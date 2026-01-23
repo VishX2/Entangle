@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Global tweaks */
+html, body {
+  height: 100%;
+}
+
+/* Optional design tokens */
+:root {
+  --brand-primary: #7CFF00;
+  --brand-dark: #0F172A;
+}

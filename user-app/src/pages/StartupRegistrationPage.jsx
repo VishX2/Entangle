@@ -105,3 +105,168 @@ export default function StartupRegistration() {
                   placeholder="contact@startup.com"
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Founder Name *
+                </label>
+                <input
+                  type="text"
+                  name="founderName"
+                  value={formData.founderName}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                  placeholder="+1 (555) 000-0000"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Website
+                </label>
+                <input
+                  type="url"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                  placeholder="https://yourstartup.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Industry *
+                </label>
+                <select
+                  name="industry"
+                  value={formData.industry}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                >
+                  <option value="">Select industry</option>
+                  <option value="fintech">FinTech</option>
+                  <option value="healthtech">HealthTech</option>
+                  <option value="edtech">EdTech</option>
+                  <option value="saas">SaaS</option>
+                  <option value="ecommerce">E-commerce</option>
+                  <option value="ai">AI/ML</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Stage *
+                </label>
+                <select
+                  name="stage"
+                  value={formData.stage}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                >
+                  <option value="">Select stage</option>
+                  <option value="idea">Idea</option>
+                  <option value="mvp">MVP</option>
+                  <option value="early">Early Stage</option>
+                  <option value="growth">Growth</option>
+                  <option value="expansion">Expansion</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Funding Needed *
+                </label>
+                <select
+                  name="fundingNeeded"
+                  value={formData.fundingNeeded}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                >
+                  <option value="">Select amount</option>
+                  <option value="50k">$0 - $50K</option>
+                  <option value="100k">$50K - $100K</option>
+                  <option value="500k">$100K - $500K</option>
+                  <option value="1m">$500K - $1M</option>
+                  <option value="5m">$1M - $5M</option>
+                  <option value="more">$5M+</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Company Description *
+              </label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition resize-none"
+                placeholder="Describe your startup, what problem you're solving, and your unique value proposition..."
+              ></textarea>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                id="terms"
+                className="mt-1 w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
+              />
+              <label htmlFor="terms" className="text-sm text-slate-600">
+                I agree to the Terms & Conditions and Privacy Policy. I understand that my information will be verified and shared with potential investors.
+              </label>
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <button
+                onClick={handleSubmit}
+                className="flex-1 bg-slate-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-slate-800 transition transform hover:scale-105 shadow-lg"
+              >
+                Submit Registration →
+              </button>
+              <button
+                onClick={() => console.log('Draft saved')}
+                className="px-8 py-4 border-2 border-slate-300 text-slate-700 rounded-lg font-semibold hover:border-slate-400 transition"
+              >
+                Save Draft
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Features */}
+        <div className="grid md:grid-cols-3 gap-6 mt-12">
+          <div className="flex items-center gap-3 bg-white bg-opacity-60 backdrop-blur-sm p-4 rounded-xl">
+            <Check className="w-6 h-6 text-green-600 flex-shrink-0" />
+            <span className="text-slate-700 font-medium">Government ID Verified</span>
+          </div>
+          <div className="flex items-center gap-3 bg-white bg-opacity-60 backdrop-blur-sm p-4 rounded-xl">
+            <Check className="w-6 h-6 text-green-600 flex-shrink-0" />
+            <span className="text-slate-700 font-medium">Smart Matching</span>
+          </div>
+          <div className="flex items-center gap-3 bg-white bg-opacity-60 backdrop-blur-sm p-4 rounded-xl">
+            <Check className="w-6 h-6 text-green-600 flex-shrink-0" />
+            <span className="text-slate-700 font-medium">Secure Messaging</span>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

@@ -1,4 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 export default function AdminLogin() {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // 👉 later replace with real auth check
+    navigate("/dashboard");
+  };
+
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#F7F3EC]">
       
@@ -14,7 +25,6 @@ export default function AdminLogin() {
             <span className="text-xl font-semibold">Entangle</span>
           </div>
 
-          {/* Heading */}
           <h1 className="text-4xl font-bold leading-tight max-w-md">
             Connecting startups with investors through verified trust
           </h1>
@@ -22,7 +32,6 @@ export default function AdminLogin() {
             Secure platform management dashboard
           </p>
 
-          {/* Feature List */}
           <ul className="mt-10 space-y-5">
             <li className="flex gap-4 items-start">
               <span className="text-orange-500">✔</span>
@@ -50,7 +59,6 @@ export default function AdminLogin() {
           </ul>
         </div>
 
-        {/* Footer */}
         <p className="text-xs text-gray-400">
           © 2026 Entangle. All rights reserved. <br />
           Enterprise Administration Portal v2.1
@@ -61,7 +69,6 @@ export default function AdminLogin() {
       <div className="flex items-center justify-center px-6">
         <div className="w-full max-w-md bg-[#F3EFE7] rounded-2xl shadow-xl p-8">
           
-          {/* Icon */}
           <div className="flex justify-center mb-6">
             <div className="h-14 w-14 rounded-full bg-[#3E516A] flex items-center justify-center text-white text-xl">
               🛡️
@@ -75,8 +82,8 @@ export default function AdminLogin() {
             Platform management & verification
           </p>
 
-          {/* Form */}
-          <form className="space-y-5">
+          {/* FORM */}
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-medium mb-1">
                 Username
@@ -100,7 +107,10 @@ export default function AdminLogin() {
             </div>
 
             <div className="text-right">
-              <button type="button" className="text-sm text-blue-600 hover:underline">
+              <button
+                type="button"
+                className="text-sm text-blue-600 hover:underline"
+              >
                 Forgot password?
               </button>
             </div>
@@ -113,7 +123,6 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          {/* Footer note */}
           <p className="text-xs text-gray-500 mt-6 text-center">
             Restricted to authorized administrators only.  
             All login activity is monitored for platform integrity.

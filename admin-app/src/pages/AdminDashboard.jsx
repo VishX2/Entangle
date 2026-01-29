@@ -132,15 +132,22 @@ function Charts() {
       <div className="bg-white p-6 rounded-xl shadow-sm">
         <h3 className="font-semibold mb-4">Platform Activity Breakdown</h3>
         <Bar
-          data={{
-            labels: ['Verifications', 'Moderation', 'Reports', 'Investors'],
-            datasets: [
-              {
-                data: [340, 160, 90, 220],
-                backgroundColor: ['#f97316', '#475569', '#334155', '#94a3b8'],
-              },
-            ],
-          }}
+            data={{
+                labels: ['Verifications', 'Reports', 'Moderation', 'Investors'],
+                datasets: [
+                    {
+                        data: [340, 160, 90, 220],
+                        backgroundColor: ['#f97316', '#475569', '#334155', '#94a3b8'],
+                    },
+                ],
+            }}
+            options={{
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+            }}
         />
       </div>
     </div>

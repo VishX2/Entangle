@@ -20,11 +20,23 @@ ChartJS.register(
   Legend
 );
 
+import {
+  Building2,
+  Clock,
+  AlertTriangle,
+  Users,
+  LayoutGrid,
+  ShieldCheck,
+  MessageSquare,
+  LogOut,
+} from "lucide-react";
+
+
 export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
       <Sidebar />
-      <main className="flex-1 p-8 space-y-8">
+      <main className="flex-1 p-8 space-y-8 overflow-y-auto h-screen">
         <Header />
         <Stats />
         <Charts />
@@ -36,27 +48,47 @@ export default function Dashboard() {
 
 function Sidebar() {
   return (
-    <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col">
-      <div className="p-6 text-xl font-bold">Entangle</div>
+    <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col sticky top-0 h-screen">
+      
+      {/* Brand */}
+      <div className="p-6">
+        <div className="text-xl font-bold">Entangle</div>
+        <div className="mt-4 border-t border-slate-700" />
+      </div>
+
+      {/* Navigation */}
       <nav className="flex-1 space-y-2 px-4">
-        <Item active label="Dashboard" />
-        <Item label="Startup Verification" />
-        <Item label="Content Moderation" />
-        <Item label="Reports & Complaints" />
+        <Item label="Dashboard" icon={LayoutGrid} active/>
+        <Item label="Startup Verification" icon={ShieldCheck} />
+        <Item label="Content Moderation" icon={MessageSquare} />
+        <Item label="Reports & Complaints" icon={AlertTriangle} />
       </nav>
-      <div className="p-4 text-sm opacity-70">Logout</div>
+
+      {/* Footer Divider */}
+      <div className="px-6">
+        <div className="mb-4 border-t border-slate-700" />
+      </div>
+
+      {/* Logout */}
+      <div className="p-4 text-sm opacity-70 cursor-pointer hover:text-white flex items-center gap-3">
+        <LogOut className="h-4 w-4" />
+        Logout
+      </div>
     </aside>
   );
 }
 
-function Item({ label, active }) {
+function Item({ label, icon: Icon, active }) {
   return (
     <div
-      className={`px-4 py-2 rounded-lg cursor-pointer ${
-        active ? 'bg-orange-500 text-white' : 'hover:bg-slate-800'
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition ${
+        active
+          ? "bg-orange-500 text-white"
+          : "text-slate-400 hover:bg-slate-800 hover:text-white"
       }`}
     >
-      {label}
+      <Icon className="h-5 w-5" />
+      <span className="text-sm font-medium">{label}</span>
     </div>
   );
 }
@@ -72,33 +104,77 @@ function Header() {
 
 function Stats() {
   const cards = [
-    { title: 'Total Startups', value: '1,284', sub: '+12% from last month' },
-    { title: 'Pending Verifications', value: '47', sub: '23 new this week' },
-    { title: 'Reported Content', value: '12', sub: '3 urgent', danger: true },
-    { title: 'Active Investors', value: '892', sub: '+8% from last month' },
+    {
+      title: "Total Startups",
+      value: "1,284",
+      sub: "+12% from last month",
+      icon: Building2,
+      iconBg: "bg-slate-200",
+      iconColor: "text-orange-500",
+    },
+    {
+      title: "Pending Verifications",
+      value: "47",
+      sub: "23 new this week",
+      icon: Clock,
+      iconBg: "bg-slate-200",
+      iconColor: "text-orange-500",
+    },
+    {
+      title: "Reported Content",
+      value: "12",
+      sub: "3 urgent",
+      danger: true,
+      icon: AlertTriangle,
+      iconBg: "bg-slate-200",
+      iconColor: "text-orange-500",
+    },
+    {
+      title: "Active Investors",
+      value: "892",
+      sub: "+8% from last month",
+      icon: Users,
+      iconBg: "bg-slate-200",
+      iconColor: "text-orange-500",
+    },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-      {cards.map((c) => (
-        <div
-          key={c.title}
-          className="bg-white rounded-xl p-6 shadow-sm"
-        >
-          <div className="text-slate-500">{c.title}</div>
-          <div className="text-3xl font-bold mt-2">{c.value}</div>
+      {cards.map((c) => {
+        const Icon = c.icon;
+
+        return (
           <div
-            className={`text-sm mt-1 ${
-              c.danger ? 'text-red-500' : 'text-green-600'
-            }`}
+            key={c.title}
+            className="bg-white rounded-xl p-6 shadow-sm flex justify-between items-start"
           >
-            {c.sub}
+            {/* LEFT CONTENT */}
+            <div>
+              <div className="text-slate-500">{c.title}</div>
+              <div className="text-3xl font-bold mt-2">{c.value}</div>
+              <div
+                className={`text-sm mt-1 ${
+                  c.danger ? "text-red-500" : "text-green-600"
+                }`}
+              >
+                {c.sub}
+              </div>
+            </div>
+
+            {/* ICON */}
+            <div
+              className={`h-12 w-12 rounded-lg flex items-center justify-center ${c.iconBg}`}
+            >
+              <Icon className={`h-6 w-6 ${c.iconColor}`} />
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
+
 
 function Charts() {
   return (

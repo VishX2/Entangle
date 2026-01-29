@@ -156,35 +156,79 @@ function Charts() {
 
 function RecentActivity() {
   const items = [
-    { text: 'Startup verified – TechVentures Inc.', tag: 'Gold' },
-    { text: 'Content flagged – StartupX', tag: 'Urgent', urgent: true },
-    { text: 'Report resolved – Complaint #1234' },
-    { text: 'Startup verified – GreenEnergy Co.', tag: 'Silver' },
-    { text: 'User complaint – Investor #892' },
-    { text: 'Startup verified – FinanceHub Ltd.', tag: 'Bronze' },
+    {
+      title: "Startup verified",
+      subtitle: "TechVentures Inc.",
+      tag: "Gold",
+      time: "2 min ago",
+      tagStyle: "bg-yellow-100 text-yellow-800",
+    },
+    {
+      title: "Content flagged",
+      subtitle: "Description by StartupX",
+      time: "15 min ago",
+    },
+    {
+      title: "Report resolved",
+      subtitle: "Complaint #1234",
+      time: "1 hour ago",
+    },
+    {
+      title: "Startup verified",
+      subtitle: "GreenEnergy Co.",
+      tag: "Silver",
+      time: "2 hours ago",
+      tagStyle: "bg-slate-100 text-slate-700",
+    },
+    {
+      title: "User complaint",
+      subtitle: "Investor Report #892",
+      time: "3 hours ago",
+    },
   ];
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-      <h3 className="font-semibold mb-4">Recent Activity</h3>
-      <ul className="space-y-4">
-        {items.map((i, idx) => (
-          <li key={idx} className="flex justify-between items-center">
-            <span>{i.text}</span>
-            {i.tag && (
-              <span
-                className={`px-3 py-1 text-xs rounded-full ${
-                  i.urgent
-                    ? 'bg-red-500 text-white'
-                    : 'bg-slate-100 text-slate-700'
-                }`}
-              >
-                {i.tag}
+    <div className="bg-white rounded-xl shadow-sm">
+      <div className="p-6">
+        <h3 className="text-lg font-semibold">Recent Activity</h3>
+        <p className='text-sm text-slate-500'>
+            Latest platform actions and events
+        </p>
+      </div>
+
+      <div className="divide-y">
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            className="flex items-center justify-between px-6 py-5"
+          >
+            {/* LEFT */}
+            <div>
+              <p className="font-medium text-slate-800">
+                {item.title}
+              </p>
+              <p className="text-sm text-slate-500">
+                {item.subtitle}
+              </p>
+            </div>
+
+            {/* RIGHT */}
+            <div className="flex items-center gap-4">
+              {item.tag && (
+                <span
+                  className={`px-3 py-1 text-xs rounded-full font-medium ${item.tagStyle}`}
+                >
+                  {item.tag}
+                </span>
+              )}
+              <span className="text-sm text-slate-500">
+                {item.time}
               </span>
-            )}
-          </li>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
+

@@ -1,24 +1,15 @@
-import { Bar, Line } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend
-);
+  Cell,
+} from "recharts";
 
 import {
   Building2,
@@ -31,8 +22,18 @@ import {
   LogOut,
 } from "lucide-react";
 
+/* -------------------- COLORS -------------------- */
 
-export default function Dashboard() {
+const CHART_COLORS = {
+  gold: "#eab308",
+  silver: "#94a3b8",
+  bronze: "#f97316",
+  dark: "#334155",
+};
+
+/* ================= DASHBOARD ================= */
+
+export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
       <Sidebar />
@@ -46,30 +47,27 @@ export default function Dashboard() {
   );
 }
 
+/* ================= SIDEBAR ================= */
+
 function Sidebar() {
   return (
     <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col sticky top-0 h-screen">
-      
-      {/* Brand */}
       <div className="p-6">
         <div className="text-xl font-bold">Entangle</div>
         <div className="mt-4 border-t border-slate-700" />
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 space-y-2 px-4">
-        <Item label="Dashboard" icon={LayoutGrid} active/>
+        <Item label="Dashboard" icon={LayoutGrid} active />
         <Item label="Startup Verification" icon={ShieldCheck} />
         <Item label="Content Moderation" icon={MessageSquare} />
         <Item label="Reports & Complaints" icon={AlertTriangle} />
       </nav>
 
-      {/* Footer Divider */}
       <div className="px-6">
         <div className="mb-4 border-t border-slate-700" />
       </div>
 
-      {/* Logout */}
       <div className="p-4 text-sm opacity-70 cursor-pointer hover:text-white flex items-center gap-3">
         <LogOut className="h-4 w-4" />
         Logout
@@ -93,14 +91,20 @@ function Item({ label, icon: Icon, active }) {
   );
 }
 
+/* ================= HEADER ================= */
+
 function Header() {
   return (
     <div>
       <h1 className="text-3xl font-semibold">Dashboard</h1>
-      <p className="text-slate-500">Welcome back, Administrator.</p>
+      <p className="text-slate-500">
+        Welcome back, Administrator. Here's your platform overview.
+      </p>
     </div>
   );
 }
+
+/* ================= STATS ================= */
 
 function Stats() {
   const cards = [
@@ -109,16 +113,12 @@ function Stats() {
       value: "1,284",
       sub: "+12% from last month",
       icon: Building2,
-      iconBg: "bg-slate-200",
-      iconColor: "text-orange-500",
     },
     {
       title: "Pending Verifications",
       value: "47",
       sub: "23 new this week",
       icon: Clock,
-      iconBg: "bg-slate-200",
-      iconColor: "text-orange-500",
     },
     {
       title: "Reported Content",
@@ -126,16 +126,12 @@ function Stats() {
       sub: "3 urgent",
       danger: true,
       icon: AlertTriangle,
-      iconBg: "bg-slate-200",
-      iconColor: "text-orange-500",
     },
     {
       title: "Active Investors",
       value: "892",
       sub: "+8% from last month",
       icon: Users,
-      iconBg: "bg-slate-200",
-      iconColor: "text-orange-500",
     },
   ];
 
@@ -143,13 +139,11 @@ function Stats() {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       {cards.map((c) => {
         const Icon = c.icon;
-
         return (
           <div
             key={c.title}
-            className="bg-white rounded-xl p-6 shadow-sm flex justify-between items-start"
+            className="bg-white rounded-xl p-6 shadow-sm flex justify-between"
           >
-            {/* LEFT CONTENT */}
             <div>
               <div className="text-slate-500">{c.title}</div>
               <div className="text-3xl font-bold mt-2">{c.value}</div>
@@ -162,11 +156,8 @@ function Stats() {
               </div>
             </div>
 
-            {/* ICON */}
-            <div
-              className={`h-12 w-12 rounded-lg flex items-center justify-center ${c.iconBg}`}
-            >
-              <Icon className={`h-6 w-6 ${c.iconColor}`} />
+            <div className="h-12 w-12 rounded-lg bg-slate-200 flex items-center justify-center">
+              <Icon className="h-6 w-6 text-orange-500" />
             </div>
           </div>
         );
@@ -175,60 +166,124 @@ function Stats() {
   );
 }
 
+/* ================= CHARTS ================= */
 
 function Charts() {
+  const lineData = [
+    { month: "Aug", gold: 45, silver: 78, bronze: 120 },
+    { month: "Sep", gold: 52, silver: 85, bronze: 135 },
+    { month: "Oct", gold: 60, silver: 92, bronze: 148 },
+    { month: "Nov", gold: 58, silver: 98, bronze: 155 },
+    { month: "Dec", gold: 70, silver: 110, bronze: 168 },
+    { month: "Jan", gold: 85, silver: 125, bronze: 182 },
+  ];
+
+  const barData = [
+    { name: "Verifications", value: 340, fill: CHART_COLORS.bronze },
+    { name: "Reports", value: 160, fill: CHART_COLORS.dark },
+    { name: "Moderation", value: 90, fill: "#1f2937" },
+    { name: "Investors", value: 220, fill: CHART_COLORS.silver },
+  ];
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-      <div className="bg-white p-6 rounded-xl shadow-sm">
-        <h3 className="font-semibold mb-4">Startup Verification Trends</h3>
-        <Line
-          data={{
-            labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
-            datasets: [
-              {
-                label: 'Gold',
-                data: [45, 52, 60, 58, 70, 85],
-                borderColor: '#eab308',
-              },
-              {
-                label: 'Silver',
-                data: [78, 85, 92, 98, 110, 125],
-                borderColor: '#94a3b8',
-              },
-              {
-                label: 'Bronze',
-                data: [120, 135, 148, 155, 168, 182],
-                borderColor: '#f97316',
-              },
-            ],
-          }}
-        />
+
+      {/* LINE CHART */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 className="font-semibold mb-4">
+          Startup Verification Trends
+        </h3>
+
+        <div className="flex gap-6 mb-3 text-sm">
+          <Legend label="Gold" color={CHART_COLORS.gold} />
+          <Legend label="Silver" color={CHART_COLORS.silver} />
+          <Legend label="Bronze" color={CHART_COLORS.bronze} />
+        </div>
+
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={lineData}>
+              <CartesianGrid stroke="#d1d5db" strokeDasharray="3 3" />
+              <XAxis dataKey="month" tick={{ fill: "#6b7280" }} />
+              <YAxis tick={{ fill: "#6b7280" }} />
+              <Tooltip />
+
+              <Line
+                dataKey="gold"
+                stroke={CHART_COLORS.gold}
+                strokeWidth={3}
+                dot={false}
+                isAnimationActive
+                animationDuration={900}
+              />
+              <Line
+                dataKey="silver"
+                stroke={CHART_COLORS.silver}
+                strokeWidth={3}
+                dot={false}
+                isAnimationActive
+                animationDuration={1100}
+              />
+              <Line
+                dataKey="bronze"
+                stroke={CHART_COLORS.bronze}
+                strokeWidth={3}
+                dot={false}
+                isAnimationActive
+                animationDuration={1300}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-sm">
-        <h3 className="font-semibold mb-4">Platform Activity Breakdown</h3>
-        <Bar
-            data={{
-                labels: ['Verifications', 'Reports', 'Moderation', 'Investors'],
-                datasets: [
-                    {
-                        data: [340, 160, 90, 220],
-                        backgroundColor: ['#f97316', '#475569', '#334155', '#94a3b8'],
-                    },
-                ],
-            }}
-            options={{
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                },
-            }}
-        />
+      {/* BAR CHART */}
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 className="font-semibold mb-4">
+          Platform Activity Breakdown
+        </h3>
+
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={barData}>
+              <CartesianGrid
+                stroke="#d1d5db"
+                strokeDasharray="3 3"
+                vertical={false}
+              />
+              <XAxis dataKey="name" tick={{ fill: "#6b7280" }} />
+              <YAxis tick={{ fill: "#6b7280" }} />
+              <Tooltip />
+
+              <Bar
+                dataKey="value"
+                radius={[8, 8, 0, 0]}
+                isAnimationActive
+                animationDuration={900}
+              >
+                {barData.map((entry, i) => (
+                  <Cell key={i} fill={entry.fill} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
+
     </div>
   );
 }
+
+function Legend({ label, color }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-4 h-2 rounded-sm" style={{ backgroundColor: color }} />
+      <span className="text-gray-600">{label}</span>
+    </div>
+  );
+}
+
+/* ================= RECENT ACTIVITY ================= */
 
 function RecentActivity() {
   const items = [
@@ -256,19 +311,14 @@ function RecentActivity() {
       time: "2 hours ago",
       tagStyle: "bg-slate-100 text-slate-700",
     },
-    {
-      title: "User complaint",
-      subtitle: "Investor Report #892",
-      time: "3 hours ago",
-    },
   ];
 
   return (
     <div className="bg-white rounded-xl shadow-sm">
       <div className="p-6">
         <h3 className="text-lg font-semibold">Recent Activity</h3>
-        <p className='text-sm text-slate-500'>
-            Latest platform actions and events
+        <p className="text-sm text-slate-500">
+          Latest platform actions and events
         </p>
       </div>
 
@@ -276,30 +326,22 @@ function RecentActivity() {
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="flex items-center justify-between px-6 py-5"
+            className="flex justify-between items-center px-6 py-5"
           >
-            {/* LEFT */}
             <div>
-              <p className="font-medium text-slate-800">
-                {item.title}
-              </p>
-              <p className="text-sm text-slate-500">
-                {item.subtitle}
-              </p>
+              <p className="font-medium">{item.title}</p>
+              <p className="text-sm text-slate-500">{item.subtitle}</p>
             </div>
 
-            {/* RIGHT */}
             <div className="flex items-center gap-4">
               {item.tag && (
                 <span
-                  className={`px-3 py-1 text-xs rounded-full font-medium ${item.tagStyle}`}
+                  className={`px-3 py-1 text-xs rounded-full ${item.tagStyle}`}
                 >
                   {item.tag}
                 </span>
               )}
-              <span className="text-sm text-slate-500">
-                {item.time}
-              </span>
+              <span className="text-sm text-slate-500">{item.time}</span>
             </div>
           </div>
         ))}
@@ -307,4 +349,3 @@ function RecentActivity() {
     </div>
   );
 }
-

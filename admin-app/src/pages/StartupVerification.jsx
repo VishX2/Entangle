@@ -1,13 +1,6 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 import TierDropdown from "../components/TierDropdown";
-import {
-  LayoutGrid,
-  ShieldCheck,
-  MessageSquare,
-  AlertTriangle,
-  LogOut,
-} from "lucide-react";
 
 /* -------------------- STATUS STYLES -------------------- */
 
@@ -101,55 +94,17 @@ export default function StartupVerification() {
 
   /* ---------------- COUNTS ---------------- */
 
-  const counts = startups.reduce(
-    (acc, s) => {
-      acc[s.status] = (acc[s.status] || 0) + 1;
-      return acc;
-    },
-    {}
-  );
+  const counts = startups.reduce((acc, s) => {
+    acc[s.status] = (acc[s.status] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
-      {/* ================= SIDEBAR ================= */}
-      <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col sticky top-0 h-screen">
-        <div className="p-6">
-          <div className="text-xl font-bold">Entangle</div>
-          <div className="mt-4 border-t border-slate-700" />
-        </div>
+      {/* SHARED SIDEBAR */}
+      <Sidebar />
 
-        <nav className="flex-1 space-y-2 px-4">
-          <SidebarItem
-            to="/dashboard"
-            icon={LayoutGrid}
-            label="Dashboard"
-          />
-          <SidebarItem
-            to="/startup-verification"
-            icon={ShieldCheck}
-            label="Startup Verification"
-          />
-          <SidebarItem
-            to="/content-moderation"
-            icon={MessageSquare}
-            label="Content Moderation"
-          />
-          <SidebarItem
-            to="/reports"
-            icon={AlertTriangle}
-            label="Reports & Complaints"
-          />
-        </nav>
-
-        <div className="px-6 my-4 border-t border-slate-700" />
-
-        <div className="p-4 text-sm opacity-70 hover:text-white cursor-pointer flex items-center gap-3">
-          <LogOut className="h-4 w-4" />
-          Logout
-        </div>
-      </aside>
-
-      {/* ================= MAIN ================= */}
+      {/* MAIN */}
       <main className="flex-1 p-8 overflow-y-auto">
         <h1 className="text-2xl font-semibold">
           Startup Verification
@@ -271,28 +226,5 @@ export default function StartupVerification() {
         </div>
       </main>
     </div>
-  );
-}
-
-/* ================= SIDEBAR ITEM ================= */
-
-function SidebarItem({ to, icon: Icon, label }) {
-  return (
-    <NavLink
-      to={to}
-      end
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-          isActive
-            ? "bg-orange-500 text-white"
-            : "text-slate-400 hover:bg-slate-800 hover:text-white"
-        }`
-      }
-    >
-      <Icon className="h-5 w-5" />
-      <span className="text-sm font-medium">
-        {label}
-      </span>
-    </NavLink>
   );
 }

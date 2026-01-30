@@ -1,11 +1,6 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 import {
-  LayoutGrid,
-  ShieldCheck,
-  MessageSquare,
-  AlertTriangle,
-  LogOut,
   Check,
   X,
   Flag,
@@ -19,67 +14,14 @@ import {
 export default function ContentModeration() {
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
+      {/* SHARED SIDEBAR */}
       <Sidebar />
 
+      {/* MAIN */}
       <main className="flex-1 p-8 overflow-y-auto">
         <ModerationContent />
       </main>
     </div>
-  );
-}
-
-/* ================= SIDEBAR ================= */
-
-function Sidebar() {
-  return (
-    <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col sticky top-0 h-screen">
-      <div className="p-6">
-        <div className="text-xl font-bold">Entangle</div>
-        <div className="mt-4 border-t border-slate-700" />
-      </div>
-
-      <nav className="flex-1 space-y-2 px-4">
-        <SidebarItem to="/dashboard" label="Dashboard" icon={LayoutGrid} />
-        <SidebarItem
-          to="/startup-verification"
-          label="Startup Verification"
-          icon={ShieldCheck}
-        />
-        <SidebarItem
-          to="/content-moderation"
-          label="Content Moderation"
-          icon={MessageSquare}
-        />
-        <SidebarItem
-          to="/reports"
-          label="Reports & Complaints"
-          icon={AlertTriangle}
-        />
-      </nav>
-
-      <div className="p-4 text-sm opacity-70 cursor-pointer hover:text-white flex items-center gap-3">
-        <LogOut className="h-4 w-4" />
-        Logout
-      </div>
-    </aside>
-  );
-}
-
-function SidebarItem({ to, label, icon: Icon }) {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-          isActive
-            ? "bg-orange-500 text-white"
-            : "text-slate-400 hover:bg-slate-800 hover:text-white"
-        }`
-      }
-    >
-      <Icon className="h-5 w-5" />
-      <span className="text-sm font-medium">{label}</span>
-    </NavLink>
   );
 }
 
@@ -138,6 +80,8 @@ function ModerationContent() {
   const [activeTab, setActiveTab] = useState("All");
   const [items, setItems] = useState(initialItems);
 
+  /* ---------- ACTIONS ---------- */
+
   const updateStatus = (id, status) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -146,6 +90,8 @@ function ModerationContent() {
     );
   };
 
+  /* ---------- COUNTS ---------- */
+
   const getCount = (tab) => {
     if (tab === "All") return items.length;
     if (tab === "Pending")
@@ -153,6 +99,8 @@ function ModerationContent() {
 
     return items.filter((i) => i.category === tab).length;
   };
+
+  /* ---------- FILTER ---------- */
 
   const filteredItems = items.filter((item) => {
     if (activeTab === "All") return true;
@@ -172,7 +120,7 @@ function ModerationContent() {
         </p>
       </div>
 
-      {/* Tabs with Counts */}
+      {/* Tabs */}
       <div className="flex gap-3 flex-wrap">
         {TABS.map((tab) => (
           <button
@@ -189,7 +137,7 @@ function ModerationContent() {
         ))}
       </div>
 
-      {/* List */}
+      {/* Moderation List */}
       <div className="space-y-5">
         {filteredItems.map((item) => {
           const Icon = item.icon;
@@ -241,7 +189,9 @@ function ModerationContent() {
               {item.status === "Pending" && (
                 <div className="flex items-center gap-6 text-sm font-medium">
                   <button
-                    onClick={() => updateStatus(item.id, "Approved")}
+                    onClick={() =>
+                      updateStatus(item.id, "Approved")
+                    }
                     className="flex items-center gap-2 text-green-600 hover:text-green-700"
                   >
                     <Check className="h-4 w-4" />
@@ -249,7 +199,9 @@ function ModerationContent() {
                   </button>
 
                   <button
-                    onClick={() => updateStatus(item.id, "Removed")}
+                    onClick={() =>
+                      updateStatus(item.id, "Removed")
+                    }
                     className="flex items-center gap-2 text-red-500 hover:text-red-600"
                   >
                     <X className="h-4 w-4" />

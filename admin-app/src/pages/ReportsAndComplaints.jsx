@@ -1,7 +1,8 @@
+import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 
 export default function ReportsAndComplaints() {
-  const reports = [
+  const [reports, setReports] = useState([
     {
       id: "RPT-001",
       reporter: "InvestorA",
@@ -47,7 +48,18 @@ export default function ReportsAndComplaints() {
       priority: "Low",
       status: "Dismissed",
     },
-  ];
+  ]);
+
+  /* ---------- STATUS UPDATE HANDLER ---------- */
+  const updateStatus = (id, newStatus) => {
+    setReports((prev) =>
+      prev.map((report) =>
+        report.id === id
+          ? { ...report, status: newStatus }
+          : report
+      )
+    );
+  };
 
   const statusBadge = (status) => {
     if (status === "Open") return "bg-blue-100 text-blue-600";
@@ -64,10 +76,8 @@ export default function ReportsAndComplaints() {
 
   return (
     <div className="flex min-h-screen bg-[#faf7f2]">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Page Content */}
       <main className="flex-1 p-6">
         {/* Header */}
         <div className="mb-6">
@@ -81,19 +91,17 @@ export default function ReportsAndComplaints() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          {[
-            { label: "Open", value: 3, color: "text-blue-600" },
-            { label: "Escalated", value: 1, color: "text-orange-600" },
-            { label: "Resolved", value: 1, color: "text-green-600" },
-            { label: "Dismissed", value: 1, color: "text-gray-600" },
-          ].map((card) => (
+          {["Open", "Escalated", "Resolved", "Dismissed"].map((status) => (
             <div
-              key={card.label}
+              key={status}
               className="bg-white border rounded-lg p-4"
             >
-              <p className="text-sm text-gray-500">{card.label}</p>
-              <p className={`text-2xl font-semibold ${card.color}`}>
-                {card.value}
+              <p className="text-sm text-gray-500">{status}</p>
+              <p className="text-2xl font-semibold">
+                {
+                  reports.filter((r) => r.status === status)
+                    .length
+                }
               </p>
             </div>
           ))}
@@ -145,16 +153,33 @@ export default function ReportsAndComplaints() {
                       {r.status}
                     </span>
                   </td>
+
+                  {/* Actions */}
                   <td className="px-4 py-4 text-right space-x-3">
                     {r.status === "Open" && (
                       <>
-                        <button className="text-green-600 hover:underline">
+                        <button
+                          onClick={() =>
+                            updateStatus(r.id, "Resolved")
+                          }
+                          className="text-green-600 hover:underline"
+                        >
                           Resolve
                         </button>
-                        <button className="text-orange-600 hover:underline">
+                        <button
+                          onClick={() =>
+                            updateStatus(r.id, "Escalated")
+                          }
+                          className="text-orange-600 hover:underline"
+                        >
                           Escalate
                         </button>
-                        <button className="text-gray-500 hover:underline">
+                        <button
+                          onClick={() =>
+                            updateStatus(r.id, "Dismissed")
+                          }
+                          className="text-gray-500 hover:underline"
+                        >
                           Dismiss
                         </button>
                       </>

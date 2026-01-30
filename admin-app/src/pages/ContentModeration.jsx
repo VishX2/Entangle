@@ -146,6 +146,14 @@ function ModerationContent() {
     );
   };
 
+  const getCount = (tab) => {
+    if (tab === "All") return items.length;
+    if (tab === "Pending")
+      return items.filter((i) => i.status === "Pending").length;
+
+    return items.filter((i) => i.category === tab).length;
+  };
+
   const filteredItems = items.filter((item) => {
     if (activeTab === "All") return true;
     if (activeTab === "Pending") return item.status === "Pending";
@@ -164,7 +172,7 @@ function ModerationContent() {
         </p>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs with Counts */}
       <div className="flex gap-3 flex-wrap">
         {TABS.map((tab) => (
           <button
@@ -176,7 +184,7 @@ function ModerationContent() {
                 : "border-slate-200 text-slate-500 hover:bg-white"
             }`}
           >
-            {tab}
+            {tab} ({getCount(tab)})
           </button>
         ))}
       </div>
@@ -189,7 +197,9 @@ function ModerationContent() {
           return (
             <div
               key={item.id}
-              className="bg-[#f3efe6] rounded-xl px-6 py-5 shadow-sm flex justify-between items-start"
+              className={`bg-white rounded-xl px-6 py-5 shadow-sm border border-slate-200 flex justify-between items-start ${
+                item.status === "Removed" ? "opacity-75" : ""
+              }`}
             >
               {/* Left */}
               <div className="flex gap-4">
@@ -206,6 +216,8 @@ function ModerationContent() {
                       className={`text-xs px-2 py-1 rounded-full font-medium ${
                         item.status === "Pending"
                           ? "bg-blue-100 text-blue-700"
+                          : item.status === "Removed"
+                          ? "bg-red-100 text-red-700"
                           : "bg-green-100 text-green-700"
                       }`}
                     >

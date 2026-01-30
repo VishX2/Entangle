@@ -193,6 +193,9 @@ function Charts() {
         <h3 className="font-semibold mb-4">
           Startup Verification Trends
         </h3>
+        <p className="text-sm text-slate-500 mb-4">
+          Last 6 months verification breakdown
+        </p>
 
         <div className="flex gap-6 mb-3 text-sm">
           <Legend label="Gold" color={CHART_COLORS.gold} />
@@ -242,6 +245,9 @@ function Charts() {
         <h3 className="font-semibold mb-4">
           Platform Activity Breakdown
         </h3>
+        <p className="text-sm text-slate-500 mb-4">
+          Activity distribution this month
+        </p>
 
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">

@@ -1,3 +1,4 @@
+import {NavLink} from "react-router-dom";
 import {
   ResponsiveContainer,
   LineChart,
@@ -52,18 +53,40 @@ export default function AdminDashboard() {
 function Sidebar() {
   return (
     <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col sticky top-0 h-screen">
+      {/* Logo */}
       <div className="p-6">
         <div className="text-xl font-bold">Entangle</div>
         <div className="mt-4 border-t border-slate-700" />
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 space-y-2 px-4">
-        <Item label="Dashboard" icon={LayoutGrid} active />
-        <Item label="Startup Verification" icon={ShieldCheck} />
-        <Item label="Content Moderation" icon={MessageSquare} />
-        <Item label="Reports & Complaints" icon={AlertTriangle} />
+        <SidebarItem
+          to="/dashboard"
+          label="Dashboard"
+          icon={LayoutGrid}
+        />
+
+        <SidebarItem
+          to="/startup-verification"
+          label="Startup Verification"
+          icon={ShieldCheck}
+        />
+
+        <SidebarItem
+          to="/content-moderation"
+          label="Content Moderation"
+          icon={MessageSquare}
+        />
+
+        <SidebarItem
+          to="/reports"
+          label="Reports & Complaints"
+          icon={AlertTriangle}
+        />
       </nav>
 
+      {/* Footer */}
       <div className="px-6">
         <div className="mb-4 border-t border-slate-700" />
       </div>
@@ -76,18 +99,23 @@ function Sidebar() {
   );
 }
 
-function Item({ label, icon: Icon, active }) {
+/* ================= SIDEBAR ITEM ================= */
+
+function SidebarItem({ to, label, icon: Icon }) {
   return (
-    <div
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition ${
-        active
-          ? "bg-orange-500 text-white"
-          : "text-slate-400 hover:bg-slate-800 hover:text-white"
-      }`}
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-4 py-3 rounded-lg transition cursor-pointer ${
+          isActive
+            ? "bg-orange-500 text-white"
+            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+        }`
+      }
     >
       <Icon className="h-5 w-5" />
       <span className="text-sm font-medium">{label}</span>
-    </div>
+    </NavLink>
   );
 }
 

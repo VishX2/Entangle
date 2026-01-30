@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminLogin from "./pages/AdminLogin";
 import Dashboard from "./pages/AdminDashboard";
+import StartupVerification from "./pages/StartupVerification";
 
 export default function App() {
   return (
@@ -14,6 +15,12 @@ export default function App() {
 
         {/* Admin Dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
+
+        {/* Startup Verification */}
+        <Route
+          path="/startup-verification"
+          element={<StartupVerification />}
+        />
       </Routes>
     </BrowserRouter>
   );

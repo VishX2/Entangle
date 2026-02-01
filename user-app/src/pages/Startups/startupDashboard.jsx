@@ -34,4 +34,21 @@ export default function StartupDashboard() {
     }, 300);
   }, []);
 
+  if (!metrics) {
+    return <p className="text-gray-500">Loading dashboard...</p>;
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* TOP CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <DashboardCard title="Profile Views" value={metrics.profileViews} />
+        <DashboardCard title="Investor Interest" value={metrics.investorInterest} />
+        <DashboardCard title="Unread Messages" value={metrics.unreadMessages} />
+      </div>
+
+      
+    </div> 
+
+  );
 }

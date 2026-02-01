@@ -348,3 +348,150 @@ export default function EntrepreneurRegistration() {
                       <option value="other">Other</option>
                     </select>
                   </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Business Stage *
+                    </label>
+                    <select
+                      name="businessStage"
+                      value={formData.businessStage}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors bg-white"
+                      required
+                    >
+                      <option value="">Select Stage</option>
+                      <option value="idea">Idea Stage</option>
+                      <option value="mvp">MVP/Prototype</option>
+                      <option value="early">Early Revenue</option>
+                      <option value="growth">Growth Stage</option>
+                      <option value="scaling">Scaling</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Funding Needed *
+                  </label>
+                  <select
+                    name="fundingNeeded"
+                    value={formData.fundingNeeded}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors bg-white"
+                    required
+                  >
+                    <option value="">Select Range</option>
+                    <option value="50k-100k">$50K - $100K</option>
+                    <option value="100k-250k">$100K - $250K</option>
+                    <option value="250k-500k">$250K - $500K</option>
+                    <option value="500k-1m">$500K - $1M</option>
+                    <option value="1m-5m">$1M - $5M</option>
+                    <option value="5m+">$5M+</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Brief Company Description *
+                  </label>
+                  <textarea
+                    name="description"
+                    rows="4"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors resize-none"
+                    placeholder="Tell us about your company, product, and vision..."
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Verification */}
+            {currentStep === 3 && (
+              <div className="space-y-6 animate-fadeIn">
+                <h2 className="text-2xl font-bold text-gray-800 mb-6">Verification Documents</h2>
+                
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-6 mb-6">
+                  <div className="flex items-start space-x-3">
+                    <CheckCircle className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+                    <div>
+                      <h3 className="font-semibold text-purple-900 mb-2">Why Verification?</h3>
+                      <p className="text-sm text-purple-800">
+                        We verify all entrepreneurs to maintain trust and security on our platform. 
+                        This helps investors make confident decisions.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Government ID Document *
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-400 transition-colors cursor-pointer bg-gray-50/50">
+                    <input
+                      type="file"
+                      id="idDocument"
+                      onChange={(e) => handleFileChange(e, 'idDocument')}
+                      className="hidden"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                    />
+                    <label htmlFor="idDocument" className="cursor-pointer">
+                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 font-medium mb-1">
+                        {formData.idDocument ? formData.idDocument.name : 'Upload your ID'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Passport, Driver's License, or National ID (PDF, JPG, PNG)
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Business Plan / Pitch Deck (Optional)
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-400 transition-colors cursor-pointer bg-gray-50/50">
+                    <input
+                      type="file"
+                      id="businessPlan"
+                      onChange={(e) => handleFileChange(e, 'businessPlan')}
+                      className="hidden"
+                      accept=".pdf,.ppt,.pptx"
+                    />
+                    <label htmlFor="businessPlan" className="cursor-pointer">
+                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 font-medium mb-1">
+                        {formData.businessPlan ? formData.businessPlan.name : 'Upload your pitch deck'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        PDF or PowerPoint presentation
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-3 pt-4">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    name="agreeToTerms"
+                    checked={formData.agreeToTerms}
+                    onChange={handleInputChange}
+                    className="mt-1 w-5 h-5 text-purple-600 rounded border-gray-300 focus:ring-purple-500"
+                    required
+                  />
+                  <label htmlFor="terms" className="text-sm text-gray-700">
+                    I agree to the{' '}
+                    <a href="#" className="text-purple-600 hover:text-purple-700 font-semibold">
+                      Terms of Service
+                    </a>{' '}
+                    and{' '}
+                    <a href="#" className="text-purple-600 hover:text-purple-700 font-semibold">
+                      Privacy Policy
+                    </a>
+                    . I understand that my information will be verified and shared with potential investors.
+                  </label>
+                </div>
+              </div>
+            )}

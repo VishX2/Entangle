@@ -47,7 +47,43 @@ export default function StartupDashboard() {
         <DashboardCard title="Unread Messages" value={metrics.unreadMessages} />
       </div>
 
+      {/* PROFILE STRENGTH */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <p className="font-semibold mb-3">Profile Strength</p>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-purple-500 h-2 rounded-full"
+            style={{ width: `${metrics.profileStrength}%` }}
+          />
+        </div>
+        <p className="text-right text-sm mt-2">
+          {metrics.profileStrength}%
+        </p>
+      </div>
       
+      {/*  QUICK ACTIONS */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <p className="font-semibold mb-4">Quick Actions</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <QuickAction label="Edit Profile" />
+          <QuickAction label="Upload Pitch Deck" />
+          <QuickAction label="View Messages" />
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div> 
 
   );

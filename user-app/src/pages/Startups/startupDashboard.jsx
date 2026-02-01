@@ -71,20 +71,24 @@ export default function StartupDashboard() {
           <QuickAction label="View Messages" />
         </div>
       </div>
+      
+      {/* RECENT ACTIVITY */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <p className="font-semibold mb-4">Recent Activity</p>
 
-
-
-
-
-
-
-
-
-
-
-
-
-    </div> 
-
+        <ul className="space-y-3">
+          {activity.map((item) => (
+            <li
+              key={item.id}
+              className="flex justify-between text-sm text-gray-600"
+            >
+              <span>{item.text}</span>
+              <span className="text-gray-400">{item.time}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
+

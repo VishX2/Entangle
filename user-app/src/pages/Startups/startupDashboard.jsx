@@ -61,7 +61,7 @@ export default function StartupDashboard() {
         </p>
       </div>
       
-      {/*  QUICK ACTIONS */}
+      {/* QUICK ACTIONS */}
       <div className="bg-white rounded-lg shadow p-6">
         <p className="font-semibold mb-4">Quick Actions</p>
 

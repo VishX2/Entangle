@@ -173,3 +173,49 @@ export default function StartupProfile() {
     </div>
   );
 }
+
+/* COMPONENTS */
+
+function Card({ title, children }) {
+  return (
+    <div
+      className="bg-white rounded-3xl p-6 transition-all duration-300
+                 hover:-translate-y-1 hover:shadow-xl"
+    >
+      <p className="mb-4 font-semibold text-[#2B3443]">
+        {title}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function Info({ label, value }) {
+  return (
+    <div>
+      <p className="text-xs uppercase tracking-wide text-[#3F5D7D]">
+        {label}
+      </p>
+      <p className="mt-1 font-medium text-[#2B3443]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function Badge({ label, value }) {
+  return (
+    <div
+      className="rounded-2xl p-4 text-center transition
+                 hover:-translate-y-0.5 hover:shadow-md
+                 bg-[#C4DAE8]"
+    >
+      <p className="text-xs uppercase text-[#3F5D7D]">
+        {label}
+      </p>
+      <p className="mt-1 text-lg font-semibold text-[#2B3443]">
+        {value}
+      </p>
+    </div>
+  );
+}

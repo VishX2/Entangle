@@ -31,4 +31,31 @@ export default function StartupConnectionRequests() {
     <div
       className="min-h-screen px-10 py-8 space-y-10"
       style={{ backgroundColor: "#F5F1E3" }}
-    ></div>
+    >
+
+      {/* HEADER */}
+      <section>
+        <h1 className="text-2xl font-semibold text-[#2B3443]">
+          Connection Requests
+        </h1>
+        <p className="text-sm text-[#3F5D7D] mt-1">
+          Investors who want to connect with your startup
+        </p>
+      </section>
+
+      {/* REQUEST LIST */}
+      <section className="space-y-6">
+        {requests.length === 0 && <EmptyState />}
+
+        {requests.map((req) => (
+          <RequestCard
+            key={req.id}
+            request={req}
+            onAccept={() => handleAccept(req.id)}
+            onReject={() => handleReject(req.id)}
+          />
+        ))}
+      </section>
+    </div>
+  );
+}

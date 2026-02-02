@@ -50,3 +50,29 @@ export default function EditStartupProfile() {
           Save Changes
         </button>
       </section>
+
+      {/* ================= BASIC INFO ================= */}
+      <Card title="Basic Information">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Field
+            label="Startup Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+          />
+          <Field
+            label="Contact Email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+          />
+          <Field
+            label="Location"
+            name="location"
+            value={form.location}
+            onChange={handleChange}
+          />
+        </div>
+      </Card>
+
+      

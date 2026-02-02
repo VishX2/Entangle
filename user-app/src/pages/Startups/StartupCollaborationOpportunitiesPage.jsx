@@ -94,3 +94,43 @@ export default function StartupCollaborations() {
           Filters
         </button>
       </div>
+      {/*  RESULTS  */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {filtered.map((item) => (
+          <div
+            key={item.id}
+            className="relative rounded-3xl p-7
+                       bg-gradient-to-br from-white via-[#FAF9F6] to-[#F7F3E6]
+                       border border-[#3F5C7D]/30
+                       shadow-sm transition
+                       hover:shadow-xl hover:-translate-y-1"
+          >
+            {/* Accent bar */}
+            <div className="absolute left-0 top-6 w-1 h-12 bg-[#F97316] rounded-r" />
+
+            {/* Header */}
+            <div className="space-y-1">
+              <h2 className="text-xl font-bold text-[#0F172A]">
+                {item.title}
+              </h2>
+              <p className="text-sm text-[#475569]">
+                {item.company}
+              </p>
+            </div>
+
+            {/* Meta */}
+            <div className="flex flex-wrap gap-4 mt-4 text-sm text-[#475569]">
+              <span className="flex items-center gap-1">
+                <MapPin size={14} />
+                {item.location}
+              </span>
+              <span className="flex items-center gap-1">
+                <TrendingUp size={14} />
+                {item.stage}
+              </span>
+            </div>
+
+            {/* Description */}
+            <p className="mt-4 text-[#64748B] leading-relaxed">
+              {item.description}
+            </p>

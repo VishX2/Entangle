@@ -92,5 +92,51 @@ export default function EditStartupProfile() {
         />
       </Card>
 
-      
+      {/* INVESTMENT DETAILS */}
+      <Card title="Investment Details">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Select
+            label="Stage"
+            name="stage"
+            value={form.stage}
+            onChange={handleChange}
+            options={["Pre-Seed", "Seed", "Series A", "Series B"]}
+          />
+          <Field
+            label="Seeking Amount"
+            name="seeking"
+            value={form.seeking}
+            onChange={handleChange}
+          />
+          <Field
+            label="Equity Offered"
+            name="equity"
+            value={form.equity}
+            onChange={handleChange}
+          />
+        </div>
+      </Card>
+
+      {/* INVESTMENT THESIS */}
+      <Card title="Investment Thesis">
+        <textarea
+          name="thesis"
+          value={form.thesis}
+          onChange={handleChange}
+          placeholder="Explain why your startup is a compelling investment opportunity. Focus on vision, market size, and growth strategy…"
+          className="w-full min-h-[160px] rounded-2xl p-4 text-sm resize-none
+                     outline-none border transition focus:ring-2"
+          style={{
+            backgroundColor: "#F5F1E3",
+            borderColor: "#9EC6DC",
+            color: "#2B3443",
+          }}
+        />
+      </Card>
+    </div>
+  );
+}
+
+
+
 

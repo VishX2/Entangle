@@ -44,4 +44,27 @@ export default function StartupProfile() {
         </button>
       </section>
 
+      {/* TABS */}
+      <section
+        className="inline-flex rounded-full p-1"
+        style={{ backgroundColor: "#9EC6DC" }}
+      >
+        {tabs.map((tab) => {
+          const isActive = tab === activeTab;
+          return (
+            <button
+              key={tab}
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all
+                ${
+                  isActive
+                    ? "bg-[#2B3443] text-white shadow-sm"
+                    : "text-[#2B3443] hover:bg-[#F5F1E3]"
+                }`}
+            >
+              {tab}
+            </button>
+          );
+        })}
+      </section>
+
       

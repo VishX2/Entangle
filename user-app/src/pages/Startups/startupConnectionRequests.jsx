@@ -117,3 +117,36 @@ function RequestCard({ request, onAccept, onReject }) {
   );
 }
 
+function ActionButton({ label, icon: Icon, bg, text, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2 px-4 py-2 rounded-xl
+                 text-sm font-medium transition
+                 hover:-translate-y-0.5 hover:shadow-md"
+      style={{
+        backgroundColor: bg,
+        color: text,
+      }}
+    >
+      <Icon size={16} />
+      {label}
+    </button>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div
+      className="bg-white rounded-3xl p-10 text-center
+                 transition hover:shadow-md"
+    >
+      <p className="text-lg font-semibold text-[#2B3443]">
+        No pending requests
+      </p>
+      <p className="text-sm text-[#3F5D7D] mt-1">
+        You’re all caught up. New investor requests will appear here.
+      </p>
+    </div>
+  );
+}

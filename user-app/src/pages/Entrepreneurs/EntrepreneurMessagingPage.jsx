@@ -132,3 +132,69 @@ export default function EntrepreneurMessages() {
       <div className="bg-white rounded-3xl shadow-sm border border-[#3F5C7D]/30
                       grid grid-cols-1 md:grid-cols-[360px_1fr]
                       overflow-hidden"></div>
+ {/*  LEFT: CONVERSATIONS  */}
+        <div className="border-r border-[#3F5C7D]/20 bg-gradient-to-b from-white to-[#FAF9F6]">
+
+          {/* Header */}
+          <div className="p-5 border-b border-[#3F5C7D]/20">
+            <h2 className="text-xl font-bold text-[#0F172A]">
+              Messages
+            </h2>
+
+            <div className="mt-3 flex items-center gap-2
+                            bg-[#F7F3E6] rounded-xl px-3 py-2">
+              <Search size={16} className="text-[#64748B]" />
+              <input
+                placeholder="Search conversations"
+                className="bg-transparent outline-none w-full text-sm"
+              />
+            </div>
+          </div>
+             {/* Conversation List */}
+          <div className="divide-y divide-[#3F5C7D]/10">
+            {conversations.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setSelected(c)}
+                className={`w-full flex gap-4 p-4 text-left transition
+                  ${
+                    selected.id === c.id
+                      ? "bg-[#F7F3E6]"
+                      : "hover:bg-[#FAF9F6]"
+                  }`}
+              >
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full
+                                  bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                                  flex items-center justify-center
+                                  font-bold text-[#0F172A]">
+                    {c.avatar}
+                  </div>
+                  {c.online && (
+                    <span className="absolute bottom-0 right-0
+                                     w-3 h-3 bg-green-500
+                                     border-2 border-white rounded-full" />
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex justify-between items-center">
+                    <p className="font-semibold text-[#0F172A]">
+                      {c.name}
+                    </p>
+                    {c.unread > 0 && (
+                      <span className="text-xs bg-[#F97316] text-white
+                                       px-2 py-0.5 rounded-full">
+                        {c.unread}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#64748B] truncate">
+                    {c.messages[c.messages.length - 1]?.text}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+

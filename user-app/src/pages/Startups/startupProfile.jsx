@@ -67,4 +67,34 @@ export default function StartupProfile() {
         })}
       </section>
 
+      {/* PERSONAL INFO */}
+      <Card title="Personal Information">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Info label="Startup Name" value="Your Startup" />
+          <Info label="Email" value="founder@startup.com" />
+          <Info label="Company Type" value="Private" />
+          <Info label="Location" value="San Francisco, USA" />
+        </div>
+      </Card>
+
+      {/* STARTUP PROFILE */}
+      <Card title="Startup Profile">
+        <p className="text-sm leading-relaxed text-[#3F5D7D]">
+          Briefly describe what your startup does, who it’s for, and the problem
+          you’re solving. This helps investors understand your business quickly.
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-2">
+          {["SaaS", "FinTech", "AI", "B2B"].map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1 rounded-full text-xs font-medium
+                         bg-[#EF6C4E] text-white"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </Card>
+
       

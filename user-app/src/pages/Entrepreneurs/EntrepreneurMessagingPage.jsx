@@ -198,3 +198,85 @@ export default function EntrepreneurMessages() {
           </div>
         </div>
 
+{/*  RIGHT: CHAT  */}
+        <div className="flex flex-col">
+
+          {/* Chat Header */}
+          <div className="p-5 border-b border-[#3F5C7D]/20
+                          flex justify-between items-center
+                          bg-gradient-to-r from-white to-[#FAF9F6]">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full
+                              bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                              flex items-center justify-center
+                              font-bold text-[#0F172A]">
+                {selected.avatar}
+              </div>
+              <div>
+                <p className="font-semibold text-[#0F172A]">
+                  {selected.name}
+                </p>
+                <p className="text-xs text-[#64748B]">
+                  {selected.company}
+                </p>
+              </div>
+            </div>
+
+            <button className="p-2 rounded-lg hover:bg-[#F7F3E6] transition">
+              <MoreVertical size={18} className="text-[#64748B]" />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 p-6 space-y-4 overflow-y-auto">
+            {selected.messages.map((m, i) => (
+              <div
+                key={i}
+                className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm
+                  ${
+                    m.fromMe
+                      ? "ml-auto bg-gradient-to-r from-[#F97316] to-[#F59E0B] text-white"
+                      : "bg-[#E5E7EB] text-[#0F172A]"
+                  }`}
+              >
+                <p>{m.text}</p>
+                <div className="mt-1 text-xs opacity-70 flex items-center gap-1">
+                  {m.time}
+                  {m.fromMe && <CheckCheck size={14} />}
+                </div>
+              </div>
+            ))}
+            <div ref={endRef} />
+          </div>
+
+          {/* Input */}
+          <div className="p-5 border-t border-[#3F5C7D]/20 bg-white">
+            <div className="flex items-center gap-3">
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="flex-1 rounded-xl px-4 py-3
+                           bg-[#F7F3E6]
+                           border border-[#3F5C7D]/30
+                           focus:outline-none focus:ring-2
+                           focus:ring-[#F97316]/30"
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              />
+              <button
+                onClick={sendMessage}
+                className="p-3 rounded-xl
+                           bg-gradient-to-r from-[#F97316] to-[#F59E0B]
+                           text-white shadow-md
+                           hover:shadow-xl transition"
+              >
+                <Send size={18} />
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}

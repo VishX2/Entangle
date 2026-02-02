@@ -104,3 +104,31 @@ const conversations = [
     ],
   },
 ];
+/*  COMPONENT  */
+export default function EntrepreneurMessages() {
+  const [selected, setSelected] = useState(conversations[0]);
+  const [message, setMessage] = useState("");
+  const endRef = useRef(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selected]);
+
+  const sendMessage = () => {
+    if (!message.trim()) return;
+
+    selected.messages.push({
+      fromMe: true,
+      text: message,
+      time: "Now",
+    });
+
+    setMessage("");
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F7F3E6] p-6">
+
+      <div className="bg-white rounded-3xl shadow-sm border border-[#3F5C7D]/30
+                      grid grid-cols-1 md:grid-cols-[360px_1fr]
+                      overflow-hidden"></div>

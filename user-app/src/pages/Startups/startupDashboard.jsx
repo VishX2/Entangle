@@ -31,7 +31,7 @@ export default function StartupDashboard() {
         <div
           className="rounded-2xl px-6 py-4 shadow-sm transition-all duration-300
                      hover:-translate-y-1 hover:shadow-lg"
-          style={{ backgroundColor: "#2B3443" }}
+          style={{ backgroundColor: "#0e1e39" }}
         >
           <p className="text-sm text-white/60">Traction Score</p>
           <p className="text-3xl font-semibold text-white">82</p>
@@ -47,7 +47,6 @@ export default function StartupDashboard() {
           label="Messages"
           value="15"
           trend="5 unread"
-          highlight
         />
       </section>
 

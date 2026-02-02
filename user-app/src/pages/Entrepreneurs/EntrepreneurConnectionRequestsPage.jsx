@@ -45,9 +45,9 @@ export default function EntrepreneurConnections() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-14"></div>
+    <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-14">
 
-     {/*  HEADER  */}
+      {/*  HEADER  */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-[#0F172A]">
           Connection Requests
@@ -64,7 +64,8 @@ export default function EntrepreneurConnections() {
         <StatCard title="Connections This Month" value="12" />
         <StatCard title="Profile Views" value="247" />
       </div>
-       {/*  REQUEST LIST  */}
+
+      {/*  REQUEST LIST  */}
       <div className="space-y-8">
         {requests.length === 0 ? (
           <EmptyState />
@@ -120,3 +121,81 @@ export default function EntrepreneurConnections() {
                     </p>
                   </div>
                 </div>
+
+                {/* ACTIONS */}
+                <div className="flex md:flex-col gap-3 justify-center">
+                  <button
+                    onClick={() => acceptRequest(req.id)}
+                    className="flex items-center justify-center gap-2
+                               px-6 py-3 rounded-xl
+                               bg-gradient-to-r from-[#22C55E] to-[#16A34A]
+                               text-white font-medium
+                               shadow-md transition
+                               hover:shadow-xl hover:-translate-y-0.5"
+                  >
+                    <Check size={18} />
+                    Accept
+                  </button>
+
+                  <button
+                    onClick={() => declineRequest(req.id)}
+                    className="flex items-center justify-center gap-2
+                               px-6 py-3 rounded-xl
+                               border border-[#EF4444]/40
+                               text-[#EF4444] font-medium
+                               bg-white
+                               hover:bg-[#FEF2F2]
+                               transition"
+                  >
+                    <X size={18} />
+                    Decline
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+/*  SMALL COMPONENTS  */
+
+function StatCard({ title, value }) {
+  return (
+    <div
+      className="rounded-2xl p-6
+                 bg-gradient-to-br from-white to-[#FAF9F6]
+                 border border-[#3F5C7D]/30
+                 shadow-sm text-center"
+    >
+      <p className="text-3xl font-bold text-[#0F172A]">
+        {value}
+      </p>
+      <p className="text-sm text-[#64748B] mt-1">
+        {title}
+      </p>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div
+      className="rounded-3xl p-16 text-center
+                 bg-gradient-to-br from-white to-[#FAF9F6]
+                 border border-[#3F5C7D]/30
+                 shadow-sm"
+    >
+      <UserPlus size={48} className="mx-auto text-[#64748B]" />
+      <h3 className="mt-4 text-xl font-semibold text-[#0F172A]">
+        No pending requests
+      </h3>
+      <p className="text-[#64748B] mt-2">
+        When someone sends you a connection request,
+        it will appear here.
+      </p>
+    </div>
+  );
+}

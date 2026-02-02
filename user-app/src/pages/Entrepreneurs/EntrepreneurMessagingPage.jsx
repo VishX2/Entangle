@@ -104,6 +104,7 @@ const conversations = [
     ],
   },
 ];
+
 /*  COMPONENT  */
 export default function EntrepreneurMessages() {
   const [selected, setSelected] = useState(conversations[0]);
@@ -131,8 +132,9 @@ export default function EntrepreneurMessages() {
 
       <div className="bg-white rounded-3xl shadow-sm border border-[#3F5C7D]/30
                       grid grid-cols-1 md:grid-cols-[360px_1fr]
-                      overflow-hidden"></div>
- {/*  LEFT: CONVERSATIONS  */}
+                      overflow-hidden">
+
+        {/*  LEFT: CONVERSATIONS  */}
         <div className="border-r border-[#3F5C7D]/20 bg-gradient-to-b from-white to-[#FAF9F6]">
 
           {/* Header */}
@@ -150,7 +152,8 @@ export default function EntrepreneurMessages() {
               />
             </div>
           </div>
-             {/* Conversation List */}
+
+          {/* Conversation List */}
           <div className="divide-y divide-[#3F5C7D]/10">
             {conversations.map((c) => (
               <button
@@ -198,7 +201,7 @@ export default function EntrepreneurMessages() {
           </div>
         </div>
 
-{/*  RIGHT: CHAT  */}
+        {/*  RIGHT: CHAT  */}
         <div className="flex flex-col">
 
           {/* Chat Header */}

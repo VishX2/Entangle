@@ -46,7 +46,7 @@ export default function EntrepreneurConnections() {
 
   return (
     <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-14"></div>
-    
+
      {/*  HEADER  */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-[#0F172A]">
@@ -64,3 +64,59 @@ export default function EntrepreneurConnections() {
         <StatCard title="Connections This Month" value="12" />
         <StatCard title="Profile Views" value="247" />
       </div>
+       {/*  REQUEST LIST  */}
+      <div className="space-y-8">
+        {requests.length === 0 ? (
+          <EmptyState />
+        ) : (
+          requests.map((req) => (
+            <div
+              key={req.id}
+              className="relative rounded-3xl p-8
+                         bg-gradient-to-br from-white via-[#FAF9F6] to-[#F7F3E6]
+                         border border-[#3F5C7D]/30
+                         shadow-sm transition
+                         hover:shadow-xl hover:-translate-y-1"
+            >
+              {/* Accent bar */}
+              <div className="absolute left-0 top-8 w-1 h-12 bg-[#F97316] rounded-r" />
+
+              <div className="flex flex-col md:flex-row justify-between gap-6">
+                {/* LEFT */}
+                <div className="flex gap-5">
+                  <div className="w-16 h-16 rounded-full
+                                  bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                                  flex items-center justify-center
+                                  font-bold text-xl text-[#0F172A]
+                                  shadow">
+                    {req.avatar}
+                  </div>
+
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-semibold text-[#0F172A]">
+                      {req.name}
+                    </h3>
+                    <p className="text-sm text-[#475569]">
+                      {req.role} · {req.company}
+                    </p>
+
+                    <div className="flex flex-wrap gap-4 text-sm text-[#64748B] mt-2">
+                      <span className="flex items-center gap-1">
+                        <MapPin size={14} />
+                        {req.location}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Briefcase size={14} />
+                        Investor
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock size={14} />
+                        {req.time}
+                      </span>
+                    </div>
+
+                    <p className="mt-3 text-[#64748B] leading-relaxed max-w-xl">
+                      “{req.message}”
+                    </p>
+                  </div>
+                </div>

@@ -9,6 +9,7 @@ import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
 import StartupCollaborationOpportunitiesPage from "./pages/Startups/StartupCollaborationOpportunitiesPage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
+import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/profile/edit" element={<EditEntrepreneurProfile />} />
           <Route path="/collaborations" element={<StartupCollaborationOpportunitiesPage />} />
           <Route path="/connections" element={<EntrepreneurConnections />} />
+          <Route path="/messages" element={<EntrepreneurMessages />} />
         </Route>
 
 

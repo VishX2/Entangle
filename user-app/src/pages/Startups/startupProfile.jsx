@@ -132,4 +132,44 @@ export default function StartupProfile() {
           </div>
         )}
 
-        
+        {/* EDIT MODE */}
+        {editingThesis && (
+          <div className="space-y-4">
+            <textarea
+              autoFocus
+              value={thesis}
+              onChange={(e) => setThesis(e.target.value)}
+              placeholder="Write your investment thesis here…"
+              className="w-full min-h-[160px] rounded-2xl p-4 text-sm resize-none
+                         outline-none border"
+              style={{
+                backgroundColor: "#F5F1E3",
+                borderColor: "#9EC6DC",
+                color: "#2B3443",
+              }}
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setEditingThesis(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium
+                           text-[#2B3443] hover:bg-[#E6E0D0]"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={() => setEditingThesis(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium
+                           bg-[#EF6C4E] text-white hover:opacity-90"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
+
+      </Card>
+    </div>
+  );
+}

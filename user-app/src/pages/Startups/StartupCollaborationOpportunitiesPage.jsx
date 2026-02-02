@@ -62,3 +62,35 @@ export default function StartupCollaborations() {
           growth opportunities.
         </p>
       </div>
+
+      {/*  SEARCH & FILTER  */}
+      <div
+        className="flex flex-col md:flex-row gap-4
+                   bg-gradient-to-br from-white to-[#FAF9F6]
+                   border border-[#3F5C7D]/30
+                   rounded-2xl p-5 shadow-sm"
+      >
+        <div className="flex items-center gap-3 flex-1">
+          <Search size={18} className="text-[#64748B]" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by startup or industry..."
+            className="w-full bg-transparent
+                       focus:outline-none
+                       text-[#0F172A]"
+          />
+        </div>
+
+        <button
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl
+                     border border-[#3F5C7D]/30
+                     text-[#0F172A]
+                     bg-[#F7F3E6]
+                     hover:bg-[#EDE9DD]
+                     transition"
+        >
+          <Filter size={16} />
+          Filters
+        </button>
+      </div>

@@ -154,3 +154,94 @@ export default function EntrepreneurProfile() {
           ))}
         </div>
       </Section>
+
+
+      {/*  INVESTMENT THESIS  */}
+      <Section title="Investment Thesis">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <ThesisCard
+            title="Preferred Stages"
+            value={profile.stages.join(", ")}
+            icon={TrendingUp}
+          />
+          <ThesisCard
+            title="Value Add"
+            value="Mentorship, Strategy, Network Access"
+            icon={Briefcase}
+          />
+        </div>
+      </Section>
+    </div>
+  );
+}
+
+/*  COMPONENTS  */
+
+function Section({ title, children }) {
+  return (
+    <div className="relative bg-white rounded-3xl p-10 space-y-6
+                    border border-[#3F5C7D]/40
+                    transition
+                    hover:border-[#F97316]
+                    hover:shadow-lg hover:-translate-y-1">
+      <div className="absolute left-0 top-10 w-1 h-12 bg-[#F97316] rounded-r" />
+      <h2 className="text-xl font-bold text-[#0F172A] pl-4">{title}</h2>
+      {children}
+    </div>
+  );
+}
+
+function InfoItem({ icon: Icon, label, value }) {
+  return (
+    <div className="flex gap-6 items-start transition hover:-translate-y-0.5">
+      <div className="w-14 h-14 rounded-xl
+                      bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                      border border-[#3F5C7D]/40
+                      flex items-center justify-center
+                      transition
+                      hover:bg-[#0F172A]">
+        <Icon size={22} className="text-[#0F172A] hover:text-white transition" />
+      </div>
+      <div>
+        <p className="text-xs text-[#3F5C7D]">{label}</p>
+        <p className="font-semibold text-[#0F172A]">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function ThesisCard({ title, value, icon: Icon }) {
+  return (
+    <div className="relative bg-white rounded-2xl p-8
+                    border border-[#3F5C7D]/40
+                    transition
+                    hover:border-[#F97316]
+                    hover:shadow-lg hover:-translate-y-1">
+      <div className="absolute left-0 top-8 w-1 h-12 bg-[#F97316] rounded-r" />
+
+      <div className="flex items-center gap-5 mb-4">
+        <div className="w-12 h-12 rounded-xl
+                        bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                        border border-[#3F5C7D]/40
+                        flex items-center justify-center
+                        transition hover:bg-[#0F172A]">
+          <Icon size={20} className="text-[#0F172A] hover:text-white transition" />
+        </div>
+        <p className="font-bold text-[#0F172A] text-lg">{title}</p>
+      </div>
+
+      <p className="text-[#3F5C7D]">{value}</p>
+    </div>
+  );
+}
+
+function Badge({ label }) {
+  return (
+    <span className="px-4 py-1.5 rounded-full text-xs font-semibold
+                     bg-[#E5E7EB] text-[#0F172A]
+                     border border-[#3F5C7D]/40
+                     transition hover:bg-[#F97316] hover:text-white">
+      {label}
+    </span>
+  );
+}

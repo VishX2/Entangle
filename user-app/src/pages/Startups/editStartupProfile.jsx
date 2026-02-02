@@ -51,7 +51,7 @@ export default function EditStartupProfile() {
         </button>
       </section>
 
-      {/* ================= BASIC INFO ================= */}
+      {/* BASIC INFO */}
       <Card title="Basic Information">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Field
@@ -75,4 +75,22 @@ export default function EditStartupProfile() {
         </div>
       </Card>
 
+      {/* DESCRIPTION */}
+      <Card title="Startup Description">
+        <textarea
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Describe what your startup does, who it’s for, and the problem you’re solving…"
+          className="w-full min-h-[140px] rounded-2xl p-4 text-sm resize-none
+                     outline-none border transition focus:ring-2"
+          style={{
+            backgroundColor: "#F5F1E3",
+            borderColor: "#9EC6DC",
+            color: "#2B3443",
+          }}
+        />
+      </Card>
+
       
+

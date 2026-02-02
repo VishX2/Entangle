@@ -5,6 +5,7 @@ import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
 
 import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 
 function App() {
   return (
@@ -21,6 +22,13 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
+
+
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<EntrepreneurProfile />} />
+        </Route>
+
 
       </Routes>
     </BrowserRouter>

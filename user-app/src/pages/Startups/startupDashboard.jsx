@@ -46,17 +46,17 @@ export default function StartupDashboard() {
   return (
     <div className="w-full min-h-screen bg-[#FAF6EE] p-8 space-y-8">
 
-      {/* ===== HEADER ===== */}
+      {/* HEADER */}
       <div>
         <h1 className="text-3xl font-bold text-[#0F172A]">
-          Dashboard
+          Welcome back!
         </h1>
         <p className="text-[#64748B] mt-1">
           Welcome back! Here's your startup overview.
         </p>
       </div>
 
-      {/* ===== PROFILE STRENGTH ===== */}
+      {/* PROFILE STRENGTH */}
       <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
         <div className="flex justify-between items-center mb-3">
           <p className="font-semibold text-[#0F172A]">
@@ -80,7 +80,7 @@ export default function StartupDashboard() {
         </p>
       </div>
 
-      {/* ===== METRIC CARDS ===== */}
+      {/* METRIC CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <MetricCard
           icon={Eye}
@@ -105,7 +105,7 @@ export default function StartupDashboard() {
         />
       </div>
 
-      {/* ===== QUICK ACTIONS ===== */}
+      {/* QUICK ACTIONS */}
       <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
         <p className="font-semibold text-[#0F172A] mb-4">
           Quick Actions
@@ -119,7 +119,7 @@ export default function StartupDashboard() {
         </div>
       </div>
 
-      {/* ===== RECENT ACTIVITY ===== */}
+      {/* RECENT ACTIVITY */}
       <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition">
         <p className="font-semibold text-[#0F172A] mb-4">
           Recent Activity
@@ -158,7 +158,7 @@ export default function StartupDashboard() {
   );
 }
 
-/* ===== COMPONENTS ===== */
+/*  COMPONENTS  */
 
 function MetricCard({ icon: Icon, title, value, subtitle, color }) {
   return (

@@ -80,3 +80,97 @@ export default function EditEntrepreneurProfile() {
             Save Changes
           </button>
         </div>
+
+
+        {/* Progress */}
+        <div className="mt-8 space-y-2">
+          <div className="flex justify-between text-sm font-semibold text-[#3F5C7D]">
+            <span>Profile Completion</span>
+            <span className="text-[#F97316]">82%</span>
+          </div>
+          <div className="w-full bg-[#E5E7EB] rounded-full h-2 overflow-hidden">
+            <div
+              className="h-2 rounded-full
+                         bg-gradient-to-r
+                         from-[#0F172A] via-[#3F5C7D] to-[#F97316]
+                         transition-all duration-700"
+              style={{ width: "82%" }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/*  BASIC INFO  */}
+      <Section title="Basic Information" icon={User} accent="blue">
+        <FormGrid>
+          <Input label="Full Name" placeholder="Robert Anderson" />
+          <Input label="Role / Title" placeholder="Angel Investor" />
+          <Input label="Company" placeholder="NorthBridge Capital Partners" />
+          <Input label="Location" placeholder="San Francisco, USA" />
+        </FormGrid>
+      </Section>
+
+      {/*  CONTACT INFO  */}
+      <Section title="Contact Information" icon={Mail} accent="orange">
+        <FormGrid>
+          <Input label="Email Address" placeholder="robert@email.com" />
+          <Input label="Website" placeholder="www.yourstartup.com" />
+        </FormGrid>
+      </Section>
+
+      {/*  ABOUT  */}
+      <Section title="About You" icon={Briefcase} accent="dark">
+        <textarea
+          rows={6}
+          placeholder="Describe your background, investment philosophy, and what founders can expect..."
+          className="w-full rounded-2xl p-5
+                     border border-[#3F5C7D]/40
+                     bg-white text-[#0F172A]
+                     focus:outline-none focus:ring-2 focus:ring-[#F97316]/40
+                     transition"
+        />
+      </Section>
+
+      {/*  INDUSTRIES  */}
+      <Section title="Industries & Expertise" icon={Building2} accent="orange">
+        <div className="flex flex-wrap gap-3 mb-5">
+          {industries.map((industry, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-2 px-5 py-2 rounded-full
+                         bg-gradient-to-br
+                         from-[#E5E7EB] to-[#DDE3EA]
+                         text-[#0F172A] font-semibold
+                         border border-[#3F5C7D]/40
+                         transition
+                         hover:from-[#F97316] hover:to-[#F59E0B]
+                         hover:text-white hover:-translate-y-0.5
+                         hover:shadow-lg"
+            >
+              {industry}
+              <button onClick={() => removeIndustry(i)}>
+                <X size={14} />
+              </button>
+            </span>
+          ))}
+        </div>
+
+        <div className="flex gap-3">
+          <input
+            value={newIndustry}
+            onChange={(e) => setNewIndustry(e.target.value)}
+            placeholder="Add new industry"
+            className="flex-1 rounded-xl p-3
+                       border border-[#3F5C7D]/40
+                       focus:outline-none focus:ring-2 focus:ring-[#F97316]/40"
+          />
+          <button
+            onClick={addIndustry}
+            className="px-5 rounded-xl
+                       bg-gradient-to-br from-[#0F172A] to-[#3F5C7D]
+                       text-white transition shadow-md
+                       hover:from-[#F97316] hover:to-[#F59E0B]">
+            <Plus size={18} />
+          </button>
+        </div>
+      </Section>

@@ -115,3 +115,41 @@ export default function FeedbackAndRisk() {
     </div>
   );
 }
+
+/* CARD */
+
+function TrustCard({ icon: Icon, title, subtitle, highlight, children }) {
+  return (
+    <div className="bg-white rounded-3xl p-6 transition-all duration-300
+                    hover:-translate-y-1 hover:shadow-xl">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{ backgroundColor: "#9EC6DC", color: "#2B3443" }}
+          >
+            <Icon size={22} />
+          </div>
+
+          <div>
+            <h2 className="text-lg font-semibold text-[#2B3443]">
+              {title}
+            </h2>
+            <p className="text-xs text-[#3F5D7D] mt-0.5">
+              {subtitle}
+            </p>
+          </div>
+        </div>
+
+        <span className="text-xs font-semibold px-3 py-1 rounded-full
+                         bg-[#EF6C4E]/10 text-[#EF6C4E]">
+          {highlight}
+        </span>
+      </div>
+
+      <p className="text-sm text-[#3F5D7D] leading-relaxed">
+        {children}
+      </p>
+    </div>
+  );
+}

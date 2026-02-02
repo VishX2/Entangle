@@ -85,3 +85,72 @@ export default function EntrepreneurProfile() {
           </button>
         </div>
       </div>
+
+
+      {/*  STATS  */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {profile.stats.map((s) => (
+          <div
+            key={s.label}
+            className="bg-white rounded-2xl p-8 text-center
+                       border border-[#3F5C7D]/40
+                       transition
+                       hover:border-[#F97316]
+                       hover:shadow-lg hover:-translate-y-1"
+          >
+            <p className="text-4xl font-bold text-[#0F172A]">{s.value}</p>
+            <p className="text-sm text-[#3F5C7D] mt-2">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/*  TABS  */}
+      <div className="bg-white rounded-2xl p-2 flex gap-2
+                      border border-[#3F5C7D]/40 shadow-sm">
+        {["Overview", "Portfolio", "Visibility", "Analytics"].map((tab, i) => (
+          <button
+            key={tab}
+            className={`flex-1 py-3 rounded-xl font-semibold transition
+              ${
+                i === 0
+                  ? "bg-[#F97316] text-white shadow"
+                  : "text-[#3F5C7D] hover:bg-[#0F172A] hover:text-white"
+              }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/*  PERSONAL INFO  */}
+      <Section title="Personal Information">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <InfoItem icon={Mail} label="Email" value={profile.email} />
+          <InfoItem icon={MapPin} label="Location" value={profile.location} />
+          <InfoItem icon={Building2} label="Company" value={profile.company} />
+          <InfoItem icon={Briefcase} label="Investment Range" value={profile.investmentRange} />
+        </div>
+      </Section>
+
+      {/*  INVESTMENT PROFILE  */}
+      <Section title="Investment Profile">
+        <p className="text-[#3F5C7D] leading-relaxed max-w-4xl">
+          {profile.about}
+        </p>
+
+        <div className="flex flex-wrap gap-3 pt-5">
+          {profile.industries.map((item) => (
+            <span
+              key={item}
+              className="px-5 py-2 rounded-full text-sm font-semibold
+                         bg-[#E5E7EB] text-[#0F172A]
+                         border border-[#3F5C7D]/40
+                         transition
+                         hover:bg-[#F97316]
+                         hover:text-white"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </Section>

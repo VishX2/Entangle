@@ -137,6 +137,68 @@ export default function EditStartupProfile() {
   );
 }
 
+/* COMPONENTS */
 
+function Card({ title, children }) {
+  return (
+    <div
+      className="bg-white rounded-3xl p-6 transition-all duration-300
+                 hover:-translate-y-1 hover:shadow-xl"
+    >
+      <p className="mb-4 font-semibold text-[#2B3443]">
+        {title}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function Field({ label, name, value, onChange }) {
+  return (
+    <div>
+      <label className="block text-xs uppercase tracking-wide text-[#3F5D7D] mb-1">
+        {label}
+      </label>
+      <input
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-xl px-4 py-2 text-sm outline-none border
+                   transition focus:ring-2"
+        style={{
+          backgroundColor: "#F5F1E3",
+          borderColor: "#9EC6DC",
+          color: "#2B3443",
+        }}
+      />
+    </div>
+  );
+}
+
+function Select({ label, name, value, onChange, options }) {
+  return (
+    <div>
+      <label className="block text-xs uppercase tracking-wide text-[#3F5D7D] mb-1">
+        {label}
+      </label>
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-xl px-4 py-2 text-sm outline-none border
+                   transition focus:ring-2"
+        style={{
+          backgroundColor: "#F5F1E3",
+          borderColor: "#9EC6DC",
+          color: "#2B3443",
+        }}
+      >
+        {options.map((opt) => (
+          <option key={opt}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
 
 

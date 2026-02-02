@@ -72,3 +72,46 @@ export default function FeedbackAndRisk() {
           </TrustCard>
         </div>
       </section>
+
+      {/* ACKNOWLEDGEMENT */}
+      <section className="max-w-4xl space-y-4">
+        <div
+          className={`rounded-3xl p-6 transition-all
+            ${acknowledged ? "bg-[#E6E0D0]" : "bg-white hover:shadow-lg"}`}
+        >
+          <label className="flex items-start gap-4 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={acknowledged}
+              onChange={(e) => setAcknowledged(e.target.checked)}
+              className="mt-1 w-4 h-4"
+            />
+
+            <div>
+              <p className="text-sm font-medium text-[#2B3443]">
+                I understand and acknowledge these protections
+              </p>
+              <p className="text-sm text-[#3F5D7D] mt-1">
+                I agree to use the platform responsibly and respect data privacy
+                and intellectual property.
+              </p>
+            </div>
+          </label>
+        </div>
+
+        <button
+          disabled={!acknowledged}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition
+            ${
+              acknowledged
+                ? "bg-[#EF6C4E] text-white hover:opacity-90"
+                : "bg-[#C4DAE8] text-[#3F5D7D] cursor-not-allowed"
+            }`}
+        >
+          <CheckCircle size={16} />
+          Continue
+        </button>
+      </section>
+    </div>
+  );
+}

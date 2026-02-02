@@ -4,6 +4,7 @@ import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
 
+import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
 
 function App() {
   return (
@@ -16,7 +17,10 @@ function App() {
           <Route path="/login" element={<EntangleLogin />} />
         </Route>
 
-        
+
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
 
       </Routes>
     </BrowserRouter>

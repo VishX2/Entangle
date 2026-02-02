@@ -28,7 +28,7 @@ const SidebarItem = ({ icon: Icon, label, active }) => (
 
 const Sidebar = ({ activePage }) => {
   return (
-    <aside className="w-64 bg-[#958bb6] text-white flex flex-col shrink-0 min-h-screen">
+    <aside className="w-64 bg-[#0F172A] text-white flex flex-col shrink-0 min-h-screen">
       
       {/* Logo Area */}
       <div className="p-6">

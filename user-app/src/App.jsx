@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import StartupDashboard from "./pages/Startups/startupDashboard";
 import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
+import EditStartupProfile from "./pages/Startups/editStartupProfile";
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
           <Route path="/startup/dashboard" element={<StartupDashboard />} />
           <Route path="/startup/messages" element={<Messages />} />
           <Route path="/startup/profile" element={<StartupProfile  />} />
+          <Route path="/startup/editProfile" element={<EditStartupProfile  />} />
 
         </Route>
 

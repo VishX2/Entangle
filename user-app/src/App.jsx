@@ -9,9 +9,6 @@ import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import FeedbackAndRisk from './pages/FeedbackAndRisk';
-
-
 
 function App() {
   return (

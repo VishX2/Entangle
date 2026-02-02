@@ -174,3 +174,96 @@ export default function EditEntrepreneurProfile() {
           </button>
         </div>
       </Section>
+
+
+      {/*  ACTION BAR  */}
+      <div className="sticky bottom-6 bg-white rounded-3xl p-6
+                      border border-[#3F5C7D]/40
+                      shadow-2xl
+                      flex justify-between items-center">
+        <div className="flex items-center gap-2 text-sm text-[#3F5C7D]">
+          <CheckCircle size={16} className="text-[#F97316]" />
+          All changes saved automatically
+        </div>
+
+        <div className="flex gap-4">
+          <button className="px-6 py-3 rounded-xl
+                             border border-[#3F5C7D]/40
+                             text-[#0F172A]
+                             hover:bg-[#F7F3E6]
+                             transition">
+            Cancel
+          </button>
+
+          <button className="flex items-center gap-2
+                             px-7 py-3 rounded-xl
+                             bg-gradient-to-r from-[#F97316] to-[#F59E0B]
+                             text-white shadow-lg transition
+                             hover:shadow-xl hover:-translate-y-0.5">
+            <Save size={16} />
+            Save Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/*  REUSABLE  */
+
+function Section({ title, icon: Icon, children, accent }) {
+  const accentMap = {
+    blue: "bg-[#3F5C7D]",
+    orange: "bg-[#F97316]",
+    dark: "bg-[#0F172A]",
+  };
+
+  return (
+    <div className="relative bg-white rounded-3xl p-10 space-y-6
+                    border border-[#3F5C7D]/40
+                    shadow-sm transition
+                    hover:shadow-2xl hover:-translate-y-1">
+      <div className={`absolute left-0 top-10 w-1 h-12 ${accentMap[accent]} rounded-r`} />
+
+      <div className="flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl
+                        bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                        border border-[#3F5C7D]/40
+                        flex items-center justify-center">
+          <Icon size={18} className="text-[#0F172A]" />
+        </div>
+        <h2 className="text-2xl font-bold text-[#0F172A]">
+          {title}
+        </h2>
+      </div>
+
+      {children}
+    </div>
+  );
+}
+
+function FormGrid({ children }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {children}
+    </div>
+  );
+}
+
+function Input({ label, placeholder }) {
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-semibold text-[#0F172A]">
+        {label}
+      </label>
+      <input
+        placeholder={placeholder}
+        className="w-full rounded-xl p-3
+                   border border-[#3F5C7D]/40
+                   bg-white
+                   focus:outline-none focus:ring-2 focus:ring-[#F97316]/40
+                   transition"
+      />
+    </div>
+  );
+}

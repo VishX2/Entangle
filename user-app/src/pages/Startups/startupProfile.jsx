@@ -97,4 +97,39 @@ export default function StartupProfile() {
         </div>
       </Card>
 
-      
+      {/* INVESTMENT DETAILS */}
+      <Card title="Investment Details">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Badge label="Stage" value="Seed" />
+          <Badge label="Seeking" value="$250K" />
+          <Badge label="Equity Offered" value="10%" />
+        </div>
+      </Card>
+
+      {/* INVESTMENT THESIS */}
+      <Card title="Investment Thesis">
+
+        {/* VIEW MODE */}
+        {!editingThesis && (
+          <div
+            className="rounded-2xl border-2 border-dashed p-6 space-y-3
+                       cursor-pointer transition hover:bg-[#F5F1E3]"
+            style={{ borderColor: "#9EC6DC" }}
+            onClick={() => setEditingThesis(true)}
+          >
+            <p className="text-sm font-medium text-[#2B3443]">
+              Add your investment thesis
+            </p>
+
+            <p className="text-sm leading-relaxed text-[#3F5D7D]">
+              Explain why your startup is a compelling investment opportunity.
+              Highlight your vision, market opportunity, and growth strategy.
+            </p>
+
+            <span className="text-sm font-medium text-[#EF6C4E]">
+              + Add investment thesis
+            </span>
+          </div>
+        )}
+
+        

@@ -51,3 +51,14 @@ export default function StartupCollaborations() {
 
   return (
     <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-12"></div>
+
+    {/*  HEADER  */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold text-[#0F172A]">
+          Startup Collaboration Opportunities
+        </h1>
+        <p className="text-[#64748B] max-w-2xl">
+          Discover startups seeking partnerships, strategic alliances, and
+          growth opportunities.
+        </p>
+      </div>

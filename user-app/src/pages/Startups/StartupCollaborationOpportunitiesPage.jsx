@@ -50,9 +50,9 @@ export default function StartupCollaborations() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-12"></div>
+    <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-12">
 
-    {/*  HEADER  */}
+      {/*  HEADER  */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-[#0F172A]">
           Startup Collaboration Opportunities
@@ -94,6 +94,7 @@ export default function StartupCollaborations() {
           Filters
         </button>
       </div>
+
       {/*  RESULTS  */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {filtered.map((item) => (
@@ -134,3 +135,46 @@ export default function StartupCollaborations() {
             <p className="mt-4 text-[#64748B] leading-relaxed">
               {item.description}
             </p>
+
+            {/* Industries */}
+            <div className="flex flex-wrap gap-2 mt-5">
+              {item.industries.map((ind) => (
+                <span
+                  key={ind}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium
+                             bg-[#E5E7EB] text-[#0F172A]"
+                >
+                  {ind}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <button
+              className="mt-6 w-full flex items-center justify-center gap-2
+                         rounded-xl py-3
+                         bg-gradient-to-r from-[#F97316] to-[#F59E0B]
+                         text-white font-medium
+                         shadow-md transition
+                         hover:shadow-xl hover:-translate-y-0.5"
+            >
+              <Users size={18} />
+              View Collaboration
+              <ArrowUpRight size={16} />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/*  EMPTY STATE  */}
+      {filtered.length === 0 && (
+        <div className="text-center py-20">
+          <Briefcase size={40} className="mx-auto text-[#64748B]" />
+          <p className="mt-4 text-[#64748B]">
+            No collaboration opportunities found.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}

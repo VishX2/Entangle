@@ -9,6 +9,8 @@ import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
+import InvestorRecommendations from "./pages/Investors/investorRecommendations";
+
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
           <Route path="/startup/profile" element={<StartupProfile  />} />
           <Route path="/startup/editProfile" element={<EditStartupProfile  />} />
           <Route path="/startup/requests" element={<StartupConnectionRequests  />} />
+          <Route path="/investor/recommendations" element={<InvestorRecommendations  />} />
+
 
         </Route>
 

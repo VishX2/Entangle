@@ -69,4 +69,41 @@ export default function InvestorProfileView() {
         </div>
       </section>
 
-      
+      {/* STATS */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Stat label="Total Investments" value={investor.investments} />
+        <Stat label="Match Score" value="92%" icon={Star} />
+        <Stat label="Avg. Response Time" value="2–3 days" />
+      </section>
+
+      {/* ABOUT */}
+      <Card title="About Investor">
+        <p className="text-sm text-[#3F5D7D] leading-relaxed">
+          {investor.bio}
+        </p>
+      </Card>
+
+      {/* INVESTMENT THESIS */}
+      <Card title="Investment Thesis">
+        <p className="text-sm text-[#3F5D7D] leading-relaxed italic">
+          “{investor.thesis}”
+        </p>
+      </Card>
+
+      {/* FOCUS AREAS */}
+      <Card title="Focus Areas">
+        <div className="flex flex-wrap gap-2">
+          {investor.focus.map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1 rounded-full text-xs font-medium
+                         bg-[#C4DAE8] text-[#2B3443]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}

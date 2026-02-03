@@ -495,3 +495,82 @@ export default function EntrepreneurRegistration() {
                 </div>
               </div>
             )}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-10 pt-6 border-t border-gray-200">
+              {currentStep > 1 ? (
+                <button
+                  type="button"
+                  onClick={prevStep}
+                  className="px-8 py-3 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Previous
+                </button>
+              ) : (
+                <div></div>
+              )}
+
+              {currentStep < 3 ? (
+                <button
+                  type="button"
+                  onClick={nextStep}
+                  className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+                >
+                  <span>Next Step</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="px-8 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl"
+                >
+                  Complete Registration
+                </button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="grid md:grid-cols-3 gap-6 mt-12">
+          <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-100">
+            <CheckCircle className="w-10 h-10 text-green-600 mx-auto mb-3" />
+            <h3 className="font-bold text-gray-800 mb-2">Government ID Verified</h3>
+            <p className="text-sm text-gray-600">Secure identity verification process</p>
+          </div>
+          
+          <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-100">
+            <CheckCircle className="w-10 h-10 text-green-600 mx-auto mb-3" />
+            <h3 className="font-bold text-gray-800 mb-2">Smart Matching</h3>
+            <p className="text-sm text-gray-600">AI-powered investor compatibility</p>
+          </div>
+          
+          <div className="text-center p-6 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-100">
+            <CheckCircle className="w-10 h-10 text-green-600 mx-auto mb-3" />
+            <h3 className="font-bold text-gray-800 mb-2">Secure Messaging</h3>
+            <p className="text-sm text-gray-600">Private & encrypted communication</p>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.4s ease-out;
+        }
+      `}</style>
+    </div>
+  );
+}

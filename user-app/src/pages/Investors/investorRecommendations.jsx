@@ -77,3 +77,83 @@ export default function InvestorRecommendations() {
     </div>
   );
 }
+
+/* ================= COMPONENTS ================= */
+
+function InvestorCard({ investor }) {
+  return (
+    <div
+      className="bg-white rounded-3xl p-6 transition-all duration-300
+                 hover:-translate-y-1 hover:shadow-xl"
+    >
+      {/* Top Row */}
+      <div className="flex justify-between items-start mb-4">
+        <div className="space-y-1">
+          <h2 className="text-xl font-semibold text-[#2B3443] flex items-center gap-2">
+            {investor.name}
+            {investor.verified && (
+              <CheckCircle size={16} className="text-[#EF6C4E]" />
+            )}
+          </h2>
+          <div className="flex items-center gap-2 text-sm text-[#3F5D7D]">
+            <MapPin size={14} />
+            {investor.location}
+          </div>
+        </div>
+
+        {/* Match Score */}
+        <div className="text-right">
+          <p className="text-xs text-[#3F5D7D]">Match Score</p>
+          <div className="flex items-center gap-1 text-[#EF6C4E] font-semibold">
+            <Star size={16} />
+            {investor.match}%
+          </div>
+        </div>
+      </div>
+
+      {/* Focus Tags */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {investor.focus.map((tag) => (
+          <span
+            key={tag}
+            className="px-3 py-1 rounded-full text-xs font-medium
+                       bg-[#C4DAE8] text-[#2B3443]"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Meta Info */}
+      <div className="flex items-center gap-6 text-sm text-[#3F5D7D] mb-6">
+        <div className="flex items-center gap-2">
+          <Briefcase size={16} />
+          {investor.stage}
+        </div>
+        <div className="flex items-center gap-2">
+          <TrendingUp size={16} />
+          High Activity
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="flex justify-between items-center">
+        <button
+          className="text-sm font-medium text-[#EF6C4E]
+                     hover:underline transition"
+        >
+          View Profile
+        </button>
+
+        <button
+          className="flex items-center gap-2 px-4 py-2 rounded-xl
+                     bg-[#2B3443] text-white text-sm font-medium
+                     hover:opacity-90 transition"
+        >
+          Connect
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -38,4 +38,32 @@ export default function InvestorRecommendations() {
     },
   ];
 
-  
+  return (
+    <div className="min-h-screen bg-[#F5F1E3] px-6 py-10 space-y-10">
+
+      {/* HEADER */}
+      <section className="space-y-2 max-w-4xl">
+        <h1 className="text-3xl font-semibold text-[#2B3443]">
+          Recommended Investors
+        </h1>
+        <p className="text-sm text-[#3F5D7D]">
+          Based on your startup profile, traction, and industry alignment.
+        </p>
+      </section>
+
+      {/* FILTER STRIP */}
+      <section className="flex flex-wrap gap-3">
+        {["All", "Top Match", "Verified Only", "Seed Stage", "FinTech"].map(
+          (filter) => (
+            <button
+              key={filter}
+              className="px-4 py-2 rounded-full text-sm font-medium
+                         bg-white text-[#2B3443]
+                         hover:bg-[#EF6C4E]/10 hover:text-[#EF6C4E]
+                         transition"
+            >
+              {filter}
+            </button>
+          )
+        )}
+      </section>

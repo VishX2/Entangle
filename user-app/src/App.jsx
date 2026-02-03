@@ -10,6 +10,7 @@ import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
 import InvestorRecommendations from "./pages/Investors/investorRecommendations";
+import InvestorProfileView from "./pages/Startups/investorProfileView";
 
 
 function App() {
@@ -33,6 +34,8 @@ function App() {
           <Route path="/startup/editProfile" element={<EditStartupProfile  />} />
           <Route path="/startup/requests" element={<StartupConnectionRequests  />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations  />} />
+          <Route path="/startup/investorProfileView" element={<InvestorProfileView  />} />
+
 
 
         </Route>

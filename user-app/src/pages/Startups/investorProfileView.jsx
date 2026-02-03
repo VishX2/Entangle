@@ -107,3 +107,34 @@ export default function InvestorProfileView() {
     </div>
   );
 }
+
+/* COMPONENTS */
+
+function Card({ title, children }) {
+  return (
+    <div className="bg-white rounded-3xl p-6 transition-all
+                    hover:-translate-y-1 hover:shadow-xl">
+      <h2 className="font-semibold text-[#2B3443] mb-3">
+        {title}
+      </h2>
+      {children}
+    </div>
+  );
+}
+
+function Stat({ label, value, icon: Icon }) {
+  return (
+    <div className="bg-white rounded-2xl p-6 text-center
+                    transition hover:shadow-md">
+      {Icon && (
+        <div className="flex justify-center mb-2 text-[#EF6C4E]">
+          <Icon size={18} />
+        </div>
+      )}
+      <p className="text-sm text-[#3F5D7D]">{label}</p>
+      <p className="text-2xl font-semibold text-[#2B3443] mt-1">
+        {value}
+      </p>
+    </div>
+  );
+}

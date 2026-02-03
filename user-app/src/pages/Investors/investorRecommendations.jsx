@@ -78,7 +78,7 @@ export default function InvestorRecommendations() {
   );
 }
 
-/* ================= COMPONENTS ================= */
+/* COMPONENTS */
 
 function InvestorCard({ investor }) {
   return (

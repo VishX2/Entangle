@@ -32,7 +32,7 @@ const CHART_COLORS = {
   dark: "#334155",
 };
 
-/* ================= DASHBOARD ================= */
+/* DASHBOARD */
 
 export default function AdminDashboard() {
   return (
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
 }
 
 
-/* ================= HEADER ================= */
+/* HEADER */
 
 function Header() {
   return (
@@ -62,7 +62,7 @@ function Header() {
   );
 }
 
-/* ================= STATS ================= */
+/* STATS */
 
 function Stats() {
   const cards = [
@@ -124,7 +124,7 @@ function Stats() {
   );
 }
 
-/* ================= CHARTS ================= */
+/* CHARTS */
 
 function Charts() {
   const lineData = [
@@ -247,7 +247,7 @@ function Legend({ label, color }) {
   );
 }
 
-/* ================= RECENT ACTIVITY ================= */
+/* RECENT ACTIVITY */
 
 function RecentActivity() {
   const items = [

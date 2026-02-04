@@ -9,7 +9,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 
-/* ================= CONTENT MODERATION PAGE ================= */
+/* CONTENT MODERATION PAGE */
 
 export default function ContentModeration() {
   return (
@@ -25,7 +25,7 @@ export default function ContentModeration() {
   );
 }
 
-/* ================= MAIN CONTENT ================= */
+/* MAIN CONTENT */
 
 const TABS = ["All", "Pending", "Descriptions", "Media", "Comments"];
 

@@ -1,10 +1,10 @@
-import ProfileHeader from "../components/Investor-Profile/ProfileHeader";
-import VerificationCard from "../components/Investor-Profile/VerificationCard";
-import InvestmentPreferences from "../components/Investor-Profile/InvestmentPreferences";
-import BackgroundExperience from "../components/Investor-Profile/BackgroundExperience";
-import InvestmentHistory from "../components/Investor-Profile/InvestmentHistory";
-import RatingsFeedback from "../components/Investor-Profile/RatingsFeedback";
-import RightSidebar from "../components/Investor-Profile/RightSidebar";
+import ProfileHeader from "../../components/Investor-profile/ProfileHeader";
+import VerificationCard from "../../components/InvestorProfile/VerificationCard";
+import InvestmentPreferences from "../../components/InvestorProfile/InvestmentPreferences";
+import BackgroundExperience from "../../components/InvestorProfile/BackgroundExperience";
+import InvestmentHistory from "../../components/InvestorProfile/InvestmentHistory";
+import RatingsFeedback from "../../components/InvestorProfile/RatingsFeedback";
+import RightSidebar from "../../components/InvestorProfile/RightSidebar";
 
 export default function InvestorProfile() {
   return (

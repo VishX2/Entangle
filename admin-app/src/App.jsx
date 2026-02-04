@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminLogin from "./pages/AdminLogin";
 import Dashboard from "./pages/AdminDashboard";
-import StartupVerification from "./pages/StartupVerification";
+import InvestorVerification from "./pages/InvestorVerification";
 import ContentModeration from "./pages/ContentModeration";
 import ReportsAndComplaints from "./pages/ReportsAndComplaints";
 
@@ -18,8 +18,8 @@ export default function App() {
         {/* Admin Dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
 
-        {/* Startup Verification */}
-        <Route path="/startup-verification" element={<StartupVerification />} />
+        {/* Investor Verification */}
+        <Route path="/investor-verification" element={<InvestorVerification />} />
 
         {/* Content Moderation */}
         <Route path="/content-moderation" element={<ContentModeration />} />

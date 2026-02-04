@@ -18,11 +18,15 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-2 px-4">
-        <SidebarItem to="/dashboard" icon={LayoutGrid} label="Dashboard" />
+        <SidebarItem 
+          to="/dashboard" 
+          icon={LayoutGrid} 
+          label="Dashboard" 
+        />
         <SidebarItem
-          to="/startup-verification"
+          to="/investor-verification"
           icon={ShieldCheck}
-          label="Startup Verification"
+          label="Investor Verification"
         />
         <SidebarItem
           to="/content-moderation"

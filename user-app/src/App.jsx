@@ -12,6 +12,12 @@ import StartupConnectionRequests from "./pages/Startups/startupConnectionRequest
 import InvestorRecommendations from "./pages/Investors/investorRecommendations";
 import InvestorProfileView from "./pages/Startups/investorProfileView";
 
+import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
+import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
+import StartupCollaborationOpportunitiesPage from "./pages/Startups/StartupCollaborationOpportunitiesPage";
+import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
+import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
 
 function App() {
   return (
@@ -40,7 +46,21 @@ function App() {
 
         </Route>
 
-        
+
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+
+
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<EntrepreneurProfile />} />
+          <Route path="/profile/edit" element={<EditEntrepreneurProfile />} />
+          <Route path="/collaborations" element={<StartupCollaborationOpportunitiesPage />} />
+          <Route path="/connections" element={<EntrepreneurConnections />} />
+          <Route path="/messages" element={<EntrepreneurMessages />} />
+        </Route>
+
 
 
 

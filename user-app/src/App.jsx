@@ -3,7 +3,7 @@ import AppLayout from './layouts/AppLayout';
 import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
-
+import InvestorProfile from './pages/Investors/InvestorProfile'; // ✅ NEW
 
 function App() {
   return (
@@ -16,7 +16,10 @@ function App() {
           <Route path="/login" element={<EntangleLogin />} />
         </Route>
 
-        
+        {/* APP (WITH SIDEBAR / DASHBOARD) */}
+        <Route element={<AppLayout />}>
+          <Route path="/investor/profile" element={<InvestorProfile />} />
+        </Route>
 
       </Routes>
     </BrowserRouter>

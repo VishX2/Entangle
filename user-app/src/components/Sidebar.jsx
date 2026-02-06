@@ -1,6 +1,4 @@
 import React from 'react';
-import logo from "../assets/logo.png";
-
 import {
   Layout as LayoutIcon,
   User,
@@ -16,11 +14,11 @@ import {
 
 const SidebarItem = ({ icon: Icon, label, active }) => (
   <div
-    className={`flex items-center gap-3 px-6 py-3 rounded-lg mx-3 cursor-pointer transition
+    className={`flex items-center space-x-3 px-6 py-3 cursor-pointer transition-colors
     ${
       active
-        ? "bg-[#F97316] text-white"
-          : "text-gray-400 hover:bg-[#1e2954] hover:text-white"
+        ? 'bg-white/10 text-white'
+        : 'text-slate-300 hover:bg-white/5 hover:text-white'
     }`}
   >
     <Icon size={20} />
@@ -30,29 +28,24 @@ const SidebarItem = ({ icon: Icon, label, active }) => (
 
 const Sidebar = ({ activePage }) => {
   return (
-    <aside className="w-64 bg-[#0B1220] text-white flex flex-col min-h-screen">
+    <aside className="w-64 bg-[#958bb6] text-white flex flex-col shrink-0 min-h-screen">
       
       {/* Logo Area */}
-      <div className="px-6 py-5 border-b border-white/10">
-        <div className="flex items-center gap-0.1">
-          <img
-            src={logo}
-            alt="Entangle Logo"
-            className="w-9 h-9 object-contain"
-          />
+      <div className="p-6">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+            <div className="w-4 h-4 border-2 border-white rotate-45" />
+          </div>
           <span className="text-xl font-bold">Entangle</span>
         </div>
 
-        <div className="mt-6 inline-block
-          text-xs font-semibold uppercase tracking-wider
-          bg-[#333747]/90 text-[#cccfdb]
-          px-3 py-1 rounded">
+        <div className="mt-6 text-sm font-semibold text-indigo-900 uppercase tracking-wider bg-white/30 px-3 py-1 rounded inline-block">
           Startup Account
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 space-y-1">
+      <nav className="flex-1 mt-4">
         <SidebarItem icon={LayoutIcon} label="Dashboard" active={activePage === 'dashboard'} />
         <SidebarItem icon={User} label="Profile" active={activePage === 'profile'} />
         <SidebarItem icon={PlusSquare} label="Create Post" active={activePage === 'create-post'} />
@@ -66,8 +59,7 @@ const Sidebar = ({ activePage }) => {
 
       {/* Logout */}
       <div className="p-6 border-t border-white/10">
-        <div className="flex items-center gap-3 cursor-pointer font-medium
-          text-[#F6F1E1]/80 hover:text-white transition">
+        <div className="flex items-center space-x-3 text-indigo-900 font-medium cursor-pointer">
           <LogOut size={20} />
           <span>Log out</span>
         </div>

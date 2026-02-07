@@ -1,148 +1,96 @@
 import React, { useState } from 'react';
-import { CheckCircle, ArrowRight, TrendingUp, Briefcase, Users, Shield, Zap, Target } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CheckCircle, TrendingUp, Briefcase, ArrowRight, Shield, Zap, Users } from 'lucide-react';
+import AuthHeader from '../components/AuthHeader';
 
 export default function UserTypeSelection() {
   const [selectedType, setSelectedType] = useState(null);
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const navigate = useNavigate();
 
   const handleContinue = () => {
-    if (selectedType) {
-      console.log('Selected user type:', selectedType);
-      // Navigate to appropriate registration page
+    if (selectedType === 'investor') {
+      navigate('/register/investor');
+    } else if (selectedType === 'entrepreneur') {
+      navigate('/register/entrepreneur');
+    } else if (selectedType === 'startup') {
+      navigate('/register/startup');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
-      {/* Header */}
-      <nav className="bg-gradient-to-r from-slate-700 via-slate-600 to-blue-900/90 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 flex items-center justify-center">
-                <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <span className="text-xl font-semibold text-white">
-                Entangle
-              </span>
-            </div>
-            <div className="flex items-center space-x-8">
-              <a href="#" className="text-white/90 hover:text-white transition-colors font-medium text-sm">How it works</a>
-              <a href="#" className="text-white/90 hover:text-white transition-colors font-medium text-sm">Features</a>
-              <a href="#" className="text-white/90 hover:text-white transition-colors font-medium text-sm">For Investors</a>
-              <a href="#" className="text-white/90 hover:text-white transition-colors font-medium text-sm">For Startups</a>
-              <a href="#" className="text-white/90 hover:text-white transition-colors font-medium text-sm">Login</a>
-              <button className="bg-blue-800 hover:bg-blue-900 text-white px-6 py-2.5 rounded-lg font-medium transition-colors text-sm">
-                Sign up
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-[#F5F3E7]">
+      <AuthHeader />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 bg-purple-100/70 backdrop-blur-sm px-5 py-2.5 rounded-full mb-8">
-            <CheckCircle className="w-5 h-5 text-purple-700" />
-            <span className="text-purple-900 font-semibold text-sm">Verified & Trusted Platform</span>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div className="text-center mb-14">
+          <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-5 py-2.5 rounded-full mb-6 border border-[#8AABCD]/30">
+            <CheckCircle className="w-5 h-5 text-[#465775]" />
+            <span className="text-[#465775] font-semibold text-sm">Verified & Trusted Platform</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            <span className="text-slate-800">Connect, </span>
-            <span className="text-purple-400">Verify, </span>
-            <span className="text-purple-400">Invest</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            <span className="text-[#2F3848]">Connect, </span>
+            <span className="text-[#E5654E]">Verify, </span>
+            <span className="text-[#465775]">Invest</span>
           </h1>
           
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg text-[#465775]/80 max-w-2xl mx-auto">
             Smart matching platform connecting verified investors with promising startups through AI-powered compatibility scoring
           </p>
         </div>
 
-        {/* User Type Selection Cards */}
-        <div className="max-w-5xl mx-auto mb-12">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Choose Your Account Type</h2>
+        <div className="max-w-5xl mx-auto mb-10">
+          <h2 className="text-2xl font-bold text-center text-[#2F3848] mb-10">Choose Your Account Type</h2>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {/* Investor Card */}
             <div
               onClick={() => setSelectedType('investor')}
-              onMouseEnter={() => setHoveredCard('investor')}
-              onMouseLeave={() => setHoveredCard(null)}
-              className={`relative bg-white rounded-3xl p-10 cursor-pointer transition-all duration-300 border-4 ${
+              className={`relative bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 border-2 ${
                 selectedType === 'investor'
-                  ? 'border-purple-500 shadow-2xl scale-105'
-                  : 'border-gray-200 hover:border-purple-300 hover:shadow-xl'
+                  ? 'border-[#E5654E] shadow-xl scale-[1.02]'
+                  : 'border-[#8AABCD]/30 hover:border-[#8AABCD] hover:shadow-lg'
               }`}
             >
               {selectedType === 'investor' && (
-                <div className="absolute top-6 right-6">
-                  <div className="bg-purple-500 rounded-full p-1">
-                    <CheckCircle className="w-6 h-6 text-white" />
+                <div className="absolute top-4 right-4">
+                  <div className="bg-[#E5654E] rounded-full p-1">
+                    <CheckCircle className="w-5 h-5 text-white" />
                   </div>
                 </div>
               )}
 
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${
-                selectedType === 'investor' || hoveredCard === 'investor'
-                  ? 'bg-gradient-to-br from-purple-500 to-blue-600'
-                  : 'bg-gradient-to-br from-purple-100 to-blue-100'
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-all ${
+                selectedType === 'investor'
+                  ? 'bg-gradient-to-br from-[#E5654E] to-[#d55440]'
+                  : 'bg-[#465775]/10'
               }`}>
-                <TrendingUp className={`w-8 h-8 transition-colors duration-300 ${
-                  selectedType === 'investor' || hoveredCard === 'investor' ? 'text-white' : 'text-purple-600'
-                }`} />
+                <TrendingUp className={`w-7 h-7 ${selectedType === 'investor' ? 'text-white' : 'text-[#465775]'}`} />
               </div>
 
-              <h3 className="text-3xl font-bold text-gray-800 mb-4">Investor</h3>
-              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-                Discover and invest in verified startups that match your investment criteria and expertise
+              <h3 className="text-xl font-bold text-[#2F3848] mb-3">Investor</h3>
+              <p className="text-[#465775]/70 mb-6 text-sm leading-relaxed">
+                Discover and invest in verified startups that match your investment criteria
               </p>
 
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
+              <div className="space-y-3">
+                {['Access verified startups', 'AI recommendations', 'Portfolio analytics'].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-[#465775]" />
+                    <span className="text-sm text-[#2F3848]">{item}</span>
                   </div>
-                  <span className="text-gray-700">Access to verified startups and entrepreneurs</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700">AI-powered investment recommendations</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700">Portfolio management and analytics</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700">Secure communication and due diligence tools</span>
-                </div>
+                ))}
               </div>
 
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 font-medium">Perfect for:</span>
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-purple-600" />
-                    <span className="text-gray-700 font-semibold">Angel Investors & VCs</span>
-                  </div>
+              <div className="mt-6 pt-4 border-t border-[#8AABCD]/20">
+                <div className="flex items-center gap-2 text-xs text-[#465775]">
+                  <Users className="w-4 h-4" />
+                  <span className="font-medium">Angel Investors & VCs</span>
                 </div>
               </div>
             </div>
@@ -150,79 +98,93 @@ export default function UserTypeSelection() {
             {/* Entrepreneur Card */}
             <div
               onClick={() => setSelectedType('entrepreneur')}
-              onMouseEnter={() => setHoveredCard('entrepreneur')}
-              onMouseLeave={() => setHoveredCard(null)}
-              className={`relative bg-white rounded-3xl p-10 cursor-pointer transition-all duration-300 border-4 ${
+              className={`relative bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 border-2 ${
                 selectedType === 'entrepreneur'
-                  ? 'border-blue-500 shadow-2xl scale-105'
-                  : 'border-gray-200 hover:border-blue-300 hover:shadow-xl'
+                  ? 'border-[#E5654E] shadow-xl scale-[1.02]'
+                  : 'border-[#8AABCD]/30 hover:border-[#8AABCD] hover:shadow-lg'
               }`}
             >
               {selectedType === 'entrepreneur' && (
-                <div className="absolute top-6 right-6">
-                  <div className="bg-blue-500 rounded-full p-1">
-                    <CheckCircle className="w-6 h-6 text-white" />
+                <div className="absolute top-4 right-4">
+                  <div className="bg-[#E5654E] rounded-full p-1">
+                    <CheckCircle className="w-5 h-5 text-white" />
                   </div>
                 </div>
               )}
 
-              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 ${
-                selectedType === 'entrepreneur' || hoveredCard === 'entrepreneur'
-                  ? 'bg-gradient-to-br from-blue-500 to-purple-600'
-                  : 'bg-gradient-to-br from-blue-100 to-purple-100'
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-all ${
+                selectedType === 'entrepreneur'
+                  ? 'bg-gradient-to-br from-[#E5654E] to-[#d55440]'
+                  : 'bg-[#465775]/10'
               }`}>
-                <Briefcase className={`w-8 h-8 transition-colors duration-300 ${
-                  selectedType === 'entrepreneur' || hoveredCard === 'entrepreneur' ? 'text-white' : 'text-blue-600'
-                }`} />
+                <Briefcase className={`w-7 h-7 ${selectedType === 'entrepreneur' ? 'text-white' : 'text-[#465775]'}`} />
               </div>
 
-              <h3 className="text-3xl font-bold text-gray-800 mb-4">Entrepreneur</h3>
-              <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-                Get verified and connect with investors who align with your vision and funding needs
+              <h3 className="text-xl font-bold text-[#2F3848] mb-3">Entrepreneur</h3>
+              <p className="text-[#465775]/70 mb-6 text-sm leading-relaxed">
+                Get verified and connect with investors who align with your vision
               </p>
 
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
+              <div className="space-y-3">
+                {['Match with investors', 'Showcase your startup', 'Track investor interest'].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-[#465775]" />
+                    <span className="text-sm text-[#2F3848]">{item}</span>
                   </div>
-                  <span className="text-gray-700">Get matched with relevant investors</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700">Showcase your startup and pitch deck</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700">Track investor interest and engagement</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                    </div>
-                  </div>
-                  <span className="text-gray-700">Access funding resources and guidance</span>
-                </div>
+                ))}
               </div>
 
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 font-medium">Perfect for:</span>
-                  <div className="flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-700 font-semibold">Startups & Founders</span>
+              <div className="mt-6 pt-4 border-t border-[#8AABCD]/20">
+                <div className="flex items-center gap-2 text-xs text-[#465775]">
+                  <Users className="w-4 h-4" />
+                  <span className="font-medium">Founders & CEOs</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Startup Card */}
+            <div
+              onClick={() => setSelectedType('startup')}
+              className={`relative bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 border-2 ${
+                selectedType === 'startup'
+                  ? 'border-[#E5654E] shadow-xl scale-[1.02]'
+                  : 'border-[#8AABCD]/30 hover:border-[#8AABCD] hover:shadow-lg'
+              }`}
+            >
+              {selectedType === 'startup' && (
+                <div className="absolute top-4 right-4">
+                  <div className="bg-[#E5654E] rounded-full p-1">
+                    <CheckCircle className="w-5 h-5 text-white" />
                   </div>
+                </div>
+              )}
+
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-all ${
+                selectedType === 'startup'
+                  ? 'bg-gradient-to-br from-[#E5654E] to-[#d55440]'
+                  : 'bg-[#465775]/10'
+              }`}>
+                <Zap className={`w-7 h-7 ${selectedType === 'startup' ? 'text-white' : 'text-[#465775]'}`} />
+              </div>
+
+              <h3 className="text-xl font-bold text-[#2F3848] mb-3">Startup</h3>
+              <p className="text-[#465775]/70 mb-6 text-sm leading-relaxed">
+                Register your company and connect with the right investors for growth
+              </p>
+
+              <div className="space-y-3">
+                {['Company verification', 'Investor matching', 'Funding resources'].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-[#465775]" />
+                    <span className="text-sm text-[#2F3848]">{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-[#8AABCD]/20">
+                <div className="flex items-center gap-2 text-xs text-[#465775]">
+                  <Users className="w-4 h-4" />
+                  <span className="font-medium">Early-stage Companies</span>
                 </div>
               </div>
             </div>
@@ -234,74 +196,59 @@ export default function UserTypeSelection() {
           <button
             onClick={handleContinue}
             disabled={!selectedType}
-            className={`inline-flex items-center space-x-3 px-10 py-4 rounded-xl font-semibold text-lg transition-all duration-300 ${
+            className={`inline-flex items-center gap-3 px-10 py-4 rounded-xl font-semibold text-lg transition-all ${
               selectedType
-                ? 'bg-gradient-to-r from-slate-700 to-blue-900 text-white hover:from-slate-800 hover:to-blue-950 shadow-lg hover:shadow-xl transform hover:scale-105'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-[#465775] to-[#2F3848] text-white hover:from-[#3a4a66] hover:to-[#252d3a] shadow-lg hover:shadow-xl transform hover:scale-[1.02]'
+                : 'bg-[#8AABCD]/30 text-[#465775]/50 cursor-not-allowed'
             }`}
           >
             <span>Get Started</span>
             <ArrowRight className="w-5 h-5" />
           </button>
           {!selectedType && (
-            <p className="mt-4 text-sm text-gray-500">Please select an account type to continue</p>
+            <p className="mt-4 text-sm text-[#465775]/60">Please select an account type to continue</p>
           )}
         </div>
 
         {/* Trust Indicators */}
-        <div className="grid md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
           <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle className="w-7 h-7 text-green-600" />
+            <div className="flex justify-center mb-3">
+              <div className="w-12 h-12 rounded-full bg-[#465775]/10 flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-[#465775]" />
               </div>
             </div>
-            <h3 className="font-bold text-gray-800 mb-2 text-lg">Government ID Verified</h3>
-            <p className="text-sm text-gray-600">All users undergo secure identity verification</p>
+            <h3 className="font-bold text-[#2F3848] mb-1">Government ID Verified</h3>
+            <p className="text-sm text-[#465775]/70">Secure identity verification</p>
           </div>
           
           <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                <Zap className="w-7 h-7 text-green-600" />
+            <div className="flex justify-center mb-3">
+              <div className="w-12 h-12 rounded-full bg-[#465775]/10 flex items-center justify-center">
+                <Zap className="w-6 h-6 text-[#465775]" />
               </div>
             </div>
-            <h3 className="font-bold text-gray-800 mb-2 text-lg">Smart Matching</h3>
-            <p className="text-sm text-gray-600">AI-powered compatibility scoring system</p>
+            <h3 className="font-bold text-[#2F3848] mb-1">AI Smart Matching</h3>
+            <p className="text-sm text-[#465775]/70">Compatibility scoring system</p>
           </div>
           
           <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                <Shield className="w-7 h-7 text-green-600" />
+            <div className="flex justify-center mb-3">
+              <div className="w-12 h-12 rounded-full bg-[#465775]/10 flex items-center justify-center">
+                <Shield className="w-6 h-6 text-[#465775]" />
               </div>
             </div>
-            <h3 className="font-bold text-gray-800 mb-2 text-lg">Secure Messaging</h3>
-            <p className="text-sm text-gray-600">Private & encrypted communication platform</p>
+            <h3 className="font-bold text-[#2F3848] mb-1">Secure Messaging</h3>
+            <p className="text-sm text-[#465775]/70">Private communication</p>
           </div>
         </div>
+
+        {/* Already have account */}
+        <div className="text-center mt-10">
+          <span className="text-[#465775]/70">Already have an account? </span>
+          <Link to="/login" className="text-[#E5654E] font-semibold hover:underline">Sign in</Link>
+        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .grid > div {
-          animation: slideUp 0.6s ease-out;
-        }
-
-        .grid > div:nth-child(2) {
-          animation-delay: 0.1s;
-        }
-      `}</style>
     </div>
   );
 }

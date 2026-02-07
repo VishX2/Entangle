@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import AuthSidebar from '../components/AuthSidebar';
 
 export default function EntangleLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,14 +17,19 @@ export default function EntangleLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3E7] flex items-center justify-center p-4">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#8AABCD]/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#465775]/10 rounded-full blur-3xl"></div>
-      </div>
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <AuthSidebar />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md border border-[#8AABCD]/20">
+      {/* Main Content */}
+      <div className="flex-1 bg-[#F5F3E7] flex items-center justify-center p-4 relative">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#8AABCD]/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#465775]/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md border border-[#8AABCD]/20">
         {/* Logo and Header */}
         <div className="flex flex-col items-center mb-8">
           <div className="mb-4 w-16 h-16 bg-gradient-to-br from-[#465775] to-[#2F3848] rounded-xl flex items-center justify-center shadow-lg">
@@ -141,6 +147,7 @@ export default function EntangleLogin() {
             </Link>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

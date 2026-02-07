@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Lock, Eye, EyeOff, ArrowRight, CheckCircle, XCircle, ShieldCheck } from 'lucide-react';
-import AuthHeader from '../components/AuthHeader';
+import AuthSidebar from '../components/AuthSidebar';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -57,33 +57,37 @@ export default function ResetPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-[#F5F3E7]">
-        <AuthHeader />
+      <div className="min-h-screen flex">
+        {/* Sidebar */}
+        <AuthSidebar />
 
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
-        </div>
+        {/* Main Content */}
+        <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
+          </div>
 
-        <div className="relative max-w-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#8AABCD]/20 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+          <div className="relative max-w-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#8AABCD]/20 text-center">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-10 h-10 text-green-600" />
+              </div>
+              
+              <h1 className="text-2xl font-bold text-[#2F3848] mb-4">Password Reset Successful!</h1>
+              
+              <p className="text-[#465775]/80 mb-8">
+                Your password has been updated successfully. You can now login with your new password.
+              </p>
+
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full py-4 rounded-xl font-semibold bg-gradient-to-r from-[#465775] to-[#2F3848] text-white hover:from-[#3a4a66] hover:to-[#252d3a] shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                <span>Continue to Login</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </div>
-            
-            <h1 className="text-2xl font-bold text-[#2F3848] mb-4">Password Reset Successful!</h1>
-            
-            <p className="text-[#465775]/80 mb-8">
-              Your password has been updated successfully. You can now login with your new password.
-            </p>
-
-            <button
-              onClick={() => navigate('/login')}
-              className="w-full py-4 rounded-xl font-semibold bg-gradient-to-r from-[#465775] to-[#2F3848] text-white hover:from-[#3a4a66] hover:to-[#252d3a] shadow-lg transition-all flex items-center justify-center gap-2"
-            >
-              <span>Continue to Login</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </div>
@@ -91,15 +95,18 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F3E7]">
-      <AuthHeader />
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <AuthSidebar />
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
-      </div>
+      {/* Main Content */}
+      <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
+        </div>
 
-      <div className="relative max-w-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div className="relative max-w-xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-5 py-2.5 rounded-full mb-6 border border-[#8AABCD]/30">
             <ShieldCheck className="w-5 h-5 text-[#465775]" />
@@ -266,6 +273,7 @@ export default function ResetPasswordPage() {
           <Link to="/login" className="text-[#465775] hover:text-[#E5654E] font-medium transition-colors">
             ← Back to Login
           </Link>
+        </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, TrendingUp, User, Briefcase, DollarSign, Linkedin, Globe, FileText } from 'lucide-react';
-import AuthHeader from '../../components/AuthHeader';
+import AuthSidebar from '../../components/AuthSidebar';
 
 export default function InvestorRegistration() {
   const navigate = useNavigate();
@@ -36,15 +36,18 @@ export default function InvestorRegistration() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F3E7]">
-      <AuthHeader />
+    <div className="min-h-screen flex">
+      {/* Sidebar */}
+      <AuthSidebar />
 
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
-      </div>
+      {/* Main Content */}
+      <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
+        </div>
 
-      <main className="relative max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <main className="relative max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-5 py-2.5 rounded-full mb-6 border border-[#8AABCD]/30">
             <CheckCircle className="w-5 h-5 text-[#465775]" />
@@ -240,7 +243,8 @@ export default function InvestorRegistration() {
             ← Back to account type selection
           </Link>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

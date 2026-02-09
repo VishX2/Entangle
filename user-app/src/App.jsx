@@ -4,7 +4,7 @@ import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
 import InvestorProfile from './pages/Investors/InvestorProfile';
-import EditInvestorProfile from "./pages/EditInvestorProfile";
+import EditInvestorProfile from "./pages/Investors/EditInvestorProfile";
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/investor/profile" element={<InvestorProfile />} />
 
-          {/* NEW EDIT PROFILE ROUTE */}
+          {/* EDIT INVESTOR PROFILE */}
           <Route
             path="/investor/edit-profile"
             element={<EditInvestorProfile />}

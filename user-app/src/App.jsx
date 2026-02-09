@@ -3,7 +3,8 @@ import AppLayout from './layouts/AppLayout';
 import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
-import InvestorProfile from './pages/Investors/InvestorProfile'; // ✅ NEW
+import InvestorProfile from './pages/Investors/InvestorProfile';
+import EditInvestorProfile from "./pages/EditInvestorProfile";
 
 function App() {
   return (
@@ -19,6 +20,12 @@ function App() {
         {/* APP (WITH SIDEBAR / DASHBOARD) */}
         <Route element={<AppLayout />}>
           <Route path="/investor/profile" element={<InvestorProfile />} />
+
+          {/* NEW EDIT PROFILE ROUTE */}
+          <Route
+            path="/investor/edit-profile"
+            element={<EditInvestorProfile />}
+          />
         </Route>
 
       </Routes>

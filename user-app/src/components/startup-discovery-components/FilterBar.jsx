@@ -11,7 +11,7 @@ export default function FilterBar({
       <input
         type="text"
         placeholder="Search startups..."
-        className="border rounded-lg px-4 py-2 flex-1 min-w-[200px]"
+        className="border rounded-lg px-4 py-2 flex-1 min-w-50"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />

@@ -19,6 +19,13 @@ import StartupCollaborationOpportunitiesPage from "./pages/Startups/StartupColla
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
 import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
 import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
+import Error403 from "./pages/errors/Error403";
+import Error404 from "./pages/errors/Error404";
+import Error500 from "./pages/errors/Error500";
+import Loading from "./pages/Loading";
+import Maintenance from "./pages/Maintenance";
+import FeedbackAlertRules from "./pages/FeedbackAlertRules";
 
 function App() {
   return (
@@ -33,7 +40,7 @@ function App() {
 
         </Route>
 
-         {/* WITH SIDEBAR */}
+         {/* STARTUP WITH SIDEBAR */}
         <Route element={<AppLayout />}>
           <Route path="/startup/dashboard" element={<StartupDashboard />} />
           <Route path="/startup/messages" element={<Messages />} />
@@ -42,10 +49,6 @@ function App() {
           <Route path="/startup/requests" element={<StartupConnectionRequests  />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations  />} />
           <Route path="/startup/investorProfileView" element={<InvestorProfileView  />} />
-          <Route path="/startup/settings" element={<Settings />} />
-
-
-
         </Route>
 
 
@@ -62,12 +65,17 @@ function App() {
           <Route path="/connections" element={<EntrepreneurConnections />} />
           <Route path="/messages" element={<EntrepreneurMessages />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/feedback-rules" element={<FeedbackAlertRules />} />
         </Route>
 
-
-
-
-        
+        {/* ERROR PAGES */}
+        <Route path="/error/403" element={<Error403 />} />
+        <Route path="/error/404" element={<Error404 />} />
+        <Route path="/error/500" element={<Error500 />} />
+        <Route path="/loading" element={<Loading />} />
+        <Route path="/maintenance" element={<Maintenance />} />
+        <Route path="*" element={<Error404 />} />
 
       </Routes>
     </BrowserRouter>

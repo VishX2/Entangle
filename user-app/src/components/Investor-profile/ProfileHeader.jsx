@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import profileImg from "../../assets/investor-profile/investor1.jpg";
 import coverImg from "../../assets/investor-profile/cover.jpg";
 
 export default function ProfileHeader() {
+  const navigate = useNavigate();
+
   return (
     <div className="rounded-3xl overflow-hidden bg-white">
 
@@ -22,7 +25,7 @@ export default function ProfileHeader() {
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />
 
-          {/* VERIFIED BADGE (X / Twitter style) */}
+          {/* VERIFIED BADGE */}
           <div className="absolute bottom-4 right-4 bg-[#1d9bf0] rounded-full p-2">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
@@ -81,7 +84,13 @@ export default function ProfileHeader() {
 
           {/* ACTION BUTTONS */}
           <div className="flex items-start gap-3">
-            <ActionButton primary>Edit Profile</ActionButton>
+            <ActionButton
+              primary
+              onClick={() => navigate("/investor/edit-profile")}
+            >
+              Edit Profile
+            </ActionButton>
+
             <ActionButton>Public Profile</ActionButton>
             <ActionButton accent>AI Suggestions</ActionButton>
           </div>
@@ -104,9 +113,10 @@ function Stat({ value, label }) {
   );
 }
 
-function ActionButton({ children, primary, accent }) {
+function ActionButton({ children, primary, accent, onClick }) {
   return (
     <button
+      onClick={onClick}
       className={`
         px-5 py-2.5 rounded-full text-sm font-medium
         transition-all duration-200 ease-out

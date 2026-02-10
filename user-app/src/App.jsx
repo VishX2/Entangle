@@ -18,6 +18,7 @@ import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfi
 import StartupCollaborationOpportunitiesPage from "./pages/Startups/StartupCollaborationOpportunitiesPage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
 import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/startup/requests" element={<StartupConnectionRequests  />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations  />} />
           <Route path="/startup/investorProfileView" element={<InvestorProfileView  />} />
+          <Route path="/startup/settings" element={<Settings />} />
 
 
 
@@ -59,6 +61,7 @@ function App() {
           <Route path="/collaborations" element={<StartupCollaborationOpportunitiesPage />} />
           <Route path="/connections" element={<EntrepreneurConnections />} />
           <Route path="/messages" element={<EntrepreneurMessages />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
 

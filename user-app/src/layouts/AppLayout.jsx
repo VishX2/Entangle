@@ -8,10 +8,20 @@ const AppLayout = () => {
 
   // Map routes to sidebar active states
   const activeMap = {
+    '/startup/dashboard': 'dashboard',
+    '/startup/profile': 'profile',
+    '/startup/messages': 'messages',
+    '/startup/create': 'create-post',
+    '/startup/analytics': 'analytics',
+    '/startup/rankings': 'rankings',
+    '/startup/trending': 'trending',
+    '/startup/verification': 'verification',
+    '/settings': 'settings',
+    '/notifications': 'notifications',
+    '/feedback-rules': 'feedback-rules',
     '/dashboard': 'dashboard',
     '/profile': 'profile',
     '/messages': 'messages',
-    '/settings': 'settings',
   };
 
   return (

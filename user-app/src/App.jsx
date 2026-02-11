@@ -27,6 +27,9 @@ import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPag
 // Other
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 
+// NEW: Startup Discovery Page
+import StartupDiscovery from "./pages/Investors/StartupDiscovery";
+
 function App() {
   return (
     <BrowserRouter>
@@ -54,6 +57,9 @@ function App() {
           <Route path="/investor/profile" element={<InvestorProfile />} />
           <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
+
+          {/* NEW: Startup Discovery */}
+          <Route path="/investor/startups" element={<StartupDiscovery />} />
         </Route>
 
         {/* ENTREPRENEUR */}
@@ -66,3 +72,8 @@ function App() {
         </Route>
 
       </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;

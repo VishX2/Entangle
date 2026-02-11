@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export default function ConnectInteract() {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100">
 
@@ -15,7 +19,12 @@ export default function ConnectInteract() {
       {/* ACTION BUTTONS */}
       <div className="grid grid-cols-2 gap-3 mb-3">
         <PrimaryButton icon={<UserPlusIcon />} label="Connect" />
-        <PrimaryButton icon={<RocketIcon />} label="Pitch Startup" />
+
+        <PrimaryButton
+          icon={<RocketIcon />}
+          label="Pitch Startup"
+          onClick={() => navigate("/investor/startups")}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -30,9 +39,12 @@ export default function ConnectInteract() {
    BUTTONS
    ===================================================== */
 
-function PrimaryButton({ icon, label }) {
+function PrimaryButton({ icon, label, onClick }) {
   return (
-    <button className="flex items-center justify-center gap-2 rounded-xl bg-orange-500 hover:bg-orange-600 transition text-white text-sm font-medium py-3">
+    <button
+      onClick={onClick}
+      className="flex items-center justify-center gap-2 rounded-xl bg-orange-500 hover:bg-orange-600 transition text-white text-sm font-medium py-3"
+    >
       {icon}
       {label}
     </button>
@@ -61,7 +73,7 @@ function DisabledButton({ icon, label }) {
 }
 
 /* =====================================================
-   ICONS (MATCH STYLE)
+   ICONS
    ===================================================== */
 
 function ConnectIcon() {

@@ -8,24 +8,26 @@ import {
   Trophy, 
   TrendingUp, 
   MessageSquare, 
+  Users,
   Shield, 
   Settings, 
   LogOut 
 } from 'lucide-react';
 
-export default function StartupSidebar() {
+export default function EntrepreneurSidebar() {
   const location = useLocation();
   
   const navItems = [
-    { path: '/startup/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/startup/profile', label: 'Profile', icon: User },
-    { path: '/startup/create-post', label: 'Create Post', icon: PlusSquare },
-    { path: '/startup/analytics', label: 'Analytics', icon: BarChart3 },
-    { path: '/startup/ranking', label: 'Ranking', icon: Trophy },
-    { path: '/startup/trending', label: 'Trending', icon: TrendingUp },
-    { path: '/startup/messages', label: 'Messages', icon: MessageSquare },
-    { path: '/startup/verification', label: 'Verification', icon: Shield },
-    { path: '/startup/settings', label: 'Settings', icon: Settings },
+    { path: '/entrepreneur/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/entrepreneur/profile', label: 'Profile', icon: User },
+    { path: '/entrepreneur/create-post', label: 'Create Post', icon: PlusSquare },
+    { path: '/entrepreneur/analytics', label: 'Analytics', icon: BarChart3 },
+    { path: '/entrepreneur/ranking', label: 'Ranking', icon: Trophy },
+    { path: '/entrepreneur/trending', label: 'Trending', icon: TrendingUp },
+    { path: '/entrepreneur/connections', label: 'Connections', icon: Users },
+    { path: '/entrepreneur/messages', label: 'Messages', icon: MessageSquare },
+    { path: '/entrepreneur/verification', label: 'Verification', icon: Shield },
+    { path: '/entrepreneur/settings', label: 'Settings', icon: Settings },
   ];
 
   const isActive = (path) => {
@@ -49,7 +51,7 @@ export default function StartupSidebar() {
           text-xs font-semibold uppercase tracking-wider
           bg-[#333747]/90 text-[#cccfdb]
           px-3 py-1 rounded">
-          Startup Account
+          Entrepreneur Account
         </div>
       </div>
 

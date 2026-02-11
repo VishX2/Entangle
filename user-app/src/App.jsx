@@ -72,11 +72,11 @@ function App() {
 
         {/* ENTREPRENEUR */}
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<EntrepreneurProfile />} />
-          <Route path="/profile/edit" element={<EditEntrepreneurProfile />} />
-          <Route path="/connections" element={<EntrepreneurConnections />} />
-          <Route path="/messages" element={<EntrepreneurMessages />} />
+          <Route path="/entrepreneur/dashboard" element={<Dashboard />} />
+          <Route path="/entrepreneur/profile" element={<EntrepreneurProfile />} />
+          <Route path="/entrepreneur/profile/edit" element={<EditEntrepreneurProfile />} />
+          <Route path="/entrepreneur/connections" element={<EntrepreneurConnections />} />
+          <Route path="/entrepreneur/messages" element={<EntrepreneurMessages />} />
         </Route>
 
       </Routes>

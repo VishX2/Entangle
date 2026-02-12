@@ -1,4 +1,4 @@
-export function BusinessNews({ news }) {
+export default function BusinessNews({ news }) {
   return (
     <section>
       <h2 className="text-lg font-semibold mb-4">
@@ -9,13 +9,15 @@ export function BusinessNews({ news }) {
         {news.map((item, i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl overflow-hidden shadow"
+            className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl hover:-translate-y-1 transition duration-200 cursor-pointer"
           >
             {item.urlToImage && (
-              <img
-                src={item.urlToImage}
-                className="h-48 w-full object-cover"
-              />
+              <div className="overflow-hidden">
+                <img
+                  src={item.urlToImage}
+                  className="h-48 w-full object-cover hover:scale-105 transition duration-300"
+                />
+              </div>
             )}
 
             <div className="p-4">

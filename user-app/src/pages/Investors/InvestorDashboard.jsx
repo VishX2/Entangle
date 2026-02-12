@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+import { HeroSection } from "../../components/Investor-dashboard/HeroSection";
+import FundingNews from "../../components/Investor-dashboard/FundingNews";
+import MASection from "../../components/Investor-dashboard/MASection";
+import BusinessNews from "../../components/Investor-dashboard/BusinessNews";
+
+import {
+  MarketSnapshot,
+  TrendingIndustries,
+  RecommendedStartups,
+} from "../../components/Investor-dashboard/DashboardSidebar";
+
 export default function InvestorDashboard() {
   const [news, setNews] = useState([]);
 
@@ -10,9 +21,8 @@ export default function InvestorDashboard() {
 
   const fetchNews = async () => {
     try {
-      // Using free public tech news API
       const res = await axios.get(
-        "https://newsapi.org/v2/top-headlines?category=business&language=en&pageSize=6&apiKey=YOUR_API_KEY"
+        "https://newsapi.org/v2/top-headlines?category=business&language=en&pageSize=6&apiKey=39a049a8c44c49518239d23453c96d6b"
       );
       setNews(res.data.articles);
     } catch (err) {

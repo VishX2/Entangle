@@ -10,6 +10,8 @@ import EditInvestorProfile from "./pages/Investors/EditInvestorProfile";
 import InvestorRecommendations from "./pages/Investors/investorRecommendations";
 import StartupProfileGate from "./pages/Startups/StartupProfileGate";
 import InvestorMessages from "./pages/Investors/InvestorMessages";
+import InvestorDashboard from "./pages/Investors/InvestorDashboard";
+
 
 
 
@@ -19,7 +21,8 @@ import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Investors/EditInvestorProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import InvestorProfileGate from "./pages/InvestorProfileGate"; // CHANGED
+import InvestorProfileGate from "./pages/InvestorProfileGate"; 
+
 
 // Entrepreneur
 import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
@@ -58,6 +61,7 @@ function App() {
 
         {/* INVESTOR */}
         <Route element={<AppLayout />}>
+        <Route path="/investor/dashboard" element={<InvestorDashboard />} />
           <Route path="/investor/profile" element={<InvestorProfile />} />
           <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />

@@ -3,6 +3,13 @@ import AppLayout from './layouts/AppLayout';
 import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
+import UserTypeSelectionPage from './pages/UserTypeSelectionPage';
+import InvestorRegistrationPage from './pages/Investors/InvestorRegistrationPage';
+import EntrepreneurRegistrationPage from './pages/Entrepreneurs/EntrepreneurRegistrationPage';
+import StartupRegistrationPage from './pages/Startups/StartupRegistrationPage';
+import VerificationPage from './pages/VerificationPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Investor
 import InvestorProfile from './pages/Investors/InvestorProfile';
@@ -46,6 +53,13 @@ function App() {
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<EntangleLogin />} />
+          <Route path="/select-type" element={<UserTypeSelectionPage />} />
+          <Route path="/register/investor" element={<InvestorRegistrationPage />} />
+          <Route path="/register/entrepreneur" element={<EntrepreneurRegistrationPage />} />
+          <Route path="/register/startup" element={<StartupRegistrationPage />} />
+          <Route path="/verify" element={<VerificationPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/feedbackAndRisk" element={<FeedbackAndRisk />} />
         </Route>
 
@@ -76,11 +90,11 @@ function App() {
 
         {/* ENTREPRENEUR */}
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<EntrepreneurProfile />} />
-          <Route path="/profile/edit" element={<EditEntrepreneurProfile />} />
-          <Route path="/connections" element={<EntrepreneurConnections />} />
-          <Route path="/messages" element={<EntrepreneurMessages />} />
+          <Route path="/entrepreneur/dashboard" element={<Dashboard />} />
+          <Route path="/entrepreneur/profile" element={<EntrepreneurProfile />} />
+          <Route path="/entrepreneur/profile/edit" element={<EditEntrepreneurProfile />} />
+          <Route path="/entrepreneur/connections" element={<EntrepreneurConnections />} />
+          <Route path="/entrepreneur/messages" element={<EntrepreneurMessages />} />
         </Route>
 
       </Routes>

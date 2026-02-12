@@ -55,14 +55,18 @@ function PrimaryButton({ icon, label, onClick }) {
   );
 }
 
-function SecondaryButton({ icon, label }) {
+function SecondaryButton({ icon, label, onClick }) {
   return (
-    <button className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition text-slate-700 text-sm font-medium py-3">
+    <button
+      onClick={onClick}
+      className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition text-slate-700 text-sm font-medium py-3"
+    >
       {icon}
       {label}
     </button>
   );
 }
+
 
 function DisabledButton({ icon, label }) {
   return (

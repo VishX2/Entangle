@@ -1,5 +1,5 @@
 import { useState } from "react";
-import StartupProfile from "../Startups/startupProfile";
+import StartupProfile from "./startupProfile";
 
 function StartupAgreement({ onAccept, onCancel }) {
   return (

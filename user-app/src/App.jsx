@@ -8,7 +8,9 @@ import Home from './pages/Home';
 import InvestorProfile from './pages/Investors/InvestorProfile';
 import EditInvestorProfile from "./pages/Investors/EditInvestorProfile";
 import InvestorRecommendations from "./pages/Investors/investorRecommendations";
-import StartupProfileGate from "./pages/Investors/StartupProfileGate";
+import StartupProfileGate from "./pages/Startups/StartupProfileGate";
+import InvestorMessages from "./pages/Investors/InvestorMessages";
+
 
 
 // Startup
@@ -61,6 +63,10 @@ function App() {
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
           <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
           <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
+          <Route path="/investor/messages" element={<InvestorMessages />} />
+          
+
+          
 
         </Route>
 

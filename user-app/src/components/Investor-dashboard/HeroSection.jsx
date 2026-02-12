@@ -1,6 +1,6 @@
 export function HeroSection() {
   return (
-    <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 hover:shadow-2xl transition duration-300">
+    <div className="rounded-2xl bg-linear-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 hover:shadow-2xl transition duration-300">
       <p className="text-sm opacity-80">GOOD MORNING</p>
       <h1 className="text-3xl font-semibold mt-1">
         Welcome back, James

@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from routes.startup import router as startup_router
 from routes.investor import router as investor_router
+from routes.entrepreneur import router as entrepreneur_router
 from db import connect_to_mongo, close_mongo
 
 app = FastAPI()
 
-# Register routes
+# Register all routes
 app.include_router(startup_router)
 app.include_router(investor_router)
+app.include_router(entrepreneur_router)
 
 
 # Connect to MongoDB when app starts

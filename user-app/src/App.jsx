@@ -8,14 +8,16 @@ import Home from './pages/Home';
 import InvestorProfile from './pages/Investors/InvestorProfile';
 import EditInvestorProfile from "./pages/Investors/EditInvestorProfile";
 import InvestorRecommendations from "./pages/Investors/investorRecommendations";
+import StartupProfileGate from "./pages/Investors/StartupProfileGate";
+
 
 // Startup
 import StartupDashboard from "./pages/Startups/startupDashboard";
 import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
-import EditStartupProfile from "./pages/Startups/editStartupProfile";
+import EditStartupProfile from "./pages/Investors/EditInvestorProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import InvestorProfileView from "./pages/Startups/investorProfileView";
+import InvestorProfileGate from "./pages/InvestorProfileGate"; // CHANGED
 
 // Entrepreneur
 import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
@@ -27,7 +29,7 @@ import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPag
 // Other
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 
-// NEW: Startup Discovery Page
+// Startup Discovery
 import StartupDiscovery from "./pages/Investors/StartupDiscovery";
 
 function App() {
@@ -49,7 +51,7 @@ function App() {
           <Route path="/startup/profile" element={<StartupProfile />} />
           <Route path="/startup/editProfile" element={<EditStartupProfile />} />
           <Route path="/startup/requests" element={<StartupConnectionRequests />} />
-          <Route path="/startup/investorProfileView" element={<InvestorProfileView />} />
+          <Route path="/startup/investorProfileView" element={<InvestorProfileGate />} />
         </Route>
 
         {/* INVESTOR */}
@@ -57,9 +59,9 @@ function App() {
           <Route path="/investor/profile" element={<InvestorProfile />} />
           <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
+          <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
+          <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
 
-          {/* NEW: Startup Discovery */}
-          <Route path="/investor/startups" element={<StartupDiscovery />} />
         </Route>
 
         {/* ENTREPRENEUR */}

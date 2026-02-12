@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 export default function StartupCard({ startup }) {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-[#f1eee7] rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
 
@@ -47,7 +51,10 @@ export default function StartupCard({ startup }) {
       </div>
 
       {/* Button */}
-      <button className="mt-5 bg-[#ff6b4a] hover:bg-[#ff5a36] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2">
+      <button
+        onClick={() => navigate("/investor/startupProfileView")}
+        className="mt-5 bg-[#ff6b4a] hover:bg-[#ff5a36] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
+      >
         View Profile
         <ArrowIcon />
       </button>

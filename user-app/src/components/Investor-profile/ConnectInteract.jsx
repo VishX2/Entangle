@@ -18,12 +18,16 @@ export default function ConnectInteract() {
 
       {/* ACTION BUTTONS */}
       <div className="grid grid-cols-2 gap-3 mb-3">
-        <PrimaryButton icon={<UserPlusIcon />} label="Connect" />
+        <PrimaryButton
+          icon={<UserPlusIcon />}
+          label="Connect"
+          onClick={() => navigate("/investor/startups")}
+        />
 
         <PrimaryButton
           icon={<RocketIcon />}
           label="Pitch Startup"
-          onClick={() => navigate("/investor/startups")}
+          onClick={() => navigate("/investor/AiMatchmaking")}
         />
       </div>
 

@@ -48,7 +48,7 @@ export default function InvestorProfileView() {
           </div>
         </div>
 
-        {/* CTA */}
+        {/* CTA Buttons */}
         <div className="flex gap-3">
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-xl
@@ -108,12 +108,14 @@ export default function InvestorProfileView() {
   );
 }
 
-/* COMPONENTS */
+/* REUSABLE COMPONENTS */
 
 function Card({ title, children }) {
   return (
-    <div className="bg-white rounded-3xl p-6 transition-all
-                    hover:-translate-y-1 hover:shadow-xl">
+    <div
+      className="bg-white rounded-3xl p-6 transition-all
+                 hover:-translate-y-1 hover:shadow-xl"
+    >
       <h2 className="font-semibold text-[#2B3443] mb-3">
         {title}
       </h2>
@@ -124,8 +126,10 @@ function Card({ title, children }) {
 
 function Stat({ label, value, icon: Icon }) {
   return (
-    <div className="bg-white rounded-2xl p-6 text-center
-                    transition hover:shadow-md">
+    <div
+      className="bg-white rounded-2xl p-6 text-center
+                 transition hover:shadow-md"
+    >
       {Icon && (
         <div className="flex justify-center mb-2 text-[#EF6C4E]">
           <Icon size={18} />

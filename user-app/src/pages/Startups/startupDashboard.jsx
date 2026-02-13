@@ -62,7 +62,7 @@ export default function StartupDashboard() {
   });
 
   return (
-    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-8">
+    <div className="min-h-screen bg-[#D8D4C5] p-6 space-y-8">
       <StartupHero
         revenue={dashboardData.monthlyRevenue}
         users={dashboardData.activeUsers}
@@ -70,7 +70,6 @@ export default function StartupDashboard() {
       />
 
       <div className="grid grid-cols-12 gap-6">
-
         {/* MAIN CONTENT */}
         <div className="col-span-12 lg:col-span-9 space-y-8">
           <GrowthMetrics metrics={dashboardData.growthMetrics} />
@@ -87,18 +86,17 @@ export default function StartupDashboard() {
             investors={dashboardData.recommendedInvestors}
           />
         </div>
-
       </div>
     </div>
   );
 }
 
-          /*       COMPONENTS     */
+/* ================= HERO ================= */
 
 function StartupHero({ revenue, users, traction }) {
   return (
-    <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 shadow-lg">
-      <p className="text-sm opacity-80">STARTUP DASHBOARD</p>
+    <div className="rounded-3xl bg-gradient-to-r from-slate-800 to-slate-600 text-white p-8 shadow-xl">
+      <p className="text-sm opacity-70">STARTUP DASHBOARD</p>
       <h1 className="text-3xl font-semibold mt-1">
         Welcome back, Founder
       </h1>
@@ -114,12 +112,14 @@ function StartupHero({ revenue, users, traction }) {
 
 function StatCard({ title, value }) {
   return (
-    <div className="bg-white/10 rounded-xl px-4 py-3 hover:bg-white/20 transition duration-200">
+    <div className="bg-white/10 backdrop-blur rounded-xl px-4 py-3 hover:bg-white/20 transition">
       <div className="text-xs opacity-80">{title}</div>
       <div className="text-lg font-semibold mt-1">{value}</div>
     </div>
   );
 }
+
+/* ================= GROWTH METRICS ================= */
 
 function GrowthMetrics({ metrics }) {
   return (
@@ -130,12 +130,10 @@ function GrowthMetrics({ metrics }) {
         {metrics.map((metric) => (
           <div
             key={metric.id}
-            className="bg-white rounded-2xl p-6 shadow
-                       hover:shadow-xl hover:-translate-y-1
-                       transition duration-200"
+            className="bg-white rounded-3xl p-6 shadow hover:shadow-xl hover:-translate-y-1 transition"
           >
-            <p className="text-sm text-gray-500">{metric.title}</p>
-            <p className="text-2xl font-semibold mt-2 text-[#E66A4B]">
+            <p className="text-sm text-slate-500">{metric.title}</p>
+            <p className="text-2xl font-semibold mt-2 text-orange-500">
               {metric.value}
             </p>
           </div>
@@ -144,6 +142,8 @@ function GrowthMetrics({ metrics }) {
     </section>
   );
 }
+
+/* ================= INVESTOR INTEREST ================= */
 
 function InvestorInterest({ interests }) {
   return (
@@ -154,18 +154,20 @@ function InvestorInterest({ interests }) {
         {interests.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl p-5 shadow
-                       hover:shadow-xl hover:-translate-y-1
-                       transition duration-200"
+            className="bg-white rounded-3xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition"
           >
-            <p className="font-medium">{item.name}</p>
-            <p className="text-sm text-gray-500 mt-1">{item.action}</p>
+            <p className="font-medium text-slate-900">{item.name}</p>
+            <p className="text-sm text-slate-500 mt-1">
+              {item.action}
+            </p>
           </div>
         ))}
       </div>
     </section>
   );
 }
+
+/* ================= NEWS ================= */
 
 function StartupNews({ news }) {
   return (
@@ -178,9 +180,7 @@ function StartupNews({ news }) {
         {news.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl overflow-hidden shadow
-                       hover:shadow-xl hover:-translate-y-1
-                       transition duration-200"
+            className="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl hover:-translate-y-1 transition"
           >
             {item.urlToImage && (
               <img
@@ -191,8 +191,10 @@ function StartupNews({ news }) {
             )}
 
             <div className="p-4">
-              <h3 className="font-semibold">{item.title}</h3>
-              <p className="text-sm text-gray-500 mt-2">
+              <h3 className="font-semibold text-slate-900">
+                {item.title}
+              </h3>
+              <p className="text-sm text-slate-500 mt-2">
                 {item.source?.name}
               </p>
             </div>
@@ -203,11 +205,13 @@ function StartupNews({ news }) {
   );
 }
 
+/* ================= SIDEBAR ================= */
+
 function ProfileStrength({ value }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-3xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition">
       <h3 className="font-semibold mb-3">Profile Strength</h3>
-      <p className="text-3xl font-semibold text-[#E66A4B]">
+      <p className="text-3xl font-semibold text-orange-500">
         {value}%
       </p>
     </div>
@@ -216,17 +220,16 @@ function ProfileStrength({ value }) {
 
 function QuickActions({ actions }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-3xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition">
       <h3 className="font-semibold mb-3">Quick Actions</h3>
 
       {actions.map((action) => (
         <button
           key={action.id}
-          className="w-full bg-gray-200 py-2 rounded-xl mb-3
-                     hover:bg-[#E66A4B] hover:text-white
+          className="w-full bg-slate-200 py-2 rounded-xl mb-3
+                     hover:bg-orange-500 hover:text-white
                      hover:shadow-md hover:-translate-y-1
-                     active:scale-95
-                     transition duration-200"
+                     active:scale-95 transition"
         >
           {action.label}
         </button>
@@ -237,11 +240,11 @@ function QuickActions({ actions }) {
 
 function RecentActivity({ activities }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-3xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition">
       <h3 className="font-semibold mb-3">Recent Activity</h3>
 
       {activities.map((item) => (
-        <p key={item.id} className="text-sm mt-2">
+        <p key={item.id} className="text-sm mt-2 text-slate-600">
           {item.text}
         </p>
       ))}
@@ -251,21 +254,21 @@ function RecentActivity({ activities }) {
 
 function RecommendedInvestors({ investors }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-3xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition">
       <h3 className="font-semibold mb-3">
         Recommended Investors
       </h3>
 
       {investors.map((inv) => (
-        <p key={inv.id} className="text-sm py-1">
+        <p key={inv.id} className="text-sm py-1 text-slate-700">
           {inv.name}
         </p>
       ))}
 
       <button
-        className="mt-4 w-full bg-[#E66A4B] text-white py-2 rounded-xl
-                   hover:bg-[#d85e40] hover:shadow-md hover:-translate-y-1
-                   active:scale-95 transition duration-200"
+        className="mt-4 w-full bg-orange-500 text-white py-2 rounded-xl
+                   hover:bg-orange-600 hover:shadow-md hover:-translate-y-1
+                   active:scale-95 transition"
       >
         Explore More Investors
       </button>

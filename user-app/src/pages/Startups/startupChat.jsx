@@ -1,153 +1,229 @@
-import { Search } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Search,
+  Paperclip,
+  Smile,
+  Send,
+  MoreVertical,
+  User,
+  Check,
+  CheckCheck,
+} from "lucide-react";
 
-export default function Messages() {
-  const messages = [
+export default function StartupMessages() {
+  const conversations = [
     {
       id: 1,
-      name: "TechVentures Capital",
-      text: "Thanks for sharing the pitch deck",
-      time: "10 min ago",
-      unread: 2,
+      name: "Sequoia Capital",
+      avatar: "https://i.pravatar.cc/100?img=12",
+      messages: [
+        {
+          sender: "investor",
+          text: "Hi, we reviewed your pitch.",
+          time: "Yesterday",
+        },
+        {
+          sender: "startup",
+          text: "Thank you! Happy to answer any questions.",
+          time: "Yesterday",
+          status: "read",
+        },
+        {
+          sender: "investor",
+          text: "Can you share more about your traction?",
+          time: "01:31 PM",
+        },
+      ],
     },
     {
       id: 2,
-      name: "Innovation Fund",
-      text: "Interested in learning more",
-      time: "1 hour ago",
-      unread: 1,
-    },
-    {
-      id: 3,
-      name: "Sarah Chen",
-      text: "Looking forward to our meeting next week",
-      time: "3 hours ago",
-      unread: 0,
-    },
-    {
-      id: 4,
-      name: "Angel Investor Network",
-      text: "Your product looks promising. Let's connect",
-      time: "5 hours ago",
-      unread: 0,
-    },
-    {
-      id: 5,
-      name: "DataFlow Startup",
-      text: "Would love to collaborate on this project",
-      time: "2 days ago",
-      unread: 0,
+      name: "Andreessen Horowitz",
+      avatar: "https://i.pravatar.cc/100?img=32",
+      messages: [
+        {
+          sender: "investor",
+          text: "Looking forward to the demo.",
+          time: "Mon",
+        },
+      ],
     },
   ];
 
+  const [activeChat, setActiveChat] = useState(conversations[0]);
+  const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
+
+  const sendMessage = () => {
+    if (!newMessage.trim()) return;
+
+    const updatedChat = {
+      ...activeChat,
+      messages: [
+        ...activeChat.messages,
+        {
+          sender: "startup",
+          text: newMessage,
+          time: "Now",
+          status: "sent",
+        },
+      ],
+    };
+
+    setActiveChat(updatedChat);
+    setNewMessage("");
+  };
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [activeChat]);
+
+  const renderStatus = (status) => {
+    if (!status) return null;
+
+    if (status === "sent") {
+      return <Check size={14} className="inline ml-1" />;
+    }
+    if (status === "delivered") {
+      return <CheckCheck size={14} className="inline ml-1" />;
+    }
+    if (status === "read") {
+      return (
+        <CheckCheck
+          size={14}
+          className="inline ml-1 text-blue-200"
+        />
+      );
+    }
+  };
+
   return (
-    <div className="bg-white rounded-2xl shadow-sm h-[78vh] flex overflow-hidden">
-
-      {/* ===== LEFT PANEL ===== */}
-      <div className="w-[380px] bg-white flex flex-col">
-
-        {/* Header */}
-        <div className="px-6 pt-6 pb-4">
-          <h2 className="text-xl font-semibold text-[#0F172A]">
-            Messages
-          </h2>
-          <p className="text-sm text-gray-500">
-            Manage your conversations
-          </p>
+    <div className="h-screen flex bg-[#D8D4C5]">
+      {/* SIDEBAR */}
+      <div className="w-72 bg-slate-800 text-white flex flex-col">
+        <div className="px-6 py-5 text-lg font-semibold">
+          Investor Chats
         </div>
 
         {/* Search */}
-        <div className="px-6 pb-4">
-          <div className="relative">
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+        <div className="px-4 pb-4">
+          <div className="flex items-center bg-slate-700 rounded-lg px-3 py-2">
+            <Search size={16} className="text-gray-300" />
             <input
-              placeholder="Search messages..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg
-                         bg-[#F4F1EB] text-sm
-                         focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+              placeholder="Search investors..."
+              className="bg-transparent outline-none ml-2 text-sm w-full text-white placeholder-gray-300"
             />
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="px-6 pb-4 flex gap-6 text-sm font-medium">
-          <button className="text-[#0F172A] relative">
-            All
-            <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#F97316]" />
-          </button>
-          <button className="text-gray-400 hover:text-[#0F172A]">
-            Unread
-          </button>
-          <button className="text-gray-400 hover:text-[#0F172A]">
-            Investors
-          </button>
-        </div>
-
-        {/* Message List (NO DIVIDERS) */}
-        <ul className="flex-1 overflow-y-auto px-4 space-y-2">
-          {messages.map((msg) => (
-            <li
-              key={msg.id}
-              className="
-                rounded-xl px-4 py-3 cursor-pointer
-                transition
-                hover:bg-[#F4F1EB]
-              "
+        {/* Conversations */}
+        <div className="flex-1 overflow-y-auto">
+          {conversations.map((c) => (
+            <div
+              key={c.id}
+              onClick={() => setActiveChat(c)}
+              className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition
+              ${
+                activeChat.id === c.id
+                  ? "bg-slate-700"
+                  : "hover:bg-slate-700/70"
+              }`}
             >
-              <div className="flex justify-between items-start">
-                <p className="font-medium text-[#0F172A]">
-                  {msg.name}
-                </p>
+              <img
+                src={c.avatar}
+                alt={c.name}
+                className="w-10 h-10 rounded-full object-cover bg-gray-400"
+              />
 
-                {msg.unread > 0 && (
-                  <span className="bg-[#F97316] text-white text-xs px-2 py-0.5 rounded-full">
-                    {msg.unread}
-                  </span>
-                )}
+              <div className="flex-1">
+                <div className="text-sm font-medium">{c.name}</div>
+                <div className="text-xs text-gray-300 truncate">
+                  {c.messages[c.messages.length - 1].text}
+                </div>
               </div>
-
-              <p className="text-sm text-gray-500 truncate mt-1">
-                {msg.text}
-              </p>
-
-              <p className="text-xs text-gray-400 mt-1">
-                {msg.time}
-              </p>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
-      {/* ===== RIGHT EMPTY STATE ===== */}
-      <div className="flex-1 bg-[#F4F1EB] flex items-center justify-center">
-        <div className="text-center max-w-sm">
-          <div
-            className="mx-auto w-20 h-20 rounded-full
-                       bg-white flex items-center justify-center
-                       text-gray-400 shadow-sm"
-          >
-            <Search size={32} />
+      {/* CHAT AREA */}
+      <div className="flex-1 flex flex-col">
+        {/* HEADER */}
+        <div className="h-16 bg-white flex items-center justify-between px-6 border-b">
+          <div className="flex items-center gap-3">
+            <img
+              src={activeChat.avatar}
+              alt=""
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <div>
+              <div className="font-semibold text-sm">
+                {activeChat.name}
+              </div>
+              <div className="text-xs text-gray-500">
+                Investor
+              </div>
+            </div>
           </div>
 
-          <h3 className="mt-6 font-semibold text-[#0F172A]">
-            Select a conversation
-          </h3>
-          <p className="text-sm text-gray-500 mt-2">
-            Choose a message from the list to view the conversation
-          </p>
+          <div className="flex gap-4 text-gray-600">
+            <User size={18} />
+            <MoreVertical size={18} />
+          </div>
+        </div>
+
+        {/* MESSAGES */}
+        <div className="flex-1 p-6 space-y-5 overflow-y-auto">
+          {activeChat.messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`flex ${
+                msg.sender === "startup"
+                  ? "justify-end"
+                  : "justify-start"
+              }`}
+            >
+              <div
+                className={`px-5 py-3 rounded-2xl shadow-sm max-w-[500px] text-sm
+                ${
+                  msg.sender === "startup"
+                    ? "bg-orange-500 text-white"
+                    : "bg-[#AFC2CF] text-slate-800"
+                }`}
+              >
+                {msg.text}
+
+                <div className="text-xs mt-1 opacity-80 flex items-center justify-end gap-1">
+                  {msg.time}
+                  {msg.sender === "startup" &&
+                    renderStatus(msg.status)}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* INPUT */}
+        <div className="bg-white px-5 py-3 flex items-center gap-3 border-t">
+          <Paperclip className="text-gray-500" size={20} />
+          <Smile className="text-gray-500" size={20} />
+
+          <input
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            placeholder="Reply to investor..."
+            className="flex-1 bg-[#D8D4C5] rounded-full px-4 py-2 outline-none text-sm"
+          />
 
           <button
-            className="mt-6 bg-[#141657] text-white
-                       px-5 py-2.5 rounded-lg
-                       hover:bg-[#eb7734] transition"
+            onClick={sendMessage}
+            className="bg-orange-500 p-3 rounded-xl text-white hover:bg-orange-600 transition"
           >
-            View Messages
+            <Send size={18} />
           </button>
         </div>
       </div>
-
     </div>
   );
 }

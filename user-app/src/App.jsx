@@ -32,7 +32,7 @@ import InvestorProfileGate from "./pages/InvestorProfileGate";
 
 
 // Entrepreneur
-import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";

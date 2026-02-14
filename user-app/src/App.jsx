@@ -26,7 +26,7 @@ import InvestorDashboard from "./pages/Investors/InvestorDashboard";
 import StartupDashboard from "./pages/Startups/startupDashboard";
 import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
-import EditStartupProfile from "./pages/Investors/EditInvestorProfile";
+import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
 import InvestorProfileGate from "./pages/InvestorProfileGate"; 
 

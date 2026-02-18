@@ -86,7 +86,7 @@ export default function ProfileHeader() {
           <div className="flex items-start gap-3">
             <ActionButton
               primary
-              onClick={() => navigate("/investor/edit-profile")}
+              onClick={() => navigate("/startup/editprofile")}
             >
               Edit Profile
             </ActionButton>

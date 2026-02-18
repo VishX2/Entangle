@@ -28,7 +28,7 @@ import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import InvestorProfileGate from "./pages/InvestorProfileGate"; 
+import InvestorProfileGate from "./pages/Investors/InvestorProfileGate"; 
 
 
 // Entrepreneur
@@ -42,7 +42,7 @@ import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPag
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 
 // Startup Discovery
-import StartupDiscovery from "./pages/Investors/StartupDiscovery";
+import StartupDiscovery from "./pages/StartupDiscovery";
 
 function App() {
   return (

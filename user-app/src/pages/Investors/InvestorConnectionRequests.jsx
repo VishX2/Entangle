@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function StartupConnectionRequests() {
+export default function InvestorConnectionRequest() {
   return (
     <div className="min-h-screen bg-slate-700 flex items-center justify-center">
       {/* Modal */}
@@ -28,7 +28,7 @@ export default function StartupConnectionRequests() {
         {/* Description */}
         <div className="mb-4">
           <h3 className="font-semibold text-gray-800">
-            Send a message to this investor
+            Send a message to this startup
           </h3>
           <p className="text-sm text-gray-600">
             Introduce yourself and explain why you'd like to connect.

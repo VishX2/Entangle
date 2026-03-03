@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-import StartupHero from "../../components/startup-discovery-components/StartupHero";
-import StartupCard from "../../components/startup-discovery-components/StartupCard";
-import FilterBar from "../../components/startup-discovery-components/FilterBar";
-import TopRatedCard from "../../components/startup-discovery-components/TopRatedCard";
-import TrendingIndustriesCard from "../../components/startup-discovery-components/TrendingIndustriesCard";
-import RecentlyFundedCard from "../../components/startup-discovery-components/RecentlyFundedCard"; // <-- missing import
+import StartupHero from "../components/startup-discovery-components/StartupHero";
+import StartupCard from "../components/startup-discovery-components/StartupCard";
+import FilterBar from "../components/startup-discovery-components/FilterBar";
+import TopRatedCard from "../components/startup-discovery-components/TopRatedCard";
+import TrendingIndustriesCard from "../components/startup-discovery-components/TrendingIndustriesCard";
+import RecentlyFundedCard from "../components/startup-discovery-components/RecentlyFundedCard"; // <-- missing import
 
 export default function StartupDiscovery() {
   // STARTUP DATA

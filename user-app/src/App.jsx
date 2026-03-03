@@ -18,6 +18,7 @@ import InvestorRecommendations from "./pages/Investors/investorRecommendations";
 import StartupProfileGate from "./pages/Startups/StartupProfileGate";
 import InvestorMessages from "./pages/Investors/InvestorMessages";
 import InvestorDashboard from "./pages/Investors/InvestorDashboard";
+import InvestorConnectionRequest from "./pages/Investors/InvestorConnectionRequests";
 
 
 
@@ -26,13 +27,14 @@ import InvestorDashboard from "./pages/Investors/InvestorDashboard";
 import StartupDashboard from "./pages/Startups/startupDashboard";
 import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
-import EditStartupProfile from "./pages/Investors/EditInvestorProfile";
+import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import InvestorProfileGate from "./pages/InvestorProfileGate"; 
+import InvestorProfileGate from "./pages/Investors/InvestorProfileGate"; 
+import StartupCollaborations from "./pages/Startups/StartupCollaborationOpportunitiesPage"; 
 
 
 // Entrepreneur
-import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
@@ -42,7 +44,7 @@ import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPag
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 
 // Startup Discovery
-import StartupDiscovery from "./pages/Investors/StartupDiscovery";
+import StartupDiscovery from "./pages/StartupDiscovery";
 
 function App() {
   return (
@@ -71,6 +73,8 @@ function App() {
           <Route path="/startup/editProfile" element={<EditStartupProfile />} />
           <Route path="/startup/requests" element={<StartupConnectionRequests />} />
           <Route path="/startup/investorProfileView" element={<InvestorProfileGate />} />
+          <Route path="/startup/startupCollaborations" element={<StartupCollaborations />} />
+
         </Route>
 
         {/* INVESTOR */}
@@ -82,7 +86,7 @@ function App() {
           <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
           <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
           <Route path="/investor/messages" element={<InvestorMessages />} />
-          
+          <Route path="/investor/requests" element={<InvestorConnectionRequest />} />
 
           
 

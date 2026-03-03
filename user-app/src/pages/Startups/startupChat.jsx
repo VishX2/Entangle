@@ -1,153 +1,285 @@
-import { Search } from "lucide-react";
+import {
+  Search,
+  Send,
+  MoreVertical,
+  CheckCheck,
+} from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
+/*  MOCK DATA  */
+const conversations = [
+  {
+    id: 1,
+    name: "Sarah Williams",
+    company: "BluePeak Ventures",
+    avatar: "SW",
+    online: true,
+    unread: 2,
+    messages: [
+      { fromMe: false, text: "Hi Jordan! Loved your startup vision 🚀", time: "10:20 AM" },
+      { fromMe: true, text: "Thanks Sarah! Happy to connect.", time: "10:22 AM" },
+      { fromMe: false, text: "Would love to hear more about your traction.", time: "10:25 AM" },
+    ],
+  },
+  {
+    id: 2,
+    name: "Daniel Kim",
+    company: "DK Capital",
+    avatar: "DK",
+    online: false,
+    unread: 0,
+    messages: [
+      { fromMe: false, text: "Would love to discuss growth strategy.", time: "Yesterday" },
+      { fromMe: true, text: "Sure, happy to chat this week.", time: "Yesterday" },
+    ],
+  },
+  {
+    id: 3,
+    name: "Aisha Khan",
+    company: "NextGen Labs",
+    avatar: "AK",
+    online: true,
+    unread: 1,
+    messages: [
+      { fromMe: false, text: "Your product aligns well with our accelerator.", time: "9:40 AM" },
+      { fromMe: true, text: "That’s great to hear!", time: "9:42 AM" },
+    ],
+  },
+  {
+    id: 4,
+    name: "Michael Chen",
+    company: "Orbit Angels",
+    avatar: "MC",
+    online: false,
+    unread: 0,
+    messages: [
+      { fromMe: false, text: "Reviewed your pitch deck. Very solid.", time: "Mon" },
+      { fromMe: true, text: "Thanks for taking a look!", time: "Mon" },
+    ],
+  },
+  {
+    id: 5,
+    name: "Emily Rodriguez",
+    company: "SeedSpark",
+    avatar: "ER",
+    online: true,
+    unread: 3,
+    messages: [
+      { fromMe: false, text: "Let’s schedule a call 📞", time: "11:10 AM" },
+      { fromMe: false, text: "Are you available tomorrow?", time: "11:12 AM" },
+    ],
+  },
+  {
+    id: 6,
+    name: "James Patel",
+    company: "FounderCircle",
+    avatar: "JP",
+    online: false,
+    unread: 0,
+    messages: [
+      { fromMe: false, text: "Happy to mentor you on fundraising.", time: "Sun" },
+      { fromMe: true, text: "That would be amazing, thank you!", time: "Sun" },
+    ],
+  },
+  {
+    id: 7,
+    name: "Olivia Brown",
+    company: "GrowthWorks",
+    avatar: "OB",
+    online: true,
+    unread: 0,
+    messages: [
+      { fromMe: false, text: "Your go-to-market strategy looks sharp.", time: "Today" },
+    ],
+  },
+  {
+    id: 8,
+    name: "Rahul Mehta",
+    company: "ScaleX Partners",
+    avatar: "RM",
+    online: false,
+    unread: 1,
+    messages: [
+      { fromMe: false, text: "Can you share your ARR numbers?", time: "Yesterday" },
+    ],
+  },
+];
+
+/*  COMPONENT  */
 export default function Messages() {
-  const messages = [
-    {
-      id: 1,
-      name: "TechVentures Capital",
-      text: "Thanks for sharing the pitch deck",
-      time: "10 min ago",
-      unread: 2,
-    },
-    {
-      id: 2,
-      name: "Innovation Fund",
-      text: "Interested in learning more",
-      time: "1 hour ago",
-      unread: 1,
-    },
-    {
-      id: 3,
-      name: "Sarah Chen",
-      text: "Looking forward to our meeting next week",
-      time: "3 hours ago",
-      unread: 0,
-    },
-    {
-      id: 4,
-      name: "Angel Investor Network",
-      text: "Your product looks promising. Let's connect",
-      time: "5 hours ago",
-      unread: 0,
-    },
-    {
-      id: 5,
-      name: "DataFlow Startup",
-      text: "Would love to collaborate on this project",
-      time: "2 days ago",
-      unread: 0,
-    },
-  ];
+  const [selected, setSelected] = useState(conversations[0]);
+  const [message, setMessage] = useState("");
+  const endRef = useRef(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selected]);
+
+  const sendMessage = () => {
+    if (!message.trim()) return;
+
+    selected.messages.push({
+      fromMe: true,
+      text: message,
+      time: "Now",
+    });
+
+    setMessage("");
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm h-[78vh] flex overflow-hidden">
+    <div className="min-h-screen bg-[#F7F3E6] p-6">
 
-      {/* ===== LEFT PANEL ===== */}
-      <div className="w-[380px] bg-white flex flex-col">
+      <div className="bg-white rounded-3xl shadow-sm border border-[#3F5C7D]/30
+                      grid grid-cols-1 md:grid-cols-[360px_1fr]
+                      overflow-hidden">
 
-        {/* Header */}
-        <div className="px-6 pt-6 pb-4">
-          <h2 className="text-xl font-semibold text-[#0F172A]">
-            Messages
-          </h2>
-          <p className="text-sm text-gray-500">
-            Manage your conversations
-          </p>
-        </div>
+        {/*  LEFT: CONVERSATIONS  */}
+        <div className="border-r border-[#3F5C7D]/20 bg-gradient-to-b from-white to-[#FAF9F6]">
 
-        {/* Search */}
-        <div className="px-6 pb-4">
-          <div className="relative">
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-            <input
-              placeholder="Search messages..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg
-                         bg-[#F4F1EB] text-sm
-                         focus:outline-none focus:ring-2 focus:ring-[#F97316]"
-            />
+          {/* Header */}
+          <div className="p-5 border-b border-[#3F5C7D]/20">
+            <h2 className="text-xl font-bold text-[#0F172A]">
+              Messages
+            </h2>
+
+            <div className="mt-3 flex items-center gap-2
+                            bg-[#F7F3E6] rounded-xl px-3 py-2">
+              <Search size={16} className="text-[#64748B]" />
+              <input
+                placeholder="Search conversations"
+                className="bg-transparent outline-none w-full text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Conversation List */}
+          <div className="divide-y divide-[#3F5C7D]/10">
+            {conversations.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setSelected(c)}
+                className={`w-full flex gap-4 p-4 text-left transition
+                  ${
+                    selected.id === c.id
+                      ? "bg-[#F7F3E6]"
+                      : "hover:bg-[#FAF9F6]"
+                  }`}
+              >
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full
+                                  bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                                  flex items-center justify-center
+                                  font-bold text-[#0F172A]">
+                    {c.avatar}
+                  </div>
+                  {c.online && (
+                    <span className="absolute bottom-0 right-0
+                                     w-3 h-3 bg-green-500
+                                     border-2 border-white rounded-full" />
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex justify-between items-center">
+                    <p className="font-semibold text-[#0F172A]">
+                      {c.name}
+                    </p>
+                    {c.unread > 0 && (
+                      <span className="text-xs bg-[#F97316] text-white
+                                       px-2 py-0.5 rounded-full">
+                        {c.unread}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#64748B] truncate">
+                    {c.messages[c.messages.length - 1]?.text}
+                  </p>
+                </div>
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="px-6 pb-4 flex gap-6 text-sm font-medium">
-          <button className="text-[#0F172A] relative">
-            All
-            <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#F97316]" />
-          </button>
-          <button className="text-gray-400 hover:text-[#0F172A]">
-            Unread
-          </button>
-          <button className="text-gray-400 hover:text-[#0F172A]">
-            Investors
-          </button>
-        </div>
+        {/*  RIGHT: CHAT  */}
+        <div className="flex flex-col">
 
-        {/* Message List (NO DIVIDERS) */}
-        <ul className="flex-1 overflow-y-auto px-4 space-y-2">
-          {messages.map((msg) => (
-            <li
-              key={msg.id}
-              className="
-                rounded-xl px-4 py-3 cursor-pointer
-                transition
-                hover:bg-[#F4F1EB]
-              "
-            >
-              <div className="flex justify-between items-start">
-                <p className="font-medium text-[#0F172A]">
-                  {msg.name}
-                </p>
-
-                {msg.unread > 0 && (
-                  <span className="bg-[#F97316] text-white text-xs px-2 py-0.5 rounded-full">
-                    {msg.unread}
-                  </span>
-                )}
+          {/* Chat Header */}
+          <div className="p-5 border-b border-[#3F5C7D]/20
+                          flex justify-between items-center
+                          bg-gradient-to-r from-white to-[#FAF9F6]">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full
+                              bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
+                              flex items-center justify-center
+                              font-bold text-[#0F172A]">
+                {selected.avatar}
               </div>
+              <div>
+                <p className="font-semibold text-[#0F172A]">
+                  {selected.name}
+                </p>
+                <p className="text-xs text-[#64748B]">
+                  {selected.company}
+                </p>
+              </div>
+            </div>
 
-              <p className="text-sm text-gray-500 truncate mt-1">
-                {msg.text}
-              </p>
-
-              <p className="text-xs text-gray-400 mt-1">
-                {msg.time}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* ===== RIGHT EMPTY STATE ===== */}
-      <div className="flex-1 bg-[#F4F1EB] flex items-center justify-center">
-        <div className="text-center max-w-sm">
-          <div
-            className="mx-auto w-20 h-20 rounded-full
-                       bg-white flex items-center justify-center
-                       text-gray-400 shadow-sm"
-          >
-            <Search size={32} />
+            <button className="p-2 rounded-lg hover:bg-[#F7F3E6] transition">
+              <MoreVertical size={18} className="text-[#64748B]" />
+            </button>
           </div>
 
-          <h3 className="mt-6 font-semibold text-[#0F172A]">
-            Select a conversation
-          </h3>
-          <p className="text-sm text-gray-500 mt-2">
-            Choose a message from the list to view the conversation
-          </p>
+          {/* Messages */}
+          <div className="flex-1 p-6 space-y-4 overflow-y-auto">
+            {selected.messages.map((m, i) => (
+              <div
+                key={i}
+                className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm
+                  ${
+                    m.fromMe
+                      ? "ml-auto bg-gradient-to-r from-[#F97316] to-[#F59E0B] text-white"
+                      : "bg-[#E5E7EB] text-[#0F172A]"
+                  }`}
+              >
+                <p>{m.text}</p>
+                <div className="mt-1 text-xs opacity-70 flex items-center gap-1">
+                  {m.time}
+                  {m.fromMe && <CheckCheck size={14} />}
+                </div>
+              </div>
+            ))}
+            <div ref={endRef} />
+          </div>
 
-          <button
-            className="mt-6 bg-[#141657] text-white
-                       px-5 py-2.5 rounded-lg
-                       hover:bg-[#eb7734] transition"
-          >
-            View Messages
-          </button>
+          {/* Input */}
+          <div className="p-5 border-t border-[#3F5C7D]/20 bg-white">
+            <div className="flex items-center gap-3">
+              <input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message..."
+                className="flex-1 rounded-xl px-4 py-3
+                           bg-[#F7F3E6]
+                           border border-[#3F5C7D]/30
+                           focus:outline-none focus:ring-2
+                           focus:ring-[#F97316]/30"
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              />
+              <button
+                onClick={sendMessage}
+                className="p-3 rounded-xl
+                           bg-gradient-to-r from-[#F97316] to-[#F59E0B]
+                           text-white shadow-md
+                           hover:shadow-xl transition"
+              >
+                <Send size={18} />
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
-
     </div>
   );
 }

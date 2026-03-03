@@ -1,4 +1,6 @@
-import Sidebar from '../components/Sidebar';
+import InvestorSidebar from '../components/InvestorSidebar';
+import StartupSidebar from '../components/StartupSidebar';
+import EntrepreneurSidebar from '../components/EntrepreneurSidebar';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -6,18 +8,23 @@ import { Outlet, useLocation } from 'react-router-dom';
 const AppLayout = () => {
   const location = useLocation();
 
-  // Map routes to sidebar active states
-  const activeMap = {
-    '/dashboard': 'dashboard',
-    '/profile': 'profile',
-    '/messages': 'messages',
-    '/settings': 'settings',
+  // Determine which sidebar to show based on route
+  const getSidebar = () => {
+    if (location.pathname.startsWith('/investor')) {
+      return <InvestorSidebar />;
+    } else if (location.pathname.startsWith('/startup')) {
+      return <StartupSidebar />;
+    } else if (location.pathname.startsWith('/entrepreneur')) {
+      return <EntrepreneurSidebar />;
+    }
+    // Default to Entrepreneur sidebar for legacy routes
+    return <EntrepreneurSidebar />;
   };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar activePage={activeMap[location.pathname]} />
+      {getSidebar()}
 
       {/* Main Content */}
       <div className="flex flex-col flex-1 overflow-hidden">

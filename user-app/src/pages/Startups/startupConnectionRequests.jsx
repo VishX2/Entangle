@@ -1,152 +1,100 @@
-import { Check, X, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import React from "react";
 
 export default function StartupConnectionRequests() {
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      name: "Sequoia Capital",
-      type: "Venture Capital",
-      location: "California, USA",
-      note: "Interested in learning more about your traction and roadmap.",
-    },
-    {
-      id: 2,
-      name: "Angel Network",
-      type: "Angel Group",
-      location: "London, UK",
-      note: "We would like to explore a potential partnership opportunity.",
-    },
-  ]);
-
-  const handleAccept = (id) => {
-    setRequests((prev) => prev.filter((r) => r.id !== id));
-  };
-
-  const handleReject = (id) => {
-    setRequests((prev) => prev.filter((r) => r.id !== id));
-  };
-
   return (
-    <div
-      className="min-h-screen px-10 py-8 space-y-10"
-      style={{ backgroundColor: "#F5F1E3" }}
-    >
+    <div className="min-h-screen bg-slate-700 flex items-center justify-center">
+      {/* Modal */}
+      <div className="bg-stone-200 w-[460px] rounded-2xl shadow-xl p-6 relative">
+        {/* Close button */}
+        <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+          ✕
+        </button>
 
-      {/* HEADER */}
-      <section>
-        <h1 className="text-2xl font-semibold text-[#2B3443]">
-          Connection Requests
-        </h1>
-        <p className="text-sm text-[#3F5D7D] mt-1">
-          Investors who want to connect with your startup
-        </p>
-      </section>
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-full bg-slate-500 text-white flex items-center justify-center font-semibold text-lg">
+            NT
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg text-gray-800">
+              NovaTech AI
+            </h2>
+            <p className="text-sm text-sky-600 font-medium">
+              CONNECTION REQUEST
+            </p>
+          </div>
+        </div>
 
-      {/* REQUEST LIST */}
-      <section className="space-y-6">
-        {requests.length === 0 && <EmptyState />}
-
-        {requests.map((req) => (
-          <RequestCard
-            key={req.id}
-            request={req}
-            onAccept={() => handleAccept(req.id)}
-            onReject={() => handleReject(req.id)}
-          />
-        ))}
-      </section>
-    </div>
-  );
-}
-
-/* COMPONENTS */
-
-function RequestCard({ request, onAccept, onReject }) {
-  return (
-    <div
-      className="bg-white rounded-3xl p-6 transition-all duration-300
-                 hover:-translate-y-1 hover:shadow-xl"
-    >
-      <div className="flex justify-between items-start gap-6">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-[#2B3443]">
-            {request.name}
+        {/* Description */}
+        <div className="mb-4">
+          <h3 className="font-semibold text-gray-800">
+            Send a message to this investor
           </h3>
-          <p className="text-sm text-[#3F5D7D] mt-0.5">
-            {request.type} · {request.location}
+          <p className="text-sm text-gray-600">
+            Introduce yourself and explain why you'd like to connect.
           </p>
         </div>
 
-        <div className="flex gap-2">
-          <ActionButton
-            label="Accept"
-            icon={Check}
-            bg="#EF6C4E"
-            text="white"
-            onClick={onAccept}
-          />
-          <ActionButton
-            label="Decline"
-            icon={X}
-            bg="#9EC6DC"
-            text="#2B3443"
-            onClick={onReject}
-          />
-        </div>
+        {/* Form */}
+        <form className="space-y-4">
+          {/* Name */}
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Your Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              defaultValue="Alex Morgan"
+              className="w-full mt-1 px-4 py-3 rounded-lg border border-gray-400 bg-stone-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+
+          {/* Organization */}
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Organization{" "}
+              <span className="text-gray-500">(optional)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Venture Capital Inc."
+              className="w-full mt-1 px-4 py-3 rounded-lg border border-gray-400 bg-stone-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Message <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              rows="4"
+              maxLength="500"
+              placeholder="Hi, I'm interested in learning more about your startup..."
+              className="w-full mt-1 px-4 py-3 rounded-lg border border-gray-400 bg-stone-200 focus:outline-none focus:ring-2 focus:ring-orange-400 resize-none"
+            ></textarea>
+            <div className="text-right text-xs text-gray-500">
+              0/500
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              className="px-5 py-2 rounded-lg border border-gray-500 text-gray-700 hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600"
+            >
+              Send Request
+            </button>
+          </div>
+        </form>
       </div>
-
-      {request.note && (
-        <div
-          className="mt-4 rounded-xl p-4 text-sm"
-          style={{ backgroundColor: "#F5F1E3", color: "#2B3443" }}
-        >
-          {request.note}
-        </div>
-      )}
-
-      <button
-        className="mt-4 flex items-center gap-2 text-sm font-medium
-                   transition hover:underline"
-        style={{ color: "#EF6C4E" }}
-      >
-        <MessageSquare size={16} />
-        View profile & message
-      </button>
-    </div>
-  );
-}
-
-function ActionButton({ label, icon: Icon, bg, text, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-2 px-4 py-2 rounded-xl
-                 text-sm font-medium transition
-                 hover:-translate-y-0.5 hover:shadow-md"
-      style={{
-        backgroundColor: bg,
-        color: text,
-      }}
-    >
-      <Icon size={16} />
-      {label}
-    </button>
-  );
-}
-
-function EmptyState() {
-  return (
-    <div
-      className="bg-white rounded-3xl p-10 text-center
-                 transition hover:shadow-md"
-    >
-      <p className="text-lg font-semibold text-[#2B3443]">
-        No pending requests
-      </p>
-      <p className="text-sm text-[#3F5D7D] mt-1">
-        You’re all caught up. New investor requests will appear here.
-      </p>
     </div>
   );
 }

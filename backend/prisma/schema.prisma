@@ -1,0 +1,111 @@
+// Entangle Platform - Prisma schema (matches entangle_db.sql)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CompanyType {
+  entrepreneur
+  investor
+  startup
+}
+
+enum VerificationTier {
+  gold
+  silver
+  bronze
+  none
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.Text
+  created_at  DateTime @default(now())
+  users       User[]
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique @db.VarChar(255)
+  password_hash   String    @db.VarChar(255)
+  first_name      String    @db.VarChar(100)
+  last_name       String    @db.VarChar(100)
+  profile_picture String?   @db.Text
+  role_id         Int       @default(2)
+  is_active       Boolean   @default(true)
+  last_login_at   DateTime? @db.Timestamp()
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now())
+  role            Role      @relation(fields: [role_id], references: [id])
+  companies_created Company[] @relation("CreatedBy")
+  companies_updated Company[] @relation("UpdatedBy")
+  reviews         Review[]
+  reports         Report[]
+}
+
+model Company {
+  id               Int          @id @default(autoincrement())
+  name             String       @db.VarChar(255)
+  company_type     CompanyType
+  description      String?      @db.Text
+  logo_url         String?      @db.Text
+  website_url      String?      @db.VarChar(500)
+  headquarters     String?      @db.VarChar(255)
+  founded_year     Int?
+  is_verified      Boolean      @default(false)
+  verification_tier VerificationTier? @default(none)
+  is_active        Boolean      @default(true)
+  founder_name     String?      @db.VarChar(255)
+  years_experience Int?
+  investment_focus String?      @db.Text
+  min_investment   Decimal?     @db.Decimal(15, 2)
+  max_investment   Decimal?     @db.Decimal(15, 2)
+  funding_stage    String?      @db.VarChar(100)
+  team_size        Int?
+  total_reviews    Int          @default(0)
+  average_rating   Decimal      @default(0) @db.Decimal(3, 2)
+  created_by       Int?
+  updated_by       Int?
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @default(now())
+  createdByUser    User?        @relation("CreatedBy", fields: [created_by], references: [id])
+  updatedByUser    User?        @relation("UpdatedBy", fields: [updated_by], references: [id])
+  reviews         Review[]
+  reports         Report[]
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  company_id   Int
+  user_id      Int?
+  title        String?  @db.VarChar(255)
+  content      String   @db.Text
+  rating       Int
+  pros         String?  @db.Text
+  cons         String?  @db.Text
+  is_anonymous Boolean  @default(false)
+  is_approved  Boolean  @default(true)
+  helpful_count Int     @default(0)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+  company      Company  @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  user         User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+}
+
+model Report {
+  id         Int       @id @default(autoincrement())
+  type       String    @db.VarChar(50)
+  content    String?   @db.Text
+  status     String    @default("pending") @db.VarChar(50)
+  priority   String?   @db.VarChar(20)
+  company_id Int?
+  user_id    Int?
+  created_at DateTime  @default(now())
+  company    Company?  @relation(fields: [company_id], references: [id], onDelete: SetNull)
+  user       User?     @relation(fields: [user_id], references: [id], onDelete: SetNull)
+}

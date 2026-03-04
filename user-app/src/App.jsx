@@ -15,6 +15,13 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import InvestorProfile from './pages/Investors/InvestorProfile';
 import EditInvestorProfile from "./pages/Investors/EditInvestorProfile";
 import InvestorRecommendations from "./pages/Investors/investorRecommendations";
+import StartupProfileGate from "./pages/Startups/StartupProfileGate";
+import InvestorMessages from "./pages/Investors/InvestorMessages";
+import InvestorDashboard from "./pages/Investors/InvestorDashboard";
+import InvestorConnectionRequest from "./pages/Investors/InvestorConnectionRequests";
+
+
+
 
 // Startup
 import StartupDashboard from "./pages/Startups/startupDashboard";
@@ -22,10 +29,12 @@ import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import InvestorProfileView from "./pages/Startups/investorProfileView";
+import InvestorProfileGate from "./pages/Investors/InvestorProfileGate"; 
+import StartupCollaborations from "./pages/Startups/StartupCollaborationOpportunitiesPage"; 
+
 
 // Entrepreneur
-import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
@@ -33,6 +42,9 @@ import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPag
 
 // Other
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
+
+// Startup Discovery
+import StartupDiscovery from "./pages/StartupDiscovery";
 
 function App() {
   return (
@@ -60,14 +72,24 @@ function App() {
           <Route path="/startup/profile" element={<StartupProfile />} />
           <Route path="/startup/editProfile" element={<EditStartupProfile />} />
           <Route path="/startup/requests" element={<StartupConnectionRequests />} />
-          <Route path="/startup/investorProfileView" element={<InvestorProfileView />} />
+          <Route path="/startup/investorProfileView" element={<InvestorProfileGate />} />
+          <Route path="/startup/startupCollaborations" element={<StartupCollaborations />} />
+
         </Route>
 
         {/* INVESTOR */}
         <Route element={<AppLayout />}>
+        <Route path="/investor/dashboard" element={<InvestorDashboard />} />
           <Route path="/investor/profile" element={<InvestorProfile />} />
           <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
+          <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
+          <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
+          <Route path="/investor/messages" element={<InvestorMessages />} />
+          <Route path="/investor/requests" element={<InvestorConnectionRequest />} />
+
+          
+
         </Route>
 
         {/* ENTREPRENEUR */}
@@ -80,10 +102,8 @@ function App() {
         </Route>
 
       </Routes>
-
-      </BrowserRouter>
+    </BrowserRouter>
   );
 }
 
 export default App;
-

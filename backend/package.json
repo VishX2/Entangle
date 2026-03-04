@@ -1,16 +1,32 @@
 {
-  "name": "backend",
+  "name": "entangle-backend",
   "version": "1.0.0",
-  "description": "Node.js/Express API with **Prisma** ORM. Schema: `prisma/schema.prisma` (aligned with `entangle_db.sql`).",
-  "main": "index.js",
+  "description": "Entangle API - Express.js + PostgreSQL",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "postinstall": "prisma generate",
+    "seed": "prisma db push && node seeds/seed.js",
+    "reset": "prisma db push --force-reset && node seeds/seed.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
-    "express": "^5.2.1",
-    "pg": "^8.19.0"
+    "@prisma/client": "^6.9.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "prisma": "^6.9.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "prisma db push && node seeds/seed.js"
   }
 }

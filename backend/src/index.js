@@ -14,6 +14,7 @@ app.use(express.json());
 app.get('/health', (req, res) => res.json({ status: 'ok', service: 'entangle-api' }));
 
 app.use('/api', routes);
+app.use('/', routes);
 
 app.use(errorHandler);
 

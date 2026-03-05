@@ -16,6 +16,7 @@ router.post('/auth/login', authController.login);
 router.post('/auth/login-admin', authController.loginAdmin);
 
 // ----- Dashboard (admin) -----
+//to do - adjust the authentication
 router.get('/dashboard/stats', auth, requireAdmin, dashboard.stats);
 
 // ----- Roles (public read) -----

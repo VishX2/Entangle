@@ -6,7 +6,7 @@ export default function AdminLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 👉 later replace with real auth check
+    //later replace with real auth check
     navigate("/dashboard");
   };
 

@@ -7,6 +7,7 @@ const reviews = require('../controllers/reviewsController');
 const users = require('../controllers/usersController');
 const roles = require('../controllers/rolesController');
 const reports = require('../controllers/reportsController');
+const matchmaking = require('../controllers/matchmakingController');
 
 const router = express.Router();
 
@@ -43,6 +44,12 @@ router.post('/reviews/:id/helpful', reviews.helpful);
 router.get('/reports', auth, requireAdmin, reports.list);
 router.get('/reports/:id', auth, requireAdmin, reports.getById);
 router.patch('/reports/:id', auth, requireAdmin, reports.update);
+
+// ----- AI Matchmaking -----
+router.get('/matchmaking/investors-for-startup/:startupId', optionalAuth, matchmaking.investorsForStartup);
+router.get('/matchmaking/startups-for-investor/:investorId', optionalAuth, matchmaking.startupsForInvestor);
+router.get('/matchmaking/investors-for-entrepreneur/:entrepreneurId', optionalAuth, matchmaking.investorsForEntrepreneur);
+router.get('/matchmaking/entrepreneurs-for-investor/:investorId', optionalAuth, matchmaking.entrepreneursForInvestor);
 
 // ----- Users -----
 router.get('/users/me', auth, users.getMe);

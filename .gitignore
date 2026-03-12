@@ -38,4 +38,3 @@ build/
 # Env
 .env
 backend/.env
-

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
 import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
@@ -34,7 +35,7 @@ import StartupCollaborations from "./pages/Startups/StartupCollaborationOpportun
 
 
 // Entrepreneur
-import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
@@ -45,6 +46,8 @@ import FeedbackAndRisk from './pages/FeedbackAndRisk';
 
 // Startup Discovery
 import StartupDiscovery from "./pages/StartupDiscovery";
+import CompanyProfile from "./pages/CompanyProfile";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -65,8 +68,8 @@ function App() {
           <Route path="/feedbackAndRisk" element={<FeedbackAndRisk />} />
         </Route>
 
-        {/* STARTUP */}
-        <Route element={<AppLayout />}>
+        {/* STARTUP (protected) */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
           <Route path="/startup/dashboard" element={<StartupDashboard />} />
           <Route path="/startup/messages" element={<Messages />} />
           <Route path="/startup/profile" element={<StartupProfile />} />
@@ -77,13 +80,14 @@ function App() {
 
         </Route>
 
-        {/* INVESTOR */}
-        <Route element={<AppLayout />}>
+        {/* INVESTOR (protected) */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
         <Route path="/investor/dashboard" element={<InvestorDashboard />} />
           <Route path="/investor/profile" element={<InvestorProfile />} />
           <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
           <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
+          <Route path="/investor/company/:id" element={<CompanyProfile />} />
           <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
           <Route path="/investor/messages" element={<InvestorMessages />} />
           <Route path="/investor/requests" element={<InvestorConnectionRequest />} />
@@ -92,8 +96,8 @@ function App() {
 
         </Route>
 
-        {/* ENTREPRENEUR */}
-        <Route element={<AppLayout />}>
+        {/* ENTREPRENEUR (protected) */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
           <Route path="/entrepreneur/dashboard" element={<Dashboard />} />
           <Route path="/entrepreneur/profile" element={<EntrepreneurProfile />} />
           <Route path="/entrepreneur/profile/edit" element={<EditEntrepreneurProfile />} />
@@ -101,6 +105,8 @@ function App() {
           <Route path="/entrepreneur/messages" element={<EntrepreneurMessages />} />
         </Route>
 
+        {/* 404 - catch all unmatched routes */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

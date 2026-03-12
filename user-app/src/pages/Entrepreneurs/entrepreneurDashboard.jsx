@@ -1,258 +1,275 @@
-import {
-  Eye,
-  Heart,
-  MessageSquare,
-  Plus,
-  Upload,
-  BarChart3,
-  Edit3,
-  Star,
-  CheckCircle,
-  Users,
-} from "lucide-react";
+import { useState } from "react";
 
 export default function EntrepreneurDashboard() {
-  const data = {
-    name: "Jordan",
-    profileStrength: 75,
-    views: 247,
-    interest: 12,
-    messages: 8,
-    unread: 4,
-    activity: [
+  const [dashboardData] = useState({
+    profileStrength: 76,
+    influenceScore: 88,
+    monthlyRevenue: 58000,
+    activeInvestors: 27,
+
+    growthMetrics: [
+      { id: 1, title: "Revenue Growth", value: "+26%" },
+      { id: 2, title: "Investor Growth", value: "+14%" },
+      { id: 3, title: "Burn Rate", value: "$15K/mo" },
+    ],             
+
+    investorInterest: [
       {
         id: 1,
-        title: "New investor interest",
-        description: "Sequoia Capital viewed your pitch deck",
-        time: "2h ago",
-        icon: Star,
+        name: "BluePeak Ventures",
+        action: "Viewed your startup",
       },
       {
         id: 2,
-        title: "Connection accepted",
-        description: "You are now connected with Angel Network",
-        time: "4h ago",
-        icon: CheckCircle,
+        name: "NextGen Capital",
+        action: "Saved your pitch",
       },
     ],
-  };
+
+    news: [
+      {
+        id: 1,
+        title: "AI Startup Raises $25M Series A",
+        source: { name: "TechCrunch" },
+        urlToImage:
+          "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
+      },
+      {
+        id: 2,
+        title: "FinTech Platform Expands Globally",
+        source: { name: "Forbes" },
+        urlToImage:
+          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80",
+  
+      },
+    ],
+
+    quickActions: [
+      { id: 1, label: "Upload Pitch Deck" },
+      { id: 2, label: "Edit Profile" },
+    ],
+
+    recentActivity: [
+      { id: 1, text: "Investor viewed profile" },
+      { id: 2, text: "Pitch saved by VC" },
+      { id: 3, text: "New message received" },
+    ],
+
+    recommendedInvestors: [
+      { id: 1, name: "Sequoia Capital" },
+      { id: 2, name: "Andreessen Horowitz" },
+      { id: 3, name: "Accel Partners" },
+    ],
+  });
 
   return (
-    <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-16">
+    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-8">
+      <EntrepreneurHero
+        revenue={dashboardData.monthlyRevenue}
+        investors={dashboardData.activeInvestors}
+        influence={dashboardData.influenceScore}
+      />
 
-      {/* HEADER */}
-      <div className="bg-white rounded-[32px] p-8
-                      border border-[#3F5C7D]/40
-                      shadow-sm transition
-                      hover:shadow-lg hover:-translate-y-1">
-        <div className="absolute inset-x-0 top-0 h-1
-                        bg-gradient-to-r from-[#0F172A] via-[#3F5C7D] to-[#F97316]
-                        rounded-t-[32px]" />
+      <div className="grid grid-cols-12 gap-6">
 
-        <h1 className="text-3xl font-bold text-[#0F172A] tracking-tight">
-          Entrepreneur Dashboard
-        </h1>
-        <p className="text-[#64748B] mt-1">
-          Here’s what’s happening with your startup today
-        </p>
-      </div>
-
-      {/* PROFILE STRENGTH */}
-      <div className="bg-white rounded-3xl p-8
-                      border border-[#3F5C7D]/40
-                      shadow-sm transition
-                      hover:shadow-lg hover:-translate-y-1
-                      space-y-4">
-
-        <div className="flex justify-between items-center">
-          <p className="font-semibold text-[#0F172A]">
-            Profile Strength
-          </p>
-          <span className="px-3 py-1 rounded-full text-sm font-semibold
-                           bg-[#F97316]/10 text-[#F97316]">
-            {data.profileStrength}%
-          </span>
+        {/* MAIN CONTENT */}
+        <div className="col-span-12 lg:col-span-9 space-y-8">
+          <GrowthMetrics metrics={dashboardData.growthMetrics} />
+          <InvestorInterest interests={dashboardData.investorInterest} />
+          <EntrepreneurNews news={dashboardData.news} />
         </div>
 
-        <div className="w-full bg-[#E5E7EB] rounded-full h-2 overflow-hidden">
-          <div
-            className="h-2 rounded-full
-                       bg-gradient-to-r from-[#F97316] to-[#F59E0B]
-                       transition-all duration-700"
-            style={{ width: `${data.profileStrength}%` }}
+        {/* SIDEBAR */}
+        <div className="col-span-12 lg:col-span-3 space-y-6">
+          <ProfileStrength value={dashboardData.profileStrength} />
+          <QuickActions actions={dashboardData.quickActions} />
+          <RecentActivity activities={dashboardData.recentActivity} />
+          <RecommendedInvestors
+            investors={dashboardData.recommendedInvestors}
           />
         </div>
 
-        <p className="text-sm text-[#64748B]">
-          Complete your profile to increase visibility to investors
-        </p>
-
-        <div className="flex flex-wrap gap-3 pt-2">
-          <ActionButton icon={Users} label="Add Team Members" primary />
-          <ActionButton icon={Upload} label="Upload Pitch Deck" />
-        </div>
-      </div>
-
-       
-      {/*  METRICS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <MetricCard icon={Eye} title="Profile Views" value={data.views} />
-        <MetricCard icon={Heart} title="Investor Interest" value={data.interest} />
-        <MetricCard
-          icon={MessageSquare}
-          title="Messages"
-          value={data.messages}
-          subtitle={`${data.unread} unread`}
-        />
-      </div>
-
-      {/*  QUICK ACTIONS */}
-      <div className="bg-white rounded-3xl p-8
-                      border border-[#3F5C7D]/40
-                      shadow-sm transition
-                      hover:shadow-lg hover:-translate-y-1">
-        <p className="font-semibold text-[#0F172A] mb-6">
-          Quick Actions
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <PrimaryAction icon={Plus} label="Create Post" />
-          <SecondaryAction icon={Upload} label="Upload Pitch Deck" />
-          <SecondaryAction icon={BarChart3} label="View Analytics" />
-          <SecondaryAction icon={Edit3} label="Edit Profile" />
-        </div>
-      </div>
-
-      {/*  RECENT ACTIVITY */}
-      <div className="bg-white rounded-3xl p-8
-                      border border-[#3F5C7D]/40
-                      shadow-sm transition
-                      hover:shadow-lg hover:-translate-y-1">
-        <p className="font-semibold text-[#0F172A] mb-6">
-          Recent Activity
-        </p>
-
-        <ul className="space-y-5">
-          {data.activity.map((item) => (
-            <li
-              key={item.id}
-              className="flex justify-between items-center
-                         p-4 rounded-2xl
-                         border border-[#3F5C7D]/30
-                         transition
-                         hover:border-[#F97316]
-                         hover:bg-[#F7F3E6]"
-            >
-              <div className="flex gap-4 items-center">
-                <div className="w-12 h-12 rounded-xl
-                                bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
-                                border border-[#3F5C7D]/40
-                                flex items-center justify-center
-                                transition hover:bg-[#0F172A]">
-                  <item.icon
-                    size={20}
-                    className="text-[#0F172A] transition hover:text-white"
-                  />
-                </div>
-                <div>
-                  <p className="font-medium text-[#0F172A]">
-                    {item.title}
-                  </p>
-                  <p className="text-sm text-[#64748B]">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-              <span className="text-xs text-[#64748B]">
-                {item.time}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-    </div>
-  );
-}
-
-/*  COMPONENTS */
-
-function MetricCard({ icon: Icon, title, value, subtitle }) {
-  return (
-    <div className="bg-white rounded-2xl p-8
-                    border border-[#3F5C7D]/40
-                    shadow-sm transition
-                    hover:shadow-lg hover:-translate-y-1
-                    flex justify-between items-center">
-      <div>
-        <p className="text-sm text-[#64748B]">{title}</p>
-        <p className="text-3xl font-bold text-[#0F172A] mt-1">
-          {value}
-        </p>
-        {subtitle && (
-          <p className="text-sm text-[#F97316] mt-1">
-            {subtitle}
-          </p>
-        )}
-      </div>
-
-      <div className="w-12 h-12 rounded-xl
-                      bg-gradient-to-br from-[#9EC7DD] to-[#E5E7EB]
-                      border border-[#3F5C7D]/40
-                      flex items-center justify-center
-                      transition hover:bg-[#0F172A]">
-        <Icon
-          size={20}
-          className="text-[#0F172A] transition hover:text-white"
-        />
       </div>
     </div>
   );
 }
 
-function ActionButton({ icon: Icon, label, primary }) {
+/* ---------------- COMPONENTS ---------------- */
+
+function EntrepreneurHero({ revenue, investors, influence }) {
   return (
-    <button
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg
-        text-sm font-medium transition
-        ${
-          primary
-            ? "bg-[#0F172A] text-white hover:shadow-lg hover:-translate-y-0.5"
-            : "border border-[#E5E7EB] text-[#0F172A] hover:bg-[#F7F3E6]"
-        }`}
-    >
-      <Icon size={16} />
-      {label}
-    </button>
+    <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 shadow-lg">
+      <p className="text-sm opacity-80">ENTREPRENEUR DASHBOARD</p>
+      <h1 className="text-3xl font-semibold mt-1">
+        Welcome back, Founder
+      </h1>
+
+      <div className="flex flex-wrap gap-6 mt-6">
+        <StatCard title="Monthly Revenue" value={`$${revenue}`} />
+        <StatCard title="Active Investors" value={investors} />
+        <StatCard title="Influence Score" value={influence} />
+      </div>
+    </div>
   );
 }
 
-function PrimaryAction({ icon: Icon, label }) {
+function StatCard({ title, value }) {
   return (
-    <button className="flex items-center justify-center gap-2
-                       bg-[#F97316] text-white
-                       py-4 rounded-xl font-medium
-                       shadow-md transition
-                       hover:bg-[#0F172A]
-                       hover:shadow-xl hover:-translate-y-0.5">
-      <Icon size={18} />
-      {label}
-    </button>
+    <div className="bg-white/10 rounded-xl px-4 py-3 hover:bg-white/20 transition duration-200">
+      <div className="text-xs opacity-80">{title}</div>
+      <div className="text-lg font-semibold mt-1">{value}</div>
+    </div>
   );
 }
 
-function SecondaryAction({ icon: Icon, label }) {
+function GrowthMetrics({ metrics }) {
   return (
-    <button className="flex items-center justify-center gap-2
-                       py-4 rounded-xl font-medium
-                       border border-[#3F5C7D]/40
-                       text-[#0F172A]
-                       bg-white transition
-                       hover:border-[#F97316]
-                       hover:bg-[#F7F3E6]">
-      <Icon size={18} />
-      {label}
-    </button>
+    <section>
+      <h2 className="text-lg font-semibold mb-4">Growth Metrics</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {metrics.map((metric) => (
+          <div
+            key={metric.id}
+            className="bg-white rounded-2xl p-6 shadow
+                       hover:shadow-xl hover:-translate-y-1
+                       transition duration-200"
+          >
+            <p className="text-sm text-gray-500">{metric.title}</p>
+            <p className="text-2xl font-semibold mt-2 text-[#E66A4B]">
+              {metric.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
+function InvestorInterest({ interests }) {
+  return (
+    <section>
+      <h2 className="text-lg font-semibold mb-4">Investor Interest</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {interests.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white rounded-2xl p-5 shadow
+                       hover:shadow-xl hover:-translate-y-1
+                       transition duration-200"
+          >
+            <p className="font-medium">{item.name}</p>
+            <p className="text-sm text-gray-500 mt-1">{item.action}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function EntrepreneurNews({ news }) {
+  return (
+    <section>
+      <h2 className="text-lg font-semibold mb-4">
+        Startup & Tech News
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {news.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white rounded-2xl overflow-hidden shadow
+                       hover:shadow-xl hover:-translate-y-1
+                       transition duration-200"
+          >
+            {item.urlToImage && (
+              <img
+                src={item.urlToImage}
+                alt={item.title}
+                className="h-48 w-full object-cover"
+              />
+            )}
+
+            <div className="p-4">
+              <h3 className="font-semibold">{item.title}</h3>
+              <p className="text-sm text-gray-500 mt-2">
+                {item.source?.name}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProfileStrength({ value }) {
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+      <h3 className="font-semibold mb-3">Profile Strength</h3>
+      <p className="text-3xl font-semibold text-[#E66A4B]">
+        {value}%
+      </p>
+    </div>
+  );
+}
+
+function QuickActions({ actions }) {
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+      <h3 className="font-semibold mb-3">Quick Actions</h3>
+
+      {actions.map((action) => (
+        <button
+          key={action.id}
+          className="w-full bg-gray-200 py-2 rounded-xl mb-3
+                     hover:bg-[#E66A4B] hover:text-white
+                     hover:shadow-md hover:-translate-y-1
+                     active:scale-95
+                     transition duration-200"
+        >
+          {action.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function RecentActivity({ activities }) {
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+      <h3 className="font-semibold mb-3">Recent Activity</h3>
+
+      {activities.map((item) => (
+        <p key={item.id} className="text-sm mt-2">
+          {item.text}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function RecommendedInvestors({ investors }) {
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+      <h3 className="font-semibold mb-3">
+        Recommended Investors
+      </h3>
+
+      {investors.map((inv) => (
+        <p key={inv.id} className="text-sm py-1">
+          {inv.name}
+        </p>
+      ))}
+
+      <button
+        className="mt-4 w-full bg-[#E66A4B] text-white py-2 rounded-xl
+                   hover:bg-[#d85e40] hover:shadow-md hover:-translate-y-1
+                   active:scale-95 transition duration-200"
+      >
+        Explore More Investors
+      </button>
+    </div>
+  );
+}

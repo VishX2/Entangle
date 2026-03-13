@@ -127,3 +127,48 @@ async function investorsForEntrepreneur(req, res, next) {
     next(err);
   }
 }
+
+/**
+ * GET /matchmaking/entrepreneurs-for-investor/:investorId
+ * Returns ranked entrepreneurs for an investor.
+ */
+async function entrepreneursForInvestor(req, res, next) {
+  try {
+    const investorId = parseInt(req.params.investorId, 10);
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 50);
+
+    const investor = await prisma.company.findUnique({
+      where: { id: investorId, company_type: 'investor', is_active: true },
+      select: selectFields,
+    });
+    if (!investor) {
+      return res.status(404).json({ error: 'Investor not found' });
+    }
+
+    const entrepreneurs = await prisma.company.findMany({
+      where: { company_type: 'entrepreneur', is_active: true },
+      select: selectFields,
+    });
+
+    const matches = await rankEntrepreneursForInvestorAsync(investor, entrepreneurs, limit);
+
+    res.json({
+      investor: { id: investor.id, name: investor.name },
+      aiEnabled: isEmbeddingsAvailable(),
+      matches: matches.map(({ company, score, breakdown }) => ({
+        company,
+        score,
+        breakdown,
+      })),
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  investorsForStartup,
+  startupsForInvestor,
+  investorsForEntrepreneur,
+  entrepreneursForInvestor,
+};

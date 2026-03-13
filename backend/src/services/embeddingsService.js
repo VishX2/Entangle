@@ -91,12 +91,35 @@ async function getEmbeddingsBatch(companies) {
   }
 }
 
+/**
+ * Cosine similarity between two vectors.
+ * @param {number[]} a
+ * @param {number[]} b
+ * @returns {number} Similarity 0-1
+ */
+function cosineSimilarity(a, b) {
+  if (!a || !b || a.length !== b.length) return 0.5;
+  let dot = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    normA += a[i] * a[i];
+    normB += b[i] * b[i];
+  }
+  const denom = Math.sqrt(normA) * Math.sqrt(normB);
+  if (denom === 0) return 0.5;
+  const sim = dot / denom;
+  return Math.max(0, Math.min(1, (sim + 1) / 2)); // map [-1,1] to [0,1]
+}
 
-
-
-
+function isEmbeddingsAvailable() {
+  return !!getClient();
+}
 
 module.exports = {
   getEmbedding,
-  getEmbeddingsBatch
+  getEmbeddingsBatch,
+  cosineSimilarity,
+  isEmbeddingsAvailable,
 };

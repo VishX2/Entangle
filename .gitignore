@@ -22,6 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
 venv
 
 # Python
@@ -33,7 +34,7 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+
 # Env
 .env
 backend/.env
-

@@ -54,44 +54,6 @@ async function investorsForStartup(req, res, next) {
 }
 
 /**
- * GET /matchmaking/investors-for-startup/:startupId
- * Returns ranked investors for a startup (AI matchmaking).
- */
-async function investorsForStartup(req, res, next) {
-  try {
-    const startupId = parseInt(req.params.startupId, 10);
-    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 50);
-
-    const startup = await prisma.company.findUnique({
-      where: { id: startupId, company_type: 'startup', is_active: true },
-      select: selectFields,
-    });
-    if (!startup) {
-      return res.status(404).json({ error: 'Startup not found' });
-    }
-
-    const investors = await prisma.company.findMany({
-      where: { company_type: 'investor', is_active: true },
-      select: selectFields,
-    });
-
-    const matches = await rankInvestorsForStartupAsync(startup, investors, limit);
-
-    res.json({
-      startup: { id: startup.id, name: startup.name },
-      aiEnabled: isEmbeddingsAvailable(),
-      matches: matches.map(({ company, score, breakdown }) => ({
-        company,
-        score,
-        breakdown,
-      })),
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-/**
  * GET /matchmaking/startups-for-investor/:investorId
  * Returns ranked startups for an investor (AI matchmaking).
  */
@@ -117,6 +79,44 @@ async function startupsForInvestor(req, res, next) {
 
     res.json({
       investor: { id: investor.id, name: investor.name },
+      matches: matches.map(({ company, score, breakdown }) => ({
+        company,
+        score,
+        breakdown,
+      })),
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * GET /matchmaking/investors-for-entrepreneur/:entrepreneurId
+ * Returns ranked investors for an entrepreneur.
+ */
+async function investorsForEntrepreneur(req, res, next) {
+  try {
+    const entrepreneurId = parseInt(req.params.entrepreneurId, 10);
+    const limit = Math.min(parseInt(req.query.limit, 10) || 20, 50);
+
+    const entrepreneur = await prisma.company.findUnique({
+      where: { id: entrepreneurId, company_type: 'entrepreneur', is_active: true },
+      select: selectFields,
+    });
+    if (!entrepreneur) {
+      return res.status(404).json({ error: 'Entrepreneur not found' });
+    }
+
+    const investors = await prisma.company.findMany({
+      where: { company_type: 'investor', is_active: true },
+      select: selectFields,
+    });
+
+    const matches = await rankInvestorsForEntrepreneurAsync(entrepreneur, investors, limit);
+
+    res.json({
+      entrepreneur: { id: entrepreneur.id, name: entrepreneur.name },
+      aiEnabled: isEmbeddingsAvailable(),
       matches: matches.map(({ company, score, breakdown }) => ({
         company,
         score,

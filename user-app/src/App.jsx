@@ -1,82 +1,112 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
 import HomeLayout from './layouts/HomeLayout';
 import EntangleLogin from './pages/Login';
 import Home from './pages/Home';
-import FeedbackAndRisk from './pages/FeedbackAndRisk';
+import UserTypeSelectionPage from './pages/UserTypeSelectionPage';
+import InvestorRegistrationPage from './pages/Investors/InvestorRegistrationPage';
+import EntrepreneurRegistrationPage from './pages/Entrepreneurs/EntrepreneurRegistrationPage';
+import StartupRegistrationPage from './pages/Startups/StartupRegistrationPage';
+import VerificationPage from './pages/VerificationPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+
+// Investor
+import InvestorProfile from './pages/Investors/InvestorProfile';
+import EditInvestorProfile from "./pages/Investors/EditInvestorProfile";
+import InvestorRecommendations from "./pages/Investors/investorRecommendations";
+import StartupProfileGate from "./pages/Startups/StartupProfileGate";
+import InvestorMessages from "./pages/Investors/InvestorMessages";
+import InvestorDashboard from "./pages/Investors/InvestorDashboard";
+import InvestorConnectionRequest from "./pages/Investors/InvestorConnectionRequests";
+
+
+
+
+// Startup
 import StartupDashboard from "./pages/Startups/startupDashboard";
 import Messages from "./pages/Startups/startupChat";
 import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
-import InvestorRecommendations from "./pages/Investors/investorRecommendations";
-import InvestorProfileView from "./pages/Startups/investorProfileView";
+import InvestorProfileGate from "./pages/Investors/InvestorProfileGate"; 
+import StartupCollaborations from "./pages/Startups/StartupCollaborationOpportunitiesPage"; 
 
-import Dashboard from "./pages/Entrepreneurs/EntrepreneurDashboard";
+
+// Entrepreneur
+import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurProfile from "./pages/Entrepreneurs/EntrepreneurProfilePage";
 import EditEntrepreneurProfile from "./pages/Entrepreneurs/EditEntrepreneurProfilePage";
-import StartupCollaborationOpportunitiesPage from "./pages/Startups/StartupCollaborationOpportunitiesPage";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
 import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
-import Settings from "./pages/Settings";
-import Notifications from "./pages/Notifications";
-import Error403 from "./pages/errors/Error403";
-import Error404 from "./pages/errors/Error404";
-import Error500 from "./pages/errors/Error500";
-import Loading from "./pages/Loading";
-import Maintenance from "./pages/Maintenance";
-import FeedbackAlertRules from "./pages/FeedbackAlertRules";
+
+// Other
+import FeedbackAndRisk from './pages/FeedbackAndRisk';
+
+// Startup Discovery
+import StartupDiscovery from "./pages/StartupDiscovery";
+import CompanyProfile from "./pages/CompanyProfile";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* HOME (NO SIDEBAR) */}
+        {/* HOME */}
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<EntangleLogin />} />
+          <Route path="/select-type" element={<UserTypeSelectionPage />} />
+          <Route path="/register/investor" element={<InvestorRegistrationPage />} />
+          <Route path="/register/entrepreneur" element={<EntrepreneurRegistrationPage />} />
+          <Route path="/register/startup" element={<StartupRegistrationPage />} />
+          <Route path="/verify" element={<VerificationPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/feedbackAndRisk" element={<FeedbackAndRisk />} />
-
         </Route>
 
-         {/* STARTUP WITH SIDEBAR */}
-        <Route element={<AppLayout />}>
+        {/* STARTUP (protected) */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
           <Route path="/startup/dashboard" element={<StartupDashboard />} />
           <Route path="/startup/messages" element={<Messages />} />
-          <Route path="/startup/profile" element={<StartupProfile  />} />
-          <Route path="/startup/editProfile" element={<EditStartupProfile  />} />
-          <Route path="/startup/requests" element={<StartupConnectionRequests  />} />
-          <Route path="/investor/recommendations" element={<InvestorRecommendations  />} />
-          <Route path="/startup/investorProfileView" element={<InvestorProfileView  />} />
+          <Route path="/startup/profile" element={<StartupProfile />} />
+          <Route path="/startup/editProfile" element={<EditStartupProfile />} />
+          <Route path="/startup/requests" element={<StartupConnectionRequests />} />
+          <Route path="/startup/investorProfileView" element={<InvestorProfileGate />} />
+          <Route path="/startup/startupCollaborations" element={<StartupCollaborations />} />
+
         </Route>
 
+        {/* INVESTOR (protected) */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+        <Route path="/investor/dashboard" element={<InvestorDashboard />} />
+          <Route path="/investor/profile" element={<InvestorProfile />} />
+          <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
+          <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
+          <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
+          <Route path="/investor/company/:id" element={<CompanyProfile />} />
+          <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
+          <Route path="/investor/messages" element={<InvestorMessages />} />
+          <Route path="/investor/requests" element={<InvestorConnectionRequest />} />
 
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          
+
         </Route>
 
-
-        <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<EntrepreneurProfile />} />
-          <Route path="/profile/edit" element={<EditEntrepreneurProfile />} />
-          <Route path="/collaborations" element={<StartupCollaborationOpportunitiesPage />} />
-          <Route path="/connections" element={<EntrepreneurConnections />} />
-          <Route path="/messages" element={<EntrepreneurMessages />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/feedback-rules" element={<FeedbackAlertRules />} />
+        {/* ENTREPRENEUR (protected) */}
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route path="/entrepreneur/dashboard" element={<Dashboard />} />
+          <Route path="/entrepreneur/profile" element={<EntrepreneurProfile />} />
+          <Route path="/entrepreneur/profile/edit" element={<EditEntrepreneurProfile />} />
+          <Route path="/entrepreneur/connections" element={<EntrepreneurConnections />} />
+          <Route path="/entrepreneur/messages" element={<EntrepreneurMessages />} />
         </Route>
 
-        {/* ERROR PAGES */}
-        <Route path="/error/403" element={<Error403 />} />
-        <Route path="/error/404" element={<Error404 />} />
-        <Route path="/error/500" element={<Error500 />} />
-        <Route path="/loading" element={<Loading />} />
-        <Route path="/maintenance" element={<Maintenance />} />
-        <Route path="*" element={<Error404 />} />
-
+        {/* 404 - catch all unmatched routes */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

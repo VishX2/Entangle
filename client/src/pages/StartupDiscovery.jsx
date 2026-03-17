@@ -1,15 +1,54 @@
-import { useState } from "react";
-
+import { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import StartupHero from "../components/startup-discovery-components/StartupHero";
 import StartupCard from "../components/startup-discovery-components/StartupCard";
 import FilterBar from "../components/startup-discovery-components/FilterBar";
 import TopRatedCard from "../components/startup-discovery-components/TopRatedCard";
 import TrendingIndustriesCard from "../components/startup-discovery-components/TrendingIndustriesCard";
-import RecentlyFundedCard from "../components/startup-discovery-components/RecentlyFundedCard"; // <-- missing import
+import RecentlyFundedCard from "../components/startup-discovery-components/RecentlyFundedCard";
+import { Sparkles } from "lucide-react";
+import { fetchCompanies, fetchInvestors, fetchStartupsForInvestor } from "../store/userApi";
+import { selectCompanies, selectInvestors, selectStartupMatches, selectMatchmakingLoading, selectUserLoading } from "../store/userSlice";
+
+function mapCompanyToStartup(c) {
+  return {
+    id: c.id,
+    name: c.name,
+    location: c.headquarters || "—",
+    rating: Number(c.average_rating) || 0,
+    description: c.description || "No description",
+    industry: c.investment_focus || c.funding_stage || "—",
+    stage: c.funding_stage || "—",
+    logo: c.logo_url || "",
+    created_by: c.created_by,
+  };
+}
 
 export default function StartupDiscovery() {
-  // STARTUP DATA
-  const startupsData = [
+  const dispatch = useDispatch();
+  const companies = useSelector(selectCompanies);
+  const investors = useSelector(selectInvestors);
+  const startupMatches = useSelector(selectStartupMatches);
+  const matchmakingLoading = useSelector(selectMatchmakingLoading);
+  const loading = useSelector(selectUserLoading);
+  const aiMatchRef = useRef(null);
+
+  const [selectedInvestorId, setSelectedInvestorId] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchCompanies({ type: "startup" }));
+    dispatch(fetchInvestors());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (selectedInvestorId) {
+      dispatch(fetchStartupsForInvestor({ investorId: selectedInvestorId }));
+    }
+  }, [dispatch, selectedInvestorId]);
+
+  const startupsData = (companies || []).map(mapCompanyToStartup);
+
+  const FALLBACK_DATA = [
     {
       id: 1,
       name: "NeuralForge",
@@ -132,6 +171,17 @@ export default function StartupDiscovery() {
     },
   ];
 
+  const data = startupsData.length > 0 ? startupsData : FALLBACK_DATA;
+
+  // AI Match results: map to startup format with match score
+  const aiMatchList = startupMatches?.matches ?? [];
+  const aiMatchStartups = aiMatchList.map(({ company, score }) => ({
+    ...mapCompanyToStartup(company),
+    matchScore: score,
+  }));
+
+  const showAIMatchResults = selectedInvestorId && aiMatchList.length > 0;
+
   // FILTER STATES
   const [search, setSearch] = useState("");
   const [industry, setIndustry] = useState("All Industries");
@@ -140,7 +190,7 @@ export default function StartupDiscovery() {
   const [sort, setSort] = useState("top");
 
   // FILTER LOGIC
-  const filteredStartups = startupsData
+  const filteredStartups = data
     .filter((s) => {
       return (
         (industry === "All Industries" || s.industry === industry) &&
@@ -156,7 +206,8 @@ export default function StartupDiscovery() {
     });
 
   // TOP RATED SIDEBAR DATA
-  const topRated = [...startupsData]
+  const topRated = [...data]
+    .filter((s) => s.rating > 0)
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 4)
     .map((s) => ({
@@ -175,10 +226,40 @@ export default function StartupDiscovery() {
   return (
     <div className="bg-[#f5f3ef] min-h-screen">
       {/* HERO */}
-      <StartupHero />
+      <StartupHero onRunAIMatch={() => aiMatchRef.current?.scrollIntoView({ behavior: "smooth" })} />
+
+      {/* AI MATCH SECTION */}
+      <section ref={aiMatchRef} id="ai-match" className="max-w-7xl mx-auto px-6 mt-8">
+        <div className="bg-white/80 rounded-2xl p-6 shadow-sm border border-slate-200">
+          <h2 className="text-lg font-semibold text-slate-800 mb-4">AI Match — Get personalized startup recommendations</h2>
+          <div className="flex flex-wrap items-center gap-4">
+            <label className="text-sm font-medium text-slate-600">Select your investor profile:</label>
+            <select
+              value={selectedInvestorId ?? ""}
+              onChange={(e) => setSelectedInvestorId(e.target.value ? Number(e.target.value) : null)}
+              className="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-800 min-w-[220px]"
+            >
+              <option value="">— Pick an investor —</option>
+              {investors.map((inv) => (
+                <option key={inv.id} value={inv.id}>{inv.name}</option>
+              ))}
+            </select>
+            <button
+              onClick={() => selectedInvestorId && dispatch(fetchStartupsForInvestor({ investorId: selectedInvestorId }))}
+              disabled={!selectedInvestorId || matchmakingLoading}
+              className="px-5 py-2.5 rounded-xl bg-[#ff6b4a] text-white font-medium hover:bg-[#ff5a36] disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              {matchmakingLoading ? "Matching…" : "Run AI Match"}
+            </button>
+          </div>
+          {investors.length === 0 && (
+            <p className="mt-2 text-sm text-slate-500">No investors in the database. Add investor companies to use AI matchmaking.</p>
+          )}
+        </div>
+      </section>
 
       {/* FILTER BAR */}
-      <div className="max-w-7xl mx-auto px-6 mt-8">
+      <div id="browse" className="max-w-7xl mx-auto px-6 mt-8">
         <FilterBar
           search={search}
           setSearch={setSearch}
@@ -197,9 +278,40 @@ export default function StartupDiscovery() {
       <div className="max-w-7xl mx-auto px-6 mt-8 grid lg:grid-cols-4 gap-8">
         {/* Startup Grid */}
         <div className="lg:col-span-3 grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredStartups.map((startup) => (
-            <StartupCard key={startup.id} startup={startup} />
-          ))}
+          {loading && startupsData.length === 0 ? (
+            <div className="col-span-full py-12 text-center text-slate-500">Loading startups…</div>
+          ) : matchmakingLoading && selectedInvestorId ? (
+            <div className="col-span-full animate-matchmaking-pulse bg-white rounded-2xl p-12 shadow-lg border border-[#ff6b4a]/20">
+              <div className="animate-matchmaking-shimmer rounded-xl px-8 py-12 text-center">
+                <div className="flex justify-center gap-2 mb-4">
+                  <Sparkles className="w-8 h-8 text-[#ff6b4a] animate-matchmaking-sparkle" />
+                  <Sparkles className="w-8 h-8 text-[#ff6b4a]/80 animate-matchmaking-sparkle" style={{ animationDelay: "0.2s" }} />
+                  <Sparkles className="w-8 h-8 text-[#ff6b4a] animate-matchmaking-sparkle" style={{ animationDelay: "0.4s" }} />
+                </div>
+                <p className="text-lg font-medium text-slate-800">AI is analyzing profiles...</p>
+                <p className="text-sm text-slate-500 mt-1">Finding the best startups for your portfolio</p>
+                <div className="flex justify-center gap-1 mt-6">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="w-2 h-2 rounded-full bg-[#ff6b4a] animate-bounce"
+                      style={{ animationDelay: `${i * 0.1}s`, animationDuration: "0.6s" }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : showAIMatchResults ? (
+            aiMatchStartups.map((startup, idx) => (
+              <div key={startup.id} className="animate-matchmaking-fade-in" style={{ animationDelay: `${idx * 0.05}s`, animationFillMode: "both" }}>
+                <StartupCard startup={startup} matchScore={startup.matchScore} />
+              </div>
+            ))
+          ) : (
+            filteredStartups.map((startup) => (
+              <StartupCard key={startup.id} startup={startup} />
+            ))
+          )}
         </div>
 
         {/* Sidebar */}

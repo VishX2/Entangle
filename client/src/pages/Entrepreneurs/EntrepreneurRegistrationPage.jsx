@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { CheckCircle, Lightbulb, User, Building2, Upload, Eye, EyeOff } from 'lucide-react';
 import AuthSidebar from '../../components/AuthSidebar';
+import { registerUser } from '../../store/authApi';
+import { uploadDocument } from '../../store/userApi';
+import { selectAuthLoading, selectAuthError } from '../../store/authSlice';
+import { clearError, setError } from '../../store/authSlice';
 
 export default function EntrepreneurRegistration() {
   const navigate = useNavigate();
@@ -9,9 +14,9 @@ export default function EntrepreneurRegistration() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '', email: '', phone: '', password: '', confirmPassword: '',
+    fullName: '', email: '', phone: '', nicId: '', password: '', confirmPassword: '',
     companyName: '', industry: '', businessStage: '', fundingNeeded: '',
-    idDocument: null, businessPlan: null, agreeToTerms: false
+    idDocument: null, businessPlan: null, referenceLetter: null, agreeToTerms: false
   });
 
   const handleInputChange = (e) => {
@@ -23,10 +28,52 @@ export default function EntrepreneurRegistration() {
     setFormData(prev => ({ ...prev, [fieldName]: e.target.files[0] }));
   };
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectAuthLoading);
+  const error = useSelector(selectAuthError);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    navigate('/verify');
+    if (formData.password !== formData.confirmPassword) {
+      dispatch(setError('Passwords do not match'));
+      return;
+    }
+    if (!formData.referenceLetter) {
+      dispatch(setError('Reference letter from an industry professional is required'));
+      return;
+    }
+    dispatch(clearError());
+    let referenceLetterUrl = null;
+    if (formData.referenceLetter) {
+      const uploadResult = await dispatch(uploadDocument(formData.referenceLetter));
+      if (uploadDocument.rejected.match(uploadResult)) {
+        dispatch(setError(uploadResult.payload || 'Failed to upload reference letter'));
+        return;
+      }
+      referenceLetterUrl = uploadResult.payload?.file_url;
+    }
+    const parts = (formData.fullName || '').trim().split(/\s+/);
+    const first_name = parts[0] || '';
+    const last_name = parts.slice(1).join(' ').trim() || '.';
+    const result = await dispatch(registerUser({
+      email: formData.email,
+      password: formData.password,
+      first_name,
+      last_name,
+      phone: formData.phone || null,
+      nic_id: formData.nicId || null,
+      reference_letter_url: referenceLetterUrl,
+      user_type: 'entrepreneur',
+      company: {
+        name: formData.companyName || 'My Venture',
+        industry: formData.industry || null,
+        stage: formData.businessStage || null,
+        fundingNeeded: formData.fundingNeeded || null,
+      },
+    }));
+    if (registerUser.fulfilled.match(result)) {
+      navigate('/entrepreneur/dashboard', { replace: true });
+    }
   };
 
   return (
@@ -84,6 +131,9 @@ export default function EntrepreneurRegistration() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10 border border-[#8AABCD]/20">
+          {error && (
+            <div className="mb-6 p-3 rounded-xl bg-red-100 text-red-700 text-sm">{error}</div>
+          )}
           <form onSubmit={handleSubmit}>
             {/* Step 1: Personal Information */}
             {currentStep === 1 && (
@@ -114,6 +164,12 @@ export default function EntrepreneurRegistration() {
                     <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-[#8AABCD]/30 rounded-xl focus:border-[#465775] focus:outline-none transition bg-[#F5F3E7]/30"
                       placeholder="+1 (555) 000-0000" required />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-[#2F3848] mb-2">NIC ID *</label>
+                    <input type="text" name="nicId" value={formData.nicId} onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-[#8AABCD]/30 rounded-xl focus:border-[#465775] focus:outline-none transition bg-[#F5F3E7]/30"
+                      placeholder="National ID for identity verification" required />
                   </div>
                 </div>
 
@@ -223,7 +279,20 @@ export default function EntrepreneurRegistration() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-[#2F3848] mb-2">Government ID *</label>
+                  <label className="block text-sm font-semibold text-[#2F3848] mb-2">Reference Letter *</label>
+                  <p className="text-sm text-[#465775]/80 mb-2">From an industry professional (mentor, advisor, or previous employer)</p>
+                  <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-6 text-center hover:border-[#465775] transition cursor-pointer bg-[#F5F3E7]/30">
+                    <input type="file" id="referenceLetter" onChange={(e) => handleFileChange(e, 'referenceLetter')} className="hidden" accept=".pdf,.doc,.docx" />
+                    <label htmlFor="referenceLetter" className="cursor-pointer">
+                      <Upload className="w-10 h-10 text-[#8AABCD] mx-auto mb-2" />
+                      <p className="text-[#2F3848] font-medium">{formData.referenceLetter?.name || 'Upload reference letter'}</p>
+                      <p className="text-sm text-[#465775]/60">PDF, DOC, DOCX</p>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#2F3848] mb-2">Government ID (Optional)</label>
                   <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-6 text-center hover:border-[#465775] transition cursor-pointer bg-[#F5F3E7]/30">
                     <input type="file" id="idDocument" onChange={(e) => handleFileChange(e, 'idDocument')} className="hidden" accept=".pdf,.jpg,.png" />
                     <label htmlFor="idDocument" className="cursor-pointer">
@@ -274,9 +343,9 @@ export default function EntrepreneurRegistration() {
                   </svg>
                 </button>
               ) : (
-                <button type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-[#465775] to-[#2F3848] text-white rounded-xl font-semibold hover:from-[#3a4a66] hover:to-[#252d3a] transition-all shadow-lg">
-                  Complete Registration
+                <button type="submit" disabled={isLoading}
+                  className="px-6 py-3 bg-gradient-to-r from-[#465775] to-[#2F3848] text-white rounded-xl font-semibold hover:from-[#3a4a66] hover:to-[#252d3a] transition-all shadow-lg disabled:opacity-50">
+                  {isLoading ? 'Registering…' : 'Complete Registration'}
                 </button>
               )}
             </div>

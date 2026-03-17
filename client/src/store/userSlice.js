@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchProfile, fetchCompanies, fetchInvestors, fetchCompanySummary, fetchCompanyById, fetchReviewsByCompany, createReview, markReviewHelpful, updateProfile, fetchInvestorsForStartup, fetchStartupsForInvestor } from './userApi';
+import { fetchProfile, fetchCompanies, fetchInvestors, fetchCompanySummary, fetchCompanyById, fetchReviewsByCompany, createReview, markReviewHelpful, updateProfile, fetchInvestorsForStartup, fetchStartupsForInvestor, fetchInvestorsForEntrepreneur, fetchEntrepreneursForInvestor, fetchSearchByPrompt, fetchConversations, fetchMessages, fetchProfileGuidance, fetchNotifications, markNotificationRead, markAllNotificationsRead, fetchConnectionRequestsSent } from './userApi';
 
 const userSlice = createSlice({
   name: 'user',
@@ -98,6 +98,68 @@ const userSlice = createSlice({
       })
       .addCase(fetchStartupsForInvestor.rejected, (state) => {
         state.matchmakingLoading = false;
+      })
+      .addCase(fetchInvestorsForEntrepreneur.pending, (state) => {
+        state.matchmakingLoading = true;
+        state.entrepreneurMatches = null;
+      })
+      .addCase(fetchInvestorsForEntrepreneur.fulfilled, (state, { payload }) => {
+        state.matchmakingLoading = false;
+        state.entrepreneurMatches = payload;
+      })
+      .addCase(fetchInvestorsForEntrepreneur.rejected, (state) => {
+        state.matchmakingLoading = false;
+      })
+      .addCase(fetchEntrepreneursForInvestor.pending, (state) => {
+        state.matchmakingLoading = true;
+        state.investorEntrepreneurMatches = null;
+      })
+      .addCase(fetchEntrepreneursForInvestor.fulfilled, (state, { payload }) => {
+        state.matchmakingLoading = false;
+        state.investorEntrepreneurMatches = payload;
+      })
+      .addCase(fetchEntrepreneursForInvestor.rejected, (state) => {
+        state.matchmakingLoading = false;
+      })
+      .addCase(fetchSearchByPrompt.pending, (state) => {
+        state.searchLoading = true;
+        state.searchResults = null;
+      })
+      .addCase(fetchSearchByPrompt.fulfilled, (state, { payload }) => {
+        state.searchLoading = false;
+        state.searchResults = payload;
+      })
+      .addCase(fetchSearchByPrompt.rejected, (state) => {
+        state.searchLoading = false;
+      })
+      .addCase(fetchConversations.fulfilled, (state, { payload }) => {
+        state.conversations = payload;
+      })
+      .addCase(fetchMessages.fulfilled, (state, { payload }) => {
+        state.messages = payload;
+      })
+      .addCase(fetchProfileGuidance.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchProfileGuidance.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.profileGuidance = payload;
+      })
+      .addCase(fetchProfileGuidance.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchNotifications.fulfilled, (state, { payload }) => {
+        state.notifications = payload;
+      })
+      .addCase(markNotificationRead.fulfilled, (state, { payload: id }) => {
+        const n = state.notifications?.find((x) => x.id === id);
+        if (n) n.read_at = new Date().toISOString();
+      })
+      .addCase(markAllNotificationsRead.fulfilled, (state) => {
+        state.notifications?.forEach((n) => { n.read_at = new Date().toISOString(); });
+      })
+      .addCase(fetchConnectionRequestsSent.fulfilled, (state, { payload }) => {
+        state.connectionRequestsSent = payload;
       });
   },
 });
@@ -115,4 +177,11 @@ export const selectUserLoading = (state) => state.user.loading;
 export const selectUserError = (state) => state.user.error;
 export const selectInvestorMatches = (state) => state.user.investorMatches;
 export const selectStartupMatches = (state) => state.user.startupMatches;
+export const selectEntrepreneurMatches = (state) => state.user.entrepreneurMatches;
+export const selectInvestorEntrepreneurMatches = (state) => state.user.investorEntrepreneurMatches;
+export const selectSearchResults = (state) => state.user.searchResults;
+export const selectSearchLoading = (state) => state.user.searchLoading;
 export const selectMatchmakingLoading = (state) => state.user.matchmakingLoading;
+export const selectConversations = (state) => state.user.conversations;
+export const selectMessages = (state) => state.user.messages;
+export const selectConnectionRequestsSent = (state) => state.user.connectionRequestsSent;

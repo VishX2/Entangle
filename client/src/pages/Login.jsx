@@ -1,9 +1,18 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import AuthSidebar from '../components/AuthSidebar';
+import { loginUser } from '../store/authApi';
+import { clearError } from '../store/authSlice';
+import { selectAuthLoading, selectAuthError } from '../store/authSlice';
 
 export default function EntangleLogin() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectAuthLoading);
+  const error = useSelector(selectAuthError);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -11,9 +20,14 @@ export default function EntangleLogin() {
     rememberMe: false
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login submitted:', formData);
+    dispatch(clearError());
+    const result = await dispatch(loginUser({ email: formData.email, password: formData.password }));
+    if (loginUser.fulfilled.match(result)) {
+      const from = (location.state?.from?.pathname) || '/';
+      navigate(from === '/' ? '/investor/dashboard' : from, { replace: true });
+    }
   };
 
   return (
@@ -41,6 +55,10 @@ export default function EntangleLogin() {
           <h1 className="text-[#2F3848] text-2xl font-bold">Welcome Back</h1>
           <p className="text-[#465775]/70 text-sm mt-1">Sign in to continue to your account</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-100 text-red-700 text-sm">{error}</div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -108,9 +126,10 @@ export default function EntangleLogin() {
           {/* Sign In Button */}
           <button 
             type="submit"
-            className="w-full bg-gradient-to-r from-[#465775] to-[#2F3848] hover:from-[#3a4a66] hover:to-[#252d3a] text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-[#465775] to-[#2F3848] hover:from-[#3a4a66] hover:to-[#252d3a] disabled:opacity-50 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
           >
-            Sign In
+            {isLoading ? 'Signing in…' : 'Sign In'}
           </button>
 
           {/* Divider */}

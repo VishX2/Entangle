@@ -1,13 +1,19 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Sparkles, CheckCircle, Zap } from "lucide-react";
+import { fetchProfileGuidance } from "../../../store/userApi";
 
 export default function EditAiToolInsights() {
-  const completeness = 78;
+  const dispatch = useDispatch();
+  const guidance = useSelector((s) => s.user?.profileGuidance);
+  const loading = useSelector((s) => s.user?.loading);
 
-  const suggestions = [
-    "Add a professional headshot",
-    "Complete investment thesis",
-    "Link portfolio companies",
-  ];
+  useEffect(() => {
+    dispatch(fetchProfileGuidance());
+  }, [dispatch]);
+
+  const completeness = guidance?.completeness_score ?? 0;
+  const suggestions = guidance?.suggestions ?? [];
 
   return (
     <div className="bg-white rounded-3xl p-6 shadow">
@@ -44,25 +50,35 @@ export default function EditAiToolInsights() {
 
       {/* Suggestion items */}
       <div className="space-y-2 mb-4">
-        {suggestions.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-3 bg-slate-100 rounded-xl px-4 py-3 text-sm text-slate-700"
-          >
-            <CheckCircle
-              size={16}
-              className="text-slate-400"
-            />
-            {item}
+        {loading ? (
+          <div className="text-sm text-slate-500">Loading suggestions…</div>
+        ) : suggestions.length > 0 ? (
+          suggestions.map((item, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-3 bg-slate-100 rounded-xl px-4 py-3 text-sm text-slate-700"
+            >
+              <CheckCircle size={16} className="text-slate-400" />
+              {item}
+            </div>
+          ))
+        ) : (
+          <div className="text-sm text-green-600 flex items-center gap-2">
+            <CheckCircle size={16} />
+            {guidance?.message || "Profile looks complete!"}
           </div>
-        ))}
+        )}
       </div>
 
       {/* Buttons */}
       <div className="space-y-2">
-        <button className="w-full flex items-center gap-2 justify-center bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-xl font-medium transition">
+        <button
+          onClick={() => dispatch(fetchProfileGuidance())}
+          disabled={loading}
+          className="w-full flex items-center gap-2 justify-center bg-slate-100 hover:bg-slate-200 text-slate-800 py-3 rounded-xl font-medium transition disabled:opacity-50"
+        >
           <Zap size={16} className="text-orange-500" />
-          Run AI Profile Check
+          {loading ? "Checking…" : "Run AI Profile Check"}
         </button>
 
         <button className="w-full flex items-center gap-2 justify-center bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-xl font-medium transition">

@@ -1,4 +1,4 @@
-export default function StartupHero() {
+export default function StartupHero({ onRunAIMatch }) {
   return (
     <section className="relative bg-gradient-to-b from-[#4a657d] to-[#3e5a70] text-white pt-20 pb-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 text-center">
@@ -39,13 +39,16 @@ export default function StartupHero() {
 
         {/* BUTTONS */}
         <div className="mt-10 flex justify-center gap-4">
-          <button className="bg-[#ff6b4a] hover:bg-[#ff5a36] px-6 py-3 rounded-xl font-semibold shadow">
+          <button
+            onClick={() => onRunAIMatch?.()}
+            className="bg-[#ff6b4a] hover:bg-[#ff5a36] px-6 py-3 rounded-xl font-semibold shadow"
+          >
             Run AI Match
           </button>
 
-          <button className="border border-white/30 px-6 py-3 rounded-xl text-white/90 hover:bg-white/10">
+          <a href="#browse" className="border border-white/30 px-6 py-3 rounded-xl text-white/90 hover:bg-white/10">
             Browse Startups
-          </button>
+          </a>
         </div>
       </div>
 

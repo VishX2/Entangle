@@ -1,9 +1,15 @@
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../../store/authSlice';
+
 export function HeroSection() {
+  const user = useSelector(selectCurrentUser);
+  const displayName = user?.first_name || 'there';
+
   return (
     <div className="rounded-2xl bg-linear-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 hover:shadow-2xl transition duration-300">
       <p className="text-sm opacity-80">GOOD MORNING</p>
       <h1 className="text-3xl font-semibold mt-1">
-        Welcome back, Anne
+        Welcome back, {displayName}
       </h1>
       <p className="text-sm mt-2 opacity-80">
         Your growth metrics, milestones, and next moves — right here.

@@ -5,8 +5,11 @@ import {
   MapPin,
   Briefcase,
   Clock,
+  Send,
+  Inbox,
 } from "lucide-react";
 import { useState } from "react";
+import ConnectionRequestsTable from "../../components/ConnectionRequestsTable";
 
 const initialRequests = [
   {
@@ -34,6 +37,7 @@ const initialRequests = [
 ];
 
 export default function EntrepreneurConnections() {
+  const [tab, setTab] = useState("sent"); // "sent" | "incoming"
   const [requests, setRequests] = useState(initialRequests);
 
   const acceptRequest = (id) => {

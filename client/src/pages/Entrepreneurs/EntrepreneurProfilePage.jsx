@@ -1,11 +1,29 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile } from "../../store/userApi";
+import { selectProfile, selectUserLoading } from "../../store/userSlice";
+import { selectCurrentUser } from "../../store/authSlice";
 
 export default function EntrepreneurProfile() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [visibility, setVisibility] = useState(true);
   const [messages, setMessages] = useState(true);
+
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const loading = useSelector(selectUserLoading);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  const user = profile || authUser;
+  const nameParts = user ? [user.first_name, user.last_name].filter(Boolean).map((s) => String(s).trim()) : [];
+  const fullName = nameParts.length ? nameParts.join(" ").trim() : "Profile";
+  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : null;
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] px-8 py-8">
@@ -28,7 +46,8 @@ export default function EntrepreneurProfile() {
 
             <div className="-mt-24 relative w-fit group">
               <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+                src={user?.profile_picture || "https://images.unsplash.com/photo-1494790108377-be9c29b29330"}
+                alt="Profile"
                 className="w-44 h-44 rounded-full border-4 border-white object-cover shadow-md group-hover:scale-105 transition"
               />
               <div className="absolute bottom-5 right-5 bg-blue-500 p-2 rounded-full shadow">
@@ -41,7 +60,7 @@ export default function EntrepreneurProfile() {
               <div>
                 <div className="flex items-center gap-4 flex-wrap">
                   <h1 className="text-3xl font-semibold text-slate-900">
-                    Elena Martinez
+                    {loading ? 'Loading...' : fullName}
                   </h1>
 
                   <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium">
@@ -50,9 +69,8 @@ export default function EntrepreneurProfile() {
                 </div>
 
                 <div className="mt-2 text-sm text-slate-500 flex gap-5 flex-wrap">
-                  <span>San Francisco, California</span>
-                  <span>elena@martinez.vc</span>
-                  <span>Joined 2019</span>
+                  {user?.email && <span>{user.email}</span>}
+                  {joinedYear && <span>Joined {joinedYear}</span>}
                 </div>
 
                 <p className="mt-4 text-sm text-slate-600 max-w-2xl">

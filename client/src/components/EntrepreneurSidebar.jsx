@@ -1,17 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import logo from "../assets/logo.png";
 import { 
   LayoutDashboard, 
   User, 
-  PlusSquare, 
-  BarChart3, 
-  Trophy, 
-  TrendingUp, 
   MessageSquare, 
   Users,
-  Shield, 
-  Settings, 
-  LogOut 
+  LogOut,
+  Sparkles
 } from 'lucide-react';
 
 export default function EntrepreneurSidebar() {
@@ -20,14 +14,9 @@ export default function EntrepreneurSidebar() {
   const navItems = [
     { path: '/entrepreneur/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/entrepreneur/profile', label: 'Profile', icon: User },
-    { path: '/entrepreneur/create-post', label: 'Create Post', icon: PlusSquare },
-    { path: '/entrepreneur/analytics', label: 'Analytics', icon: BarChart3 },
-    { path: '/entrepreneur/ranking', label: 'Ranking', icon: Trophy },
-    { path: '/entrepreneur/trending', label: 'Trending', icon: TrendingUp },
+    { path: '/entrepreneur/ai-matchmaking', label: 'AI Matchmaking', icon: Sparkles },
     { path: '/entrepreneur/connections', label: 'Connections', icon: Users },
     { path: '/entrepreneur/messages', label: 'Messages', icon: MessageSquare },
-    { path: '/entrepreneur/verification', label: 'Verification', icon: Shield },
-    { path: '/entrepreneur/settings', label: 'Settings', icon: Settings },
   ];
 
   const isActive = (path) => {
@@ -35,22 +24,19 @@ export default function EntrepreneurSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#0B1220] text-white flex flex-col min-h-screen">
+    <aside className="w-64 bg-[#2F3B4B] text-[#9EC0DB] flex flex-col min-h-screen">
       {/* Logo Area */}
-      <div className="px-6 py-5 border-b border-white/10">
+      <div className="px-6 py-5 border-b border-[#465B77]">
         <Link to="/" className="flex items-center gap-0.1">
           <img
-            src={logo}
+            src="/favicon.png"
             alt="Entangle Logo"
             className="w-9 h-9 object-contain"
           />
           <span className="text-xl font-bold">Entangle</span>
         </Link>
 
-        <div className="mt-6 inline-block
-          text-xs font-semibold uppercase tracking-wider
-          bg-[#333747]/90 text-[#cccfdb]
-          px-3 py-1 rounded">
+        <div className="mt-6 inline-block text-xs font-semibold uppercase tracking-wider bg-[#465B77] text-[#9EC0DB] px-3 py-1 rounded">
           Entrepreneur Account
         </div>
       </div>
@@ -79,11 +65,10 @@ export default function EntrepreneurSidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-6 border-t border-white/10">
+      <div className="p-6 border-t border-[#465B77]">
         <Link
           to="/login"
-          className="flex items-center gap-3 cursor-pointer font-medium
-            text-[#F6F1E1]/80 hover:text-white transition"
+          className="flex items-center gap-3 cursor-pointer font-medium text-[#9EC0DB]/80 hover:text-white transition"
         >
           <LogOut size={20} />
           <span>Log out</span>

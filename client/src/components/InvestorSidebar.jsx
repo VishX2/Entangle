@@ -1,15 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import logo from "../assets/logo.png";
 import { 
   Home, 
   Search, 
   Sparkles, 
   User, 
   Trophy, 
-  TrendingUp, 
   MessageSquare, 
-  Shield, 
-  Settings, 
   LogOut 
 } from 'lucide-react';
 
@@ -17,15 +13,12 @@ export default function InvestorSidebar() {
   const location = useLocation();
   
   const navItems = [
-    { path: '/investor/home', label: 'Home', icon: Home },
-    { path: '/investor/search', label: 'Search', icon: Search },
-    { path: '/investor/ai-matches', label: 'AI Matches', icon: Sparkles },
+    { path: '/investor/dashboard', label: 'Dashboard', icon: Home },
+    { path: '/investor/recommendations', label: 'Recommendations', icon: Search },
+    { path: '/investor/ai-matchmaking', label: 'AI Matchmaking', icon: Sparkles },
     { path: '/investor/profile', label: 'Profile', icon: User },
-    { path: '/investor/ranking', label: 'Ranking', icon: Trophy },
-    { path: '/investor/trending', label: 'Trending', icon: TrendingUp },
     { path: '/investor/messages', label: 'Messages', icon: MessageSquare },
-    { path: '/investor/verification', label: 'Verification', icon: Shield },
-    { path: '/investor/settings', label: 'Settings', icon: Settings },
+    { path: '/investor/requests', label: 'Connection Requests', icon: Trophy },
   ];
 
   const isActive = (path) => {
@@ -33,40 +26,27 @@ export default function InvestorSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#0B1220] text-white flex flex-col min-h-screen">
-      {/* Logo Area */}
-      <div className="px-6 py-5 border-b border-white/10">
-        <Link to="/" className="flex items-center gap-0.1">
-          <img
-            src={logo}
-            alt="Entangle Logo"
-            className="w-9 h-9 object-contain"
-          />
-          <span className="text-xl font-bold">Entangle</span>
+    <aside className="w-64 bg-[#2F3B4B] text-[#9EC0DB] flex flex-col min-h-screen">
+      <div className="px-6 py-5 border-b border-[#465B77]">
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/favicon.png" alt="Entangle Logo" className="w-9 h-9 object-contain" />
+          <span className="text-xl font-bold text-white">Entangle</span>
         </Link>
-
-        <div className="mt-6 inline-block
-          text-xs font-semibold uppercase tracking-wider
-          bg-[#333747]/90 text-[#cccfdb]
-          px-3 py-1 rounded">
+        <div className="mt-6 inline-block text-xs font-semibold uppercase tracking-wider bg-[#465B77] text-[#9EC0DB] px-3 py-1 rounded">
           Investor Account
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 py-4 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.path);
-          
           return (
             <Link
               key={item.path}
               to={item.path}
               className={`flex items-center gap-3 px-6 py-3 rounded-lg mx-3 transition ${
-                active
-                  ? 'bg-[#F97316] text-white'
-                  : 'text-gray-400 hover:bg-[#1e2954] hover:text-white'
+                active ? 'bg-[#EF6F5B] text-white' : 'text-[#9EC0DB] hover:bg-[#465B77] hover:text-white'
               }`}
             >
               <Icon size={20} />
@@ -76,12 +56,10 @@ export default function InvestorSidebar() {
         })}
       </nav>
 
-      {/* Logout */}
-      <div className="p-6 border-t border-white/10">
+      <div className="p-6 border-t border-[#465B77]">
         <Link
           to="/login"
-          className="flex items-center gap-3 cursor-pointer font-medium
-            text-[#F6F1E1]/80 hover:text-white transition"
+          className="flex items-center gap-3 cursor-pointer font-medium text-[#9EC0DB]/80 hover:text-white transition"
         >
           <LogOut size={20} />
           <span>Log out</span>

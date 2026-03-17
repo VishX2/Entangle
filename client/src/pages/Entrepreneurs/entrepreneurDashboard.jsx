@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../store/authSlice";
 
 export default function EntrepreneurDashboard() {
+  const user = useSelector(selectCurrentUser);
   const [dashboardData] = useState({
     profileStrength: 76,
     influenceScore: 88,
@@ -65,6 +68,7 @@ export default function EntrepreneurDashboard() {
   return (
     <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-8">
       <EntrepreneurHero
+        userName={user?.first_name || 'Founder'}
         revenue={dashboardData.monthlyRevenue}
         investors={dashboardData.activeInvestors}
         influence={dashboardData.influenceScore}
@@ -96,12 +100,12 @@ export default function EntrepreneurDashboard() {
 
 /* ---------------- COMPONENTS ---------------- */
 
-function EntrepreneurHero({ revenue, investors, influence }) {
+function EntrepreneurHero({ userName, revenue, investors, influence }) {
   return (
     <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 shadow-lg">
       <p className="text-sm opacity-80">ENTREPRENEUR DASHBOARD</p>
       <h1 className="text-3xl font-semibold mt-1">
-        Welcome back, Founder
+        Welcome back, {userName}
       </h1>
 
       <div className="flex flex-wrap gap-6 mt-6">

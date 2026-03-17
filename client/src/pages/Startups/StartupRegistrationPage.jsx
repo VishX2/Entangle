@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { CheckCircle, Building2, Users, Globe, DollarSign, FileText } from 'lucide-react';
 import AuthSidebar from '../../components/AuthSidebar';
+import { registerUser } from '../../store/authApi';
+import { selectAuthLoading, selectAuthError } from '../../store/authSlice';
+import { clearError } from '../../store/authSlice';
 
 export default function StartupRegistration() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectAuthLoading);
+  const error = useSelector(selectAuthError);
   const [formData, setFormData] = useState({
     companyName: '',
     email: '',
+    password: '',
     founderName: '',
     phone: '',
     website: '',
@@ -15,13 +23,38 @@ export default function StartupRegistration() {
     stage: '',
     fundingNeeded: '',
     description: '',
+    businessRegistrationAddress: '',
+    patentId: '',
     agreeToTerms: false
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    navigate('/verify');
+    dispatch(clearError());
+    const parts = (formData.founderName || '').trim().split(/\s+/);
+    const first_name = parts[0] || '';
+    const last_name = parts.slice(1).join(' ').trim() || '.';
+    const result = await dispatch(registerUser({
+      email: formData.email,
+      password: formData.password || 'demo123',
+      first_name,
+      last_name,
+      user_type: 'startup',
+      company: {
+        name: formData.companyName || 'My Startup',
+        description: formData.description || null,
+        website: formData.website || null,
+        industry: formData.industry || null,
+        stage: formData.stage || null,
+        fundingNeeded: formData.fundingNeeded || null,
+        founderName: formData.founderName || null,
+        business_registration_address: formData.businessRegistrationAddress || null,
+        patent_id: formData.patentId || null,
+      },
+    }));
+    if (registerUser.fulfilled.match(result)) {
+      navigate('/startup/dashboard', { replace: true });
+    }
   };
 
   const handleChange = (e) => {
@@ -67,6 +100,9 @@ export default function StartupRegistration() {
 
         {/* Registration Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10 border border-[#8AABCD]/20">
+          {error && (
+            <div className="mb-6 p-3 rounded-xl bg-red-100 text-red-700 text-sm">{error}</div>
+          )}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-gradient-to-br from-[#465775] to-[#2F3848] rounded-xl flex items-center justify-center">
               <Building2 className="w-6 h-6 text-white" />
@@ -112,6 +148,23 @@ export default function StartupRegistration() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border-2 border-[#8AABCD]/30 rounded-xl focus:border-[#465775] focus:outline-none transition bg-[#F5F3E7]/30"
                   placeholder="contact@startup.com"
+                  required
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-semibold text-[#2F3848] mb-2">
+                  Password *
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border-2 border-[#8AABCD]/30 rounded-xl focus:border-[#465775] focus:outline-none transition bg-[#F5F3E7]/30"
+                  placeholder="Min 6 characters"
+                  minLength={6}
                   required
                 />
               </div>
@@ -243,6 +296,37 @@ export default function StartupRegistration() {
                   </select>
                 </div>
               </div>
+
+              {/* Business Registration Address */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-[#2F3848] mb-2">
+                  Business Registration Address *
+                </label>
+                <input
+                  type="text"
+                  name="businessRegistrationAddress"
+                  value={formData.businessRegistrationAddress}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border-2 border-[#8AABCD]/30 rounded-xl focus:border-[#465775] focus:outline-none transition bg-[#F5F3E7]/30"
+                  placeholder="Registered business address"
+                  required
+                />
+              </div>
+
+              {/* Patent ID (optional) */}
+              <div>
+                <label className="block text-sm font-semibold text-[#2F3848] mb-2">
+                  Patent ID <span className="text-slate-400 font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  name="patentId"
+                  value={formData.patentId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border-2 border-[#8AABCD]/30 rounded-xl focus:border-[#465775] focus:outline-none transition bg-[#F5F3E7]/30"
+                  placeholder="e.g. US1234567"
+                />
+              </div>
             </div>
 
             {/* Company Description */}
@@ -286,9 +370,10 @@ export default function StartupRegistration() {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-[#465775] to-[#2F3848] text-white px-8 py-4 rounded-xl font-semibold hover:from-[#3a4a66] hover:to-[#252d3a] transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2"
+                disabled={isLoading}
+                className="flex-1 bg-gradient-to-r from-[#465775] to-[#2F3848] text-white px-8 py-4 rounded-xl font-semibold hover:from-[#3a4a66] hover:to-[#252d3a] transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                Submit Registration
+                {isLoading ? 'Registering…' : 'Submit Registration'}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>

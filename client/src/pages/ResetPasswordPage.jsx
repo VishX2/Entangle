@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Lock, Eye, EyeOff, ArrowRight, CheckCircle, XCircle, ShieldCheck } from 'lucide-react';
 import AuthSidebar from '../components/AuthSidebar';
+import { resetPassword } from '../store/authApi';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const tokenFromUrl = searchParams.get('token') || '';
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +44,11 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError('');
 
+    if (!tokenFromUrl) {
+      setError('Invalid reset link. Request a new one from the forgot password page.');
+      return;
+    }
+
     if (!allRequirementsMet) {
       setError('Please meet all password requirements');
       return;
@@ -50,9 +60,13 @@ export default function ResetPasswordPage() {
     }
 
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const result = await dispatch(resetPassword({ token: tokenFromUrl, password }));
     setIsLoading(false);
-    setIsSuccess(true);
+    if (resetPassword.fulfilled.match(result)) {
+      setIsSuccess(true);
+    } else {
+      setError(result.payload || 'Something went wrong. Try again.');
+    }
   };
 
   if (isSuccess) {

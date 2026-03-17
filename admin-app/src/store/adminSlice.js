@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchRoles, fetchUsers, fetchCompanies, fetchReviews, fetchDashboardStats, fetchReports, fetchCompanyById, updateCompany, updateReview, updateReport } from './adminApi';
+import { fetchRoles, fetchUsers, fetchCompanies, fetchReviews, fetchDashboardStats, fetchReports, fetchCompanyById, updateCompany, updateReview, updateReport, fetchInvestorsForStartup, fetchStartupsForInvestor, fetchInvestorsForEntrepreneur, fetchEntrepreneursForInvestor } from './adminApi';
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -11,17 +11,27 @@ const adminSlice = createSlice({
     reports: [],
     dashboard: null,
     currentCompany: null,
+    investorMatches: null,
+    startupMatches: null,
+    entrepreneurMatches: null,
+    investorEntrepreneurMatches: null,
+    matchmakingLoading: false,
     loading: false,
     error: null,
   },
+  
+  //Reducers for synchronous state updates
   reducers: {
     clearAdminError: (state) => {
       state.error = null;
     },
+
+    // Clear currently viewed company details
     clearCurrentCompany: (state) => {
       state.currentCompany = null;
     },
   },
+
   extraReducers: (builder) => {
     const pending = (state) => {
       state.loading = true;
@@ -86,6 +96,50 @@ const adminSlice = createSlice({
       .addCase(updateReport.fulfilled, (state, { payload }) => {
         const i = state.reports.findIndex((r) => r.id === payload.id);
         if (i !== -1) state.reports[i] = { ...state.reports[i], ...payload };
+      })
+      .addCase(fetchInvestorsForStartup.pending, (state) => {
+        state.matchmakingLoading = true;
+        state.investorMatches = null;
+      })
+      .addCase(fetchInvestorsForStartup.fulfilled, (state, { payload }) => {
+        state.matchmakingLoading = false;
+        state.investorMatches = payload;
+      })
+      .addCase(fetchInvestorsForStartup.rejected, (state) => {
+        state.matchmakingLoading = false;
+      })
+      .addCase(fetchStartupsForInvestor.pending, (state) => {
+        state.matchmakingLoading = true;
+        state.startupMatches = null;
+      })
+      .addCase(fetchStartupsForInvestor.fulfilled, (state, { payload }) => {
+        state.matchmakingLoading = false;
+        state.startupMatches = payload;
+      })
+      .addCase(fetchStartupsForInvestor.rejected, (state) => {
+        state.matchmakingLoading = false;
+      })
+      .addCase(fetchInvestorsForEntrepreneur.pending, (state) => {
+        state.matchmakingLoading = true;
+        state.entrepreneurMatches = null;
+      })
+      .addCase(fetchInvestorsForEntrepreneur.fulfilled, (state, { payload }) => {
+        state.matchmakingLoading = false;
+        state.entrepreneurMatches = payload;
+      })
+      .addCase(fetchInvestorsForEntrepreneur.rejected, (state) => {
+        state.matchmakingLoading = false;
+      })
+      .addCase(fetchEntrepreneursForInvestor.pending, (state) => {
+        state.matchmakingLoading = true;
+        state.investorEntrepreneurMatches = null;
+      })
+      .addCase(fetchEntrepreneursForInvestor.fulfilled, (state, { payload }) => {
+        state.matchmakingLoading = false;
+        state.investorEntrepreneurMatches = payload;
+      })
+      .addCase(fetchEntrepreneursForInvestor.rejected, (state) => {
+        state.matchmakingLoading = false;
       });
   },
 });
@@ -102,3 +156,8 @@ export const selectReports = (state) => state.admin.reports;
 export const selectCurrentCompany = (state) => state.admin.currentCompany;
 export const selectAdminLoading = (state) => state.admin.loading;
 export const selectAdminError = (state) => state.admin.error;
+export const selectInvestorMatches = (state) => state.admin.investorMatches;
+export const selectStartupMatches = (state) => state.admin.startupMatches;
+export const selectEntrepreneurMatches = (state) => state.admin.entrepreneurMatches;
+export const selectInvestorEntrepreneurMatches = (state) => state.admin.investorEntrepreneurMatches;
+export const selectMatchmakingLoading = (state) => state.admin.matchmakingLoading;

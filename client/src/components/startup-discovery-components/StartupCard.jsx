@@ -1,7 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import ConnectButton from "../ConnectButton";
+import MessageButton from "../MessageButton";
 
-export default function StartupCard({ startup }) {
+export default function StartupCard({ startup, matchScore }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const base = location.pathname.startsWith("/investor") ? "/investor" : location.pathname.startsWith("/startup") ? "/startup" : "/entrepreneur";
 
   return (
     <div className="bg-[#f1eee7] rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
@@ -13,11 +17,17 @@ export default function StartupCard({ startup }) {
           {/* Logo + Name */}
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-[#e0e4e6] flex items-center justify-center overflow-hidden">
-              <img
-                src={startup.logo}
-                alt={startup.name}
-                className="w-8 h-8 object-contain"
-              />
+              {startup.logo ? (
+                <img
+                  src={startup.logo}
+                  alt={startup.name}
+                  className="w-8 h-8 object-contain"
+                />
+              ) : (
+                <span className="text-slate-500 font-semibold text-sm">
+                  {(startup.name || "").slice(0, 2).toUpperCase()}
+                </span>
+              )}
             </div>
 
             <div>
@@ -31,10 +41,10 @@ export default function StartupCard({ startup }) {
             </div>
           </div>
 
-          {/* Rating */}
+          {/* Rating / Match Score */}
           <div className="bg-[#ffe4dc] text-[#ff6b4a] text-sm font-semibold px-3 py-1 rounded-full flex items-center gap-1">
             <StarIcon />
-            {startup.rating}
+            {matchScore != null ? `${matchScore}% match` : startup.rating}
           </div>
         </div>
 
@@ -50,14 +60,18 @@ export default function StartupCard({ startup }) {
         </div>
       </div>
 
-      {/* Button */}
-      <button
-        onClick={() => navigate("/investor/startupProfileView")}
-        className="mt-5 bg-[#ff6b4a] hover:bg-[#ff5a36] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
-      >
-        View Profile
-        <ArrowIcon />
-      </button>
+      {/* Buttons */}
+      <div className="mt-5 flex gap-3 flex-wrap">
+        <button
+          onClick={() => navigate(`${base}/company/${startup.id}`)}
+          className="flex-1 min-w-[120px] bg-[#ff6b4a] hover:bg-[#ff5a36] text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2"
+        >
+          View Profile
+          <ArrowIcon />
+        </button>
+        <ConnectButton companyId={startup.id} className="py-3" />
+        <MessageButton company={{ ...startup, created_by: startup.created_by }} className="py-3" />
+      </div>
     </div>
   );
 }

@@ -1,194 +1,191 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../components/Sidebar";
 
+//Redux async function for admin layout
+import { fetchReports, updateReport } from "../store/adminApi";
+//Redux selectors for read state
+import { selectReports, selectAdminLoading } from "../store/adminSlice";
+
+//Maps backend status values to UI display values
+const STATUS_MAP = {
+  pending: "Open",
+  resolved: "Resolved",
+  escalated: "Escalated",
+  dismissed: "Dismissed",
+};
+
+//Returns Tailwind CSS styles based on report status
+const statusBadge = (status) => {
+  const s = (status || "").toLowerCase();
+  if (s === "pending" || s === "open") return "bg-blue-100 text-blue-600";
+  if (s === "escalated") return "bg-orange-100 text-orange-600";
+  if (s === "resolved") return "bg-green-100 text-green-600";
+  return "bg-gray-100 text-gray-600";
+};
+
+//Color coding for priority level
+const priorityColor = (priority) => {
+  const p = (priority || "").toLowerCase();
+  if (p === "high") return "text-red-600";
+  if (p === "medium") return "text-orange-500";
+  return "text-gray-500";
+};
+
 export default function ReportsAndComplaints() {
-  const [reports, setReports] = useState([
-    {
-      id: "RPT-001",
-      reporter: "InvestorA",
-      entity: "TechVentures Inc.",
-      entityType: "Startup",
-      reason: "Fraudulent claims",
-      priority: "High",
-      status: "Open",
-    },
-    {
-      id: "RPT-002",
-      reporter: "StartupX",
-      entity: "InvestorB",
-      entityType: "Investor",
-      reason: "Harassment",
-      priority: "High",
-      status: "Escalated",
-    },
-    {
-      id: "RPT-003",
-      reporter: "User123",
-      entity: "Forum Post #456",
-      entityType: "Content",
-      reason: "Spam",
-      priority: "Low",
-      status: "Open",
-    },
-    {
-      id: "RPT-004",
-      reporter: "InvestorC",
-      entity: "GreenEnergy Co.",
-      entityType: "Startup",
-      reason: "Misleading info",
-      priority: "Medium",
-      status: "Resolved",
-    },
-    {
-      id: "RPT-005",
-      reporter: "StartupY",
-      entity: "InvestorD",
-      entityType: "Investor",
-      reason: "Unprofessional conduct",
-      priority: "Low",
-      status: "Dismissed",
-    },
-  ]);
+  // Redux dispatch
+  const dispatch = useDispatch();
+  //Get reports and loading state from Redux store
+  const reports = useSelector(selectReports);
+  const loading = useSelector(selectAdminLoading);
 
-  /* ---------- STATUS UPDATE HANDLER ---------- */
-  const updateStatus = (id, newStatus) => {
-    setReports((prev) =>
-      prev.map((report) =>
-        report.id === id
-          ? { ...report, status: newStatus }
-          : report
-      )
-    );
+  // Fetch reports when page loads calls backend
+  useEffect(() => {
+    dispatch(fetchReports());
+  }, [dispatch]);
+
+  //update report status by dispatching updateReport action with report ID and new status
+  const updateStatus = (id, status) => {
+    dispatch(updateReport({ id, status }));
   };
 
-  const statusBadge = (status) => {
-    if (status === "Open") return "bg-blue-100 text-blue-600";
-    if (status === "Escalated") return "bg-orange-100 text-orange-600";
-    if (status === "Resolved") return "bg-green-100 text-green-600";
-    return "bg-gray-100 text-gray-600";
-  };
+  //Helper function to convert backend status to user-friendly display status
+  const displayStatus = (s) => STATUS_MAP[(s || "").toLowerCase()] || s || "Open";
 
-  const priorityColor = (priority) => {
-    if (priority === "High") return "text-red-600";
-    if (priority === "Medium") return "text-orange-500";
-    return "text-gray-500";
+  //Dashboard summary counts
+  const counts = {
+    Open: reports.filter((r) => (r.status || "").toLowerCase() === "pending").length,
+    Escalated: reports.filter((r) => (r.status || "").toLowerCase() === "escalated").length,
+    Resolved: reports.filter((r) => (r.status || "").toLowerCase() === "resolved").length,
+    Dismissed: reports.filter((r) => (r.status || "").toLowerCase() === "dismissed").length,
   };
 
   return (
-    <div className="flex min-h-screen bg-[#faf7f2]">
+    <div className="flex min-h-screen bg-[#f7f3ec]">
       <Sidebar />
 
-      <main className="flex-1 p-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-gray-800">
-            Reports & Complaints
-          </h1>
-          <p className="text-sm text-gray-500">
-            Review and manage user reports and platform complaints
-          </p>
-        </div>
+      <main className="flex-1 p-8 overflow-y-auto">
+        <h1 className="text-2xl font-semibold">Reports & Complaints</h1>
+        <p className="text-slate-500 mb-6">
+          Review and manage user reports and platform complaints
+        </p>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {["Open", "Escalated", "Resolved", "Dismissed"].map((status) => (
             <div
               key={status}
-              className="bg-white border rounded-lg p-4"
+              className="bg-white rounded-xl p-5 shadow-sm border border-slate-200"
             >
-              <p className="text-sm text-gray-500">{status}</p>
-              <p className="text-2xl font-semibold">
-                {
-                  reports.filter((r) => r.status === status)
-                    .length
-                }
-              </p>
+              <p className="text-slate-500 text-sm">{status}</p>
+              <p className="text-2xl font-bold">{counts[status] ?? 0}</p>
             </div>
           ))}
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl border overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-gray-600">
-              <tr>
-                <th className="text-left px-4 py-3">ID</th>
-                <th className="text-left px-4 py-3">Reporter</th>
-                <th className="text-left px-4 py-3">Reported Entity</th>
-                <th className="text-left px-4 py-3">Reason</th>
-                <th className="text-left px-4 py-3">Priority</th>
-                <th className="text-left px-4 py-3">Status</th>
-                <th className="text-right px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {reports.map((r) => (
-                <tr
-                  key={r.id}
-                  className="border-t hover:bg-gray-50 transition"
-                >
-                  <td className="px-4 py-4 text-gray-500">{r.id}</td>
-                  <td className="px-4 py-4">{r.reporter}</td>
-                  <td className="px-4 py-4">
-                    <div className="font-medium">{r.entity}</div>
-                    <div className="text-xs text-gray-400">
-                      {r.entityType}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-gray-500">{r.reason}</td>
-                  <td
-                    className={`px-4 py-4 font-medium ${priorityColor(
-                      r.priority
-                    )}`}
-                  >
-                    {r.priority}
-                  </td>
-                  <td className="px-4 py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge(
-                        r.status
-                      )}`}
-                    >
-                      {r.status}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-4 text-right space-x-3">
-                    {r.status === "Open" && (
-                      <>
-                        <button
-                          onClick={() =>
-                            updateStatus(r.id, "Resolved")
-                          }
-                          className="text-green-600 hover:underline"
-                        >
-                          Resolve
-                        </button>
-                        <button
-                          onClick={() =>
-                            updateStatus(r.id, "Escalated")
-                          }
-                          className="text-orange-600 hover:underline"
-                        >
-                          Escalate
-                        </button>
-                        <button
-                          onClick={() =>
-                            updateStatus(r.id, "Dismissed")
-                          }
-                          className="text-gray-500 hover:underline"
-                        >
-                          Dismiss
-                        </button>
-                      </>
-                    )}
-                  </td>
+        {/* Reports Table */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          {loading ? (
+            <div className="p-8 text-center text-slate-500">Loading...</div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="bg-gray-100 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-4 text-left">ID</th>
+                  <th className="px-6 py-4 text-left">Reporter</th>
+                  <th className="px-6 py-4 text-left">Reported Entity</th>
+                  <th className="px-6 py-4 text-left">Reason</th>
+                  <th className="px-6 py-4 text-left">Priority</th>
+                  <th className="px-6 py-4 text-left">Status</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {reports.map((r) => {
+                  const status = (r.status || "").toLowerCase();
+                  const isPending = status === "pending";
+                  return (
+                    <tr
+                      key={r.id}
+                      className="border-b border-slate-200 last:border-0 hover:bg-gray-50 transition"
+                    >
+                      {/* Report ID */}
+                      <td className="px-6 py-4 text-slate-500">#{r.id}</td>
+                      {/* Reporter */}
+                      <td className="px-6 py-4">{r.reporter || "Unknown"}</td>
+                      {/* Company / Entity */}
+                      <td className="px-6 py-4">
+                        <div className="font-medium">
+                          {r.company_name || `Company #${r.company_id || "-"}`}
+                        </div>
+                        <div className="text-xs text-gray-400 capitalize">
+                          {r.type || "content"}
+                        </div>
+                      </td>
+
+                      {/* Reason */}
+                      <td className="px-6 py-4 text-slate-500 max-w-xs truncate">
+                        {r.content || "-"}
+                      </td>
+                      {/* Priority */}
+                      <td
+                        className={`px-6 py-4 font-medium ${priorityColor(
+                          r.priority
+                        )}`}
+                      >
+                        {r.priority || "Medium"}
+                      </td>
+
+                      {/* Status Badge */}
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge(
+                            r.status
+                          )}`}
+                        >
+                          {displayStatus(r.status)}
+                        </span>
+                      </td>
+
+                      {/* Admin Actions - only visible for pending reports */}
+                      <td className="px-6 py-4 text-right space-x-3">
+                        {isPending && (
+                          <>
+                            <button
+                              onClick={() => updateStatus(r.id, "resolved")}
+                              className="text-green-600 hover:underline"
+                            >
+                              Resolve
+                            </button>
+                            <button
+                              onClick={() => updateStatus(r.id, "escalated")}
+                              className="text-orange-600 hover:underline"
+                            >
+                              Escalate
+                            </button>
+                            <button
+                              onClick={() => updateStatus(r.id, "dismissed")}
+                              className="text-gray-500 hover:underline"
+                            >
+                              Dismiss
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+
+          {/* Empty state when no reports are found */}
+          {!loading && reports.length === 0 && (
+            <div className="p-8 text-center text-slate-500">
+              No reports found
+            </div>
+          )}
         </div>
       </main>
     </div>

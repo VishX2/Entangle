@@ -1,9 +1,26 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import profileImg from "../../../assets/startup-profile/startup1.jpg";
 import coverImg from "../../../assets/startup-profile/cover.jpg";
+import { fetchProfile } from "../../../store/userApi";
+import { selectProfile, selectUserLoading } from "../../../store/userSlice";
+import { selectCurrentUser } from "../../../store/authSlice";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const loading = useSelector(selectUserLoading);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  const user = profile || authUser;
+  const fullName = user ? (`${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Profile') : 'Profile';
+  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : null;
 
   return (
     <div className="rounded-3xl overflow-hidden bg-white">
@@ -20,8 +37,8 @@ export default function ProfileHeader() {
         {/* PROFILE IMAGE */}
         <div className="-mt-24 relative inline-block">
           <img
-            src={profileImg}
-            alt="Investor profile"
+            src={user?.profile_picture || profileImg}
+            alt="Profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />
 
@@ -46,7 +63,7 @@ export default function ProfileHeader() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-semibold text-slate-900">
-                Anne Rozel
+                {loading ? 'Loading...' : fullName}
               </h1>
 
               <span className="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600 font-medium">
@@ -55,9 +72,8 @@ export default function ProfileHeader() {
             </div>
 
             <div className="mt-2 text-sm text-slate-600 flex flex-wrap gap-4">
-              <span>San Francisco, California</span>
-              <span>anne@rozel.vc</span>
-              <span>Joined 2018</span>
+              {user?.email && <span>{user.email}</span>}
+              {joinedYear && <span>Joined {joinedYear}</span>}
             </div>
 
             <p className="mt-4 max-w-2xl text-sm text-slate-700 leading-relaxed">

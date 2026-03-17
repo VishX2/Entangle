@@ -9,7 +9,8 @@ export default function FundingNews() {
         <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-200 cursor-pointer">
           <div className="overflow-hidden">
             <img
-              src="/images/building.jpg"
+              src="/images/building.svg"
+              alt="FinTech funding"
               className="h-64 w-full object-cover hover:scale-105 transition duration-300"
             />
           </div>
@@ -30,12 +31,12 @@ export default function FundingNews() {
           <SmallFundingCard
             title="AI platform secures growth funding"
             tag="Investor Insight"
-            image="/images/ai.jpg"
+            image="/images/ai.svg"
           />
           <SmallFundingCard
             title="Climate tech energy platform funding"
             tag="Funding Round"
-            image="/images/wind.jpg"
+            image="/images/wind.svg"
           />
         </div>
       </div>
@@ -49,6 +50,7 @@ function SmallFundingCard({ title, tag, image }) {
       <div className="overflow-hidden">
         <img
           src={image}
+          alt=""
           className="h-32 w-full object-cover hover:scale-105 transition duration-300"
         />
       </div>

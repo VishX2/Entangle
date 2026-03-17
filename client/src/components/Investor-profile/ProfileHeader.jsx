@@ -1,9 +1,26 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import profileImg from "../../assets/investor-profile/investor1.jpg";
 import coverImg from "../../assets/investor-profile/cover.jpg";
+import { fetchProfile } from "../../store/userApi";
+import { selectProfile, selectUserLoading } from "../../store/userSlice";
+import { selectCurrentUser } from "../../store/authSlice";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const loading = useSelector(selectUserLoading);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  const user = profile ?? authUser;
+  const fullName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Profile' : 'Loading...';
+  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : null;
 
   return (
     <div className="rounded-3xl overflow-hidden bg-white">
@@ -20,8 +37,8 @@ export default function ProfileHeader() {
         {/* PROFILE IMAGE */}
         <div className="-mt-24 relative inline-block">
           <img
-            src={profileImg}
-            alt="Investor profile"
+            src={user?.profile_picture || profileImg}
+            alt="Profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />
 
@@ -46,7 +63,7 @@ export default function ProfileHeader() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-semibold text-slate-900">
-                Elena Martinez
+                {loading ? 'Loading...' : fullName}
               </h1>
 
               <span className="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600 font-medium">
@@ -55,16 +72,9 @@ export default function ProfileHeader() {
             </div>
 
             <div className="mt-2 text-sm text-slate-600 flex flex-wrap gap-4">
-              <span>San Francisco, California</span>
-              <span>elena@martinez.vc</span>
-              <span>Joined 2019</span>
+              {user?.email && <span>{user.email}</span>}
+              {joinedYear && <span>Joined {joinedYear}</span>}
             </div>
-
-            <p className="mt-4 max-w-2xl text-sm text-slate-700 leading-relaxed">
-              Backing visionary founders building the future of work, AI, and
-              sustainable technology. Angel investor with a passion for mentorship
-              and long-term partnerships.
-            </p>
 
             {/* SOCIAL ICONS */}
             <div className="flex gap-4 mt-6">
@@ -72,13 +82,6 @@ export default function ProfileHeader() {
               <SocialIcon type="x" />
               <SocialIcon type="website" />
               <SocialIcon type="email" />
-            </div>
-
-            {/* STATS */}
-            <div className="flex gap-12 mt-7 text-sm">
-              <Stat value="2.5K" label="Connections" />
-              <Stat value="12.8K" label="Followers" />
-              <Stat value="847" label="Posts" />
             </div>
           </div>
 
@@ -103,15 +106,6 @@ export default function ProfileHeader() {
 /* =====================================================
    HELPER COMPONENTS
    ===================================================== */
-
-function Stat({ value, label }) {
-  return (
-    <div>
-      <div className="font-semibold text-slate-900">{value}</div>
-      <div className="text-xs text-slate-500">{label}</div>
-    </div>
-  );
-}
 
 function ActionButton({ children, primary, accent, onClick }) {
   return (

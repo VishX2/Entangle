@@ -40,11 +40,7 @@ export default function AuthSidebar() {
       {/* Logo */}
       <div className="p-6">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
-          </div>
+          <img src="/favicon.png" alt="Entangle" className="w-8 h-8 object-contain" />
           <span className="text-xl font-semibold text-white">Entangle</span>
         </Link>
       </div>

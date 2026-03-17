@@ -1,25 +1,31 @@
-import axios from 'axios';
+import toast from 'react-hot-toast';
+import { createApiClient } from '@shared/api/createApiClient';
+import config from '../config';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const isAuthUrl = (url) =>
+  typeof url === 'string' &&
+  (url.includes('/auth/login') || url.includes('/auth/register'));
 
-export const api = axios.create({
-  baseURL: `${API_BASE}/api`,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('entangle_user_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
+export const api = createApiClient({
+  baseURL: `${config.apiUrl}/api`,
+  tokenKey: config.tokenKey,
+  userKey: config.userKey,
+  on401: (err) => {
+    if (!isAuthUrl(err?.config?.url)) {
+      toast.error('Session expired. Please sign in again.');
+    }
+  },
 });
 
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
-      localStorage.removeItem('entangle_user_token');
-      localStorage.removeItem('entangle_user');
-      window.dispatchEvent(new Event('storage'));
+    const status = err.response?.status;
+    const url = err.config?.url || '';
+    const isAuth = isAuthUrl(url);
+    const message = err.response?.data?.error || err.message || 'Request failed';
+    if (status && status >= 400 && status !== 401 && !isAuth) {
+      toast.error(message);
     }
     return Promise.reject(err);
   }

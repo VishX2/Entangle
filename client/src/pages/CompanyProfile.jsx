@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowLeft, Star, ThumbsUp } from "lucide-react";
+import ConnectButton from "../components/ConnectButton";
+import MessageButton from "../components/MessageButton";
 import { fetchCompanyById, fetchReviewsByCompany, createReview, markReviewHelpful } from "../store/userApi";
 import {
   selectCurrentCompany,
@@ -10,7 +12,6 @@ import {
   clearCurrentCompany,
 } from "../store/userSlice";
 import { selectToken } from "../store/authSlice";
-import AppLayout from "../layouts/AppLayout";
 
 export default function CompanyProfile() {
   const { id } = useParams();
@@ -60,28 +61,25 @@ export default function CompanyProfile() {
 
   if (loading && !company) {
     return (
-      <AppLayout>
-        <div className="p-8 text-center text-slate-500">Loading…</div>
-      </AppLayout>
+      <div className="p-8 text-center text-slate-500">Loading…</div>
     );
   }
 
   if (!company) {
     return (
-      <AppLayout>
-        <div className="p-8 text-center text-slate-500">Company not found</div>
-        <button onClick={goBack} className="text-[#E5654E] hover:underline">
+      <div className="p-8">
+        <div className="text-center text-slate-500">Company not found</div>
+        <button onClick={goBack} className="text-[#E5654E] hover:underline mt-2">
           Go back
         </button>
-      </AppLayout>
+      </div>
     );
   }
 
   const rating = Number(company.average_rating) || 0;
 
   return (
-    <AppLayout>
-      <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-6 py-8">
         <button
           onClick={goBack}
           className="flex items-center gap-2 text-slate-600 hover:text-slate-800 mb-6"
@@ -94,7 +92,15 @@ export default function CompanyProfile() {
           <div className="p-8">
             <div className="flex justify-between items-start flex-wrap gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">{company.name}</h1>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-2xl font-bold text-slate-800">{company.name}</h1>
+                  {isLoggedIn && (
+                    <>
+                      <ConnectButton companyId={company.id} className="shrink-0" />
+                      <MessageButton company={company} className="shrink-0" />
+                    </>
+                  )}
+                </div>
                 <p className="text-slate-500 mt-1">{company.headquarters || "—"}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="bg-[#ffe4dc] text-[#ff6b4a] text-sm font-semibold px-3 py-1 rounded-full flex items-center gap-1">
@@ -228,6 +234,5 @@ export default function CompanyProfile() {
           </div>
         </div>
       </div>
-    </AppLayout>
   );
 }

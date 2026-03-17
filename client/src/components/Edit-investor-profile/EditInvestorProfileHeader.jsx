@@ -1,8 +1,14 @@
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
 import defaultProfile from "../../assets/investor-profile/investor1.jpg";
 import defaultCover from "../../assets/investor-profile/cover.jpg";
+import { usePiiScanBeforeSave } from "../../hooks/usePiiScanBeforeSave";
+import { updateProfile } from "../../store/userApi";
 
 export default function EditInvestorProfileHeader() {
+  const dispatch = useDispatch();
+  const { scanAndSave, PiiModal } = usePiiScanBeforeSave();
   const [profileImage, setProfileImage] = useState(defaultProfile);
   const [coverImage, setCoverImage] = useState(defaultCover);
   const [bio, setBio] = useState(
@@ -76,10 +82,20 @@ export default function EditInvestorProfileHeader() {
           <button className="px-4 py-2 rounded-xl bg-slate-100 text-sm">
             Public Profile
           </button>
-          <button className="px-4 py-2 rounded-xl bg-orange-500 text-white text-sm">
+          <button
+            onClick={() =>
+              scanAndSave([bio], async () => {
+                const result = await dispatch(updateProfile({ first_name: "Marcus", last_name: "Reynolds" }));
+                if (updateProfile.fulfilled.match(result)) toast.success("Profile saved");
+                else toast.error(result.payload || "Failed to save");
+              })
+            }
+            className="px-4 py-2 rounded-xl bg-orange-500 text-white text-sm hover:bg-orange-600 transition"
+          >
             Save Changes
           </button>
         </div>
+        {PiiModal}
 
         {/* NAME + TAGS */}
         <div className="mt-4">

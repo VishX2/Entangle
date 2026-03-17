@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import {
   Search,
   Paperclip,
@@ -9,82 +11,67 @@ import {
   Check,
   CheckCheck,
 } from "lucide-react";
+import { fetchConversations, fetchMessages, sendMessage as sendMessageApi } from "../../store/userApi";
 
 export default function InvestorMessages() {
-  const conversations = [
-    {
-      id: 1,
-      name: "GreenLoop",
-      avatar: "/avatars/greenloop.png",
-      messages: [
-        {
-          sender: "startup",
-          text: "Hello! Excited to connect with you.",
-          time: "Yesterday",
-        },
-        {
-          sender: "investor",
-          text: "Hi GreenLoop! Tell me about your model.",
-          time: "Yesterday",
-          status: "read",
-        },
-        {
-          sender: "startup",
-          text: "We provide B2B waste-to-resource matching.",
-          time: "Yesterday",
-        },
-        {
-          sender: "investor",
-          text: "Interesting. Can you share your deck?",
-          time: "01:31 PM",
-          status: "delivered",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "FinBridge",
-      avatar: "/avatars/finbridge.png",
-      messages: [
-        {
-          sender: "startup",
-          text: "Looking forward to the demo.",
-          time: "Mon",
-        },
-      ],
-    },
-  ];
-
-  const [activeChat, setActiveChat] = useState(conversations[0]);
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const openConversationId = location.state?.openConversationId;
+  const conversationsList = useSelector((s) => s.user?.conversations) || [];
+  const messagesList = useSelector((s) => s.user?.messages) || [];
+  const [activeChat, setActiveChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
 
-  const sendMessage = () => {
-    if (!newMessage.trim()) return;
+  useEffect(() => {
+    dispatch(fetchConversations());
+  }, [dispatch]);
 
-    const updatedChat = {
-      ...activeChat,
-      messages: [
-        ...activeChat.messages,
-        {
-          sender: "investor",
-          text: newMessage,
-          time: "Now",
-          status: "sent",
-        },
-      ],
-    };
+  useEffect(() => {
+    if (activeChat?.id) {
+      dispatch(fetchMessages(activeChat.id));
+    }
+  }, [dispatch, activeChat?.id]);
 
-    setActiveChat(updatedChat);
-    setNewMessage("");
+  const conversations = conversationsList.map((c) => ({
+    id: c.id,
+    name: c.other_user?.name || c.other_user?.email || "Unknown",
+    avatar: null,
+    lastMessage: c.last_message,
+  }));
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !activeChat?.id) return;
+    const result = await dispatch(sendMessageApi({ conversationId: activeChat.id, content: newMessage.trim() }));
+    if (sendMessageApi.fulfilled.match(result)) {
+      setNewMessage("");
+      dispatch(fetchMessages(activeChat.id));
+    }
   };
 
-  // Auto scroll
+  const messages = messagesList.map((m) => ({
+    sender: m.is_mine ? "investor" : "startup",
+    text: m.content,
+    time: m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "",
+  }));
+
+  useEffect(() => {
+    if (conversations.length === 0) return;
+    if (openConversationId) {
+      const conv = conversations.find((c) => c.id === openConversationId);
+      if (conv) setActiveChat(conv);
+      else setActiveChat(conversations[0]);
+    } else if (!activeChat) {
+      setActiveChat(conversations[0]);
+    }
+  }, [conversations, activeChat, openConversationId]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeChat]);
+  }, [messagesList]);
 
-  const renderStatus = (status) => {
+  const renderStatus = (_status) => {
+    const status = _status;
     if (!status) return null;
 
     if (status === "sent") {
@@ -128,38 +115,42 @@ export default function InvestorMessages() {
               onClick={() => setActiveChat(c)}
               className={`flex items-center gap-3 px-4 py-3 cursor-pointer
               ${
-                activeChat.id === c.id
+                activeChat?.id === c.id
                   ? "bg-[#465F7F]"
                   : "hover:bg-[#465F7F]/70"
               }`}
             >
-              <img
-                src={c.avatar}
-                alt={c.name}
-                className="w-10 h-10 rounded-full object-cover bg-gray-400"
-              />
-
-              <div className="flex-1">
-                <div className="text-sm font-medium">{c.name}</div>
+              <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+                {c.avatar ? (
+                  <img src={c.avatar} alt={c.name} className="w-10 h-10 rounded-full object-cover" />
+                ) : (
+                  <User size={20} className="text-[#465F7F]" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium truncate">{c.name}</div>
                 <div className="text-xs text-gray-300 truncate">
-                  {c.messages[c.messages.length - 1].text}
+                  {c.lastMessage?.content || "No messages yet"}
                 </div>
               </div>
             </div>
           ))}
+          {conversations.length === 0 && (
+            <div className="px-4 py-6 text-sm text-gray-400 text-center">No conversations yet</div>
+          )}
         </div>
       </div>
 
       {/* Chat section */}
       <div className="flex-1 flex flex-col">
+        {activeChat ? (
+          <>
         {/* Header */}
         <div className="h-16 bg-white flex items-center justify-between px-6 border-b">
           <div className="flex items-center gap-3">
-            <img
-              src={activeChat.avatar}
-              alt=""
-              className="w-10 h-10 rounded-full object-cover bg-gray-400"
-            />
+            <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+              <User size={20} className="text-[#465F7F]" />
+            </div>
             <div>
               <div className="font-semibold text-sm">{activeChat.name}</div>
               <div className="text-xs text-gray-500">Connected</div>
@@ -174,7 +165,7 @@ export default function InvestorMessages() {
 
         {/* Messages */}
         <div className="flex-1 p-6 space-y-5 overflow-y-auto">
-          {activeChat.messages.map((msg, i) => (
+          {messages.map((msg, i) => (
             <div
               key={i}
               className={`flex ${
@@ -194,8 +185,6 @@ export default function InvestorMessages() {
                 {msg.text}
                 <div className="text-xs mt-1 opacity-80 flex items-center justify-end gap-1">
                   {msg.time}
-                  {msg.sender === "investor" &&
-                    renderStatus(msg.status)}
                 </div>
               </div>
             </div>
@@ -223,6 +212,12 @@ export default function InvestorMessages() {
             <Send size={18} />
           </button>
         </div>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center text-gray-500">
+            Select a conversation or start a new one from a company profile
+          </div>
+        )}
       </div>
     </div>
   );

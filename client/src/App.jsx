@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
 import HomeLayout from './layouts/HomeLayout';
@@ -31,8 +32,7 @@ import StartupProfile from "./pages/Startups/startupProfile";
 import EditStartupProfile from "./pages/Startups/editStartupProfile";
 import StartupConnectionRequests from "./pages/Startups/startupConnectionRequests";
 import InvestorProfileGate from "./pages/Investors/InvestorProfileGate"; 
-import StartupCollaborations from "./pages/Startups/StartupCollaborationOpportunitiesPage"; 
-
+import StartupCollaborations from "./pages/Startups/StartupCollaborationOpportunitiesPage";
 
 // Entrepreneur
 import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
@@ -44,14 +44,16 @@ import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPag
 // Other
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 
-// Startup Discovery
+// Startup Discovery & AI Matchmaking
 import StartupDiscovery from "./pages/StartupDiscovery";
+import AiMatchmaking from "./pages/AiMatchmaking";
 import CompanyProfile from "./pages/CompanyProfile";
 import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       <Routes>
 
         {/* HOME */}
@@ -77,7 +79,8 @@ function App() {
           <Route path="/startup/requests" element={<StartupConnectionRequests />} />
           <Route path="/startup/investorProfileView" element={<InvestorProfileGate />} />
           <Route path="/startup/startupCollaborations" element={<StartupCollaborations />} />
-
+          <Route path="/startup/ai-matchmaking" element={<AiMatchmaking />} />
+          <Route path="/startup/company/:id" element={<CompanyProfile />} />
         </Route>
 
         {/* INVESTOR (protected) */}
@@ -87,6 +90,7 @@ function App() {
           <Route path="/investor/edit-profile" element={<EditInvestorProfile />} />
           <Route path="/investor/recommendations" element={<InvestorRecommendations />} />
           <Route path="/investor/AiMatchmaking" element={<StartupDiscovery />} />
+          <Route path="/investor/ai-matchmaking" element={<AiMatchmaking />} />
           <Route path="/investor/company/:id" element={<CompanyProfile />} />
           <Route path="/investor/startupProfileView" element={<StartupProfileGate />} />
           <Route path="/investor/messages" element={<InvestorMessages />} />
@@ -102,7 +106,9 @@ function App() {
           <Route path="/entrepreneur/profile" element={<EntrepreneurProfile />} />
           <Route path="/entrepreneur/profile/edit" element={<EditEntrepreneurProfile />} />
           <Route path="/entrepreneur/connections" element={<EntrepreneurConnections />} />
-          <Route path="/entrepreneur/messages" element={<EntrepreneurMessages />} />
+          <Route path="/entrepreneur/messages" element={<InvestorMessages />} />
+          <Route path="/entrepreneur/ai-matchmaking" element={<AiMatchmaking />} />
+          <Route path="/entrepreneur/company/:id" element={<CompanyProfile />} />
         </Route>
 
         {/* 404 - catch all unmatched routes */}

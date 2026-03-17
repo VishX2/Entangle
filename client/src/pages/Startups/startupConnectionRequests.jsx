@@ -1,4 +1,4 @@
-import ConnectionRequestsTable from "../../components/ConnectionRequestsTable";
+import ConnectionRequestsTable from "../../components/ConnectionRequestTable";
 
 export default function StartupConnectionRequests() {
   return <ConnectionRequestsTable />;

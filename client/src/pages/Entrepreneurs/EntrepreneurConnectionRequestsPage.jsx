@@ -9,7 +9,7 @@ import {
   Inbox,
 } from "lucide-react";
 import { useState } from "react";
-import ConnectionRequestsTable from "../../components/ConnectionRequestTable";
+import ConnectionRequestTable from "../../components/ConnectionRequestTable";
 
 const initialRequests = [
   {

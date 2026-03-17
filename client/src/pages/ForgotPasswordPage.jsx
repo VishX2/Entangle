@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Mail, ArrowRight, KeyRound, CheckCircle, ArrowLeft } from 'lucide-react';
 import AuthSidebar from '../components/AuthSidebar';
+import { forgotPassword } from '../store/authApi';
 
 export default function ForgotPasswordPage() {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -24,9 +27,13 @@ export default function ForgotPasswordPage() {
     }
 
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const result = await dispatch(forgotPassword(email.trim().toLowerCase()));
     setIsLoading(false);
-    setIsSubmitted(true);
+    if (forgotPassword.fulfilled.match(result)) {
+      setIsSubmitted(true);
+    } else {
+      setError(result.payload || 'Something went wrong. Try again.');
+    }
   };
 
   if (isSubmitted) {

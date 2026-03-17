@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from "../assets/logo.png";
 
 import {
   Layout as LayoutIcon,
@@ -36,7 +35,7 @@ const Sidebar = ({ activePage }) => {
       <div className="px-6 py-5 border-b border-white/10">
         <div className="flex items-center gap-0.1">
           <img
-            src={logo}
+            src="/favicon.png"
             alt="Entangle Logo"
             className="w-9 h-9 object-contain"
           />

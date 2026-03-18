@@ -11,7 +11,7 @@ function getClient() {
   if (!OPENAI_API_KEY || OPENAI_API_KEY === '') return null;
   if (!openaiClient) {
     try {
-      const { OpenAI } = require('openai');
+      const { OpenAI } = require('openai/index.js');
       openaiClient = new OpenAI({ apiKey: OPENAI_API_KEY });
     } catch (err) {
       console.warn('[embeddings] OpenAI client init failed:', err.message);
@@ -117,9 +117,33 @@ function isEmbeddingsAvailable() {
   return !!getClient();
 }
 
+/**
+ * Get embedding for a search query string.
+ * @param {string} query - Natural language search query
+ * @returns {Promise<number[]|null>} Embedding vector or null
+ */
+async function getEmbeddingForQuery(query) {
+  const client = getClient();
+  if (!client || !query || typeof query !== 'string') return null;
+  const trimmed = query.trim().slice(0, 8000);
+  if (!trimmed) return null;
+  try {
+    const response = await client.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: trimmed,
+    });
+    return response.data?.[0]?.embedding ?? null;
+  } catch (err) {
+    console.warn('[embeddings] Query embedding error:', err.message);
+    return null;
+  }
+}
+
 module.exports = {
   getEmbedding,
   getEmbeddingsBatch,
+  getEmbeddingForQuery,
   cosineSimilarity,
   isEmbeddingsAvailable,
+  buildProfileText,
 };

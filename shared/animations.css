@@ -1,0 +1,48 @@
+/**
+ * Shared animations for Entangle apps
+ */
+
+@keyframes matchmaking-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+@keyframes matchmaking-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes matchmaking-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes matchmaking-sparkle {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.animate-matchmaking-pulse {
+  animation: matchmaking-pulse 1.5s ease-in-out infinite;
+}
+
+.animate-matchmaking-shimmer {
+  background: linear-gradient(
+    90deg,
+    #F5F0DD 0%,
+    #ebe6d4 25%,
+    #e2ddd0 50%,
+    #ebe6d4 75%,
+    #F5F0DD 100%
+  );
+  background-size: 200% 100%;
+  animation: matchmaking-shimmer 1.5s linear infinite;
+}
+
+.animate-matchmaking-fade-in {
+  animation: matchmaking-fade-in 0.4s ease-out forwards;
+}
+
+.animate-matchmaking-sparkle {
+  animation: matchmaking-sparkle 1.2s ease-in-out infinite;
+}

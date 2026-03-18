@@ -1,0 +1,64 @@
+/**
+ * Entangle Design System - Color Palette
+ * Used by admin-app and user-app (client)
+ *
+ * Palette:
+ * - primary: #465B77 (deep muted blue) - primary background, text, accent
+ * - secondary: #9EC0DB (light sky blue) - secondary elements, highlights
+ * - accent: #EF6F5B (vibrant coral) - CTAs, active states, buttons
+ * - surface: #F5F0DD (pale creamy off-white) - main content backgrounds
+ * - text: #2F3B4B (dark desaturated blue) - primary text, headers
+ */
+
+@theme {
+  /* Colors */
+  --color-primary: #465B77;
+  --color-primary-hover: #3a4d63;
+  --color-primary-light: #5c7390;
+
+  --color-secondary: #9EC0DB;
+  --color-secondary-hover: #8ab3d0;
+  --color-secondary-light: #b8d4e8;
+
+  --color-accent: #EF6F5B;
+  --color-accent-hover: #e85a45;
+  --color-accent-light: #f48979;
+
+  --color-surface: #F5F0DD;
+  --color-surface-alt: #ebe6d4;
+
+  --color-text: #2F3B4B;
+  --color-text-muted: #5a6575;
+  --color-text-light: #8a94a3;
+
+  /* Semantic */
+  --color-bg-sidebar: #2F3B4B;
+  --color-bg-main: #F5F0DD;
+  --color-bg-card: #ffffff;
+  --color-border: #e2ddd0;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-error: #ef4444;
+
+  /* Spacing scale (8px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Border radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}

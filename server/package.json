@@ -8,23 +8,30 @@
     "dev": "nodemon src/index.js",
     "postinstall": "prisma generate",
     "seed": "prisma db push && node seeds/seed.js",
-    "reset": "prisma db push --force-reset && node seeds/seed.js"
+    "reset": "prisma db push --force-reset && node seeds/seed.js",
+    "test": "node --test tests/api.test.js"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
+    "@sendgrid/mail": "^8.1.6",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^8.3.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "openai": "^6.26.0"
+    "multer": "^2.1.1",
+    "openai": "^6.26.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
-    "prisma": "^6.9.0"
+    "prisma": "^6.9.0",
+    "supertest": "^7.2.2"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",

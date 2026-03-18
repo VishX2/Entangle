@@ -30,13 +30,16 @@ model Role {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @unique @db.VarChar(255)
-  password_hash   String    @db.VarChar(255)
-  first_name      String    @db.VarChar(100)
-  last_name       String    @db.VarChar(100)
-  profile_picture String?   @db.Text
-  role_id         Int       @default(2)
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique @db.VarChar(255)
+  password_hash      String    @db.VarChar(255)
+  first_name         String    @db.VarChar(100)
+  last_name          String    @db.VarChar(100)
+  profile_picture    String?   @db.Text
+  phone              String?   @db.VarChar(50)
+  nic_id             String?   @db.VarChar(50)
+  reference_letter_url String? @db.Text
+  role_id            Int       @default(2)
   is_active       Boolean   @default(true)
   last_login_at   DateTime? @db.Timestamp()
   created_at      DateTime  @default(now())
@@ -46,6 +49,22 @@ model User {
   companies_updated Company[] @relation("UpdatedBy")
   reviews         Review[]
   reports         Report[]
+  password_reset_tokens PasswordResetToken[]
+  connection_requests_from ConnectionRequest[] @relation("ConnectionRequestsFrom")
+  conversation_participations ConversationParticipant[]
+  messages_sent Message[]
+  notifications Notification[]
+  documents Document[]
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  token     String   @unique @db.VarChar(255)
+  expires_at DateTime @db.Timestamp()
+  used_at   DateTime? @db.Timestamp()
+  created_at DateTime @default(now())
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Company {
@@ -79,6 +98,60 @@ model Company {
   reports         Report[]
 }
 
+model Conversation {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  messages   Message[]
+  participants ConversationParticipant[]
+}
+
+model ConversationParticipant {
+  id             Int          @id @default(autoincrement())
+  conversation_id Int
+  user_id        Int
+  created_at     DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([conversation_id, user_id])
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversation_id Int
+  sender_id      Int
+  content        String       @db.Text
+  read_at        DateTime?    @db.Timestamp()
+  created_at     DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  sender         User         @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  type       String    @db.VarChar(50)
+  title      String    @db.VarChar(255)
+  body       String?   @db.Text
+  link       String?   @db.VarChar(500)
+  read_at    DateTime? @db.Timestamp()
+  created_at DateTime  @default(now())
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id          Int       @id @default(autoincrement())
+  user_id     Int?
+  company_id  Int?
+  type        String    @db.VarChar(50)
+  file_url    String    @db.Text
+  file_name   String?   @db.VarChar(255)
+  created_at  DateTime  @default(now())
+  user        User?     @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  company     Company?  @relation(fields: [company_id], references: [id], onDelete: SetNull)
+}
+
 model Review {
   id           Int      @id @default(autoincrement())
   company_id   Int
@@ -97,6 +170,7 @@ model Review {
   user         User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
 }
 
+
 model Report {
   id         Int       @id @default(autoincrement())
   type       String    @db.VarChar(50)
@@ -109,3 +183,18 @@ model Report {
   company    Company?  @relation(fields: [company_id], references: [id], onDelete: SetNull)
   user       User?     @relation(fields: [user_id], references: [id], onDelete: SetNull)
 }
+
+model ConnectionRequest {
+  id          Int       @id @default(autoincrement())
+  from_user_id Int
+  to_company_id Int
+  message     String?   @db.Text
+  status      String    @default("pending") @db.VarChar(20)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
+  fromUser    User      @relation("ConnectionRequestsFrom", fields: [from_user_id], references: [id], onDelete: Cascade)
+  toCompany   Company   @relation("ConnectionRequestsTo", fields: [to_company_id], references: [id], onDelete: Cascade)
+
+  @@unique([from_user_id, to_company_id])
+}
+

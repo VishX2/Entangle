@@ -1,14 +1,11 @@
+const config = require('../config');
+
 function errorHandler(err, req, res, next) {
-  console.error(err);
-
-  if (res.headersSent) {
-    return next(err);
-  }
-
-  const status = err.statusCode || err.status || 500;
-  const message = status === 500 ? 'Internal server error' : err.message;
-
-  return res.status(status).json({ error: message });
+  console.error(err.stack);
+  const status = err.statusCode || 500;
+  res.status(status).json({
+    error: err.message || 'Internal server error',
+    ...(config.nodeEnv === 'development' && { stack: err.stack }),
+  });
 }
-
 module.exports = { errorHandler };

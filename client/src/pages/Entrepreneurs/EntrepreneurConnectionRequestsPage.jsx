@@ -9,7 +9,6 @@ import {
   Inbox,
 } from "lucide-react";
 import { useState } from "react";
-import ConnectionRequestTable from "../../components/ConnectionRequestTable";
 
 const initialRequests = [
   {

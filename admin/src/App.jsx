@@ -8,6 +8,8 @@ import InvestorVerification from "./pages/InvestorVerification";
 import ContentModeration from "./pages/ContentModeration";
 import CompanyDetail from "./pages/CompanyDetail";
 import ReportsAndComplaints from "./pages/ReportsAndComplaints";
+import UserManagement from "./pages/UserManagement";
+import ConnectionRequests from "./pages/ConnectionRequests";
 import AIMatchmaking from "./pages/AIMatchmaking";
 import { selectToken, selectIsAdmin } from "./store/authSlice";
 
@@ -43,13 +45,14 @@ export default function App() {
         <Route path="/register" element={<RegisterOrRedirect />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
+        <Route path="/connection-requests" element={<ProtectedRoute><ConnectionRequests /></ProtectedRoute>} />
         <Route path="/investor-verification" element={<ProtectedRoute><InvestorVerification /></ProtectedRoute>} />
         <Route path="/content-moderation" element={<ProtectedRoute><ContentModeration /></ProtectedRoute>} />
         <Route path="/content-moderation/company/:id" element={<ProtectedRoute><CompanyDetail /></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><ReportsAndComplaints /></ProtectedRoute>} />
         <Route path="/ai-matchmaking" element={<ProtectedRoute><AIMatchmaking /></ProtectedRoute>} />
 
-        {/* Catch-all route redirects unknown paths to root */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

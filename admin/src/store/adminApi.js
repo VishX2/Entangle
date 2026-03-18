@@ -42,7 +42,33 @@ export const fetchUsers = createAsyncThunk('admin/users', async (_, { rejectWith
   }
 });
 
-// Fetch companies with optional query parameters (filters, pagination, etc.
+export const updateUser = createAsyncThunk('admin/updateUser', async ({ id, ...payload }, { rejectWithValue }) => {
+  try {
+    const { data } = await api.patch(`/users/${id}`, payload);
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.error || err.message);
+  }
+});
+
+export const fetchConnectionRequests = createAsyncThunk('admin/connectionRequests', async (params = {}, { rejectWithValue }) => {
+  try {
+    const { data } = await api.get('/connection-requests', { params });
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.error || err.message);
+  }
+});
+
+export const updateConnectionRequest = createAsyncThunk('admin/updateConnectionRequest', async ({ id, status }, { rejectWithValue }) => {
+  try {
+    const { data } = await api.patch(`/connection-requests/${id}`, { status });
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.error || err.message);
+  }
+});
+
 export const fetchCompanies = createAsyncThunk('admin/companies', async (params = {}, { rejectWithValue }) => {
   try {
     const { data } = await api.get('/companies', { params });

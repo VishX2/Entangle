@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/organisms/Sidebar";
 import { fetchDashboardStats } from "../store/adminApi";
 import {
   ResponsiveContainer,

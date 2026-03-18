@@ -1,39 +1,44 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { loginAdmin, registerUser } from './adminApi';
+import config from '../config';
 
 const loadUser = () => {
   try {
-    const u = localStorage.getItem('entangle_admin_user');
+    const u = localStorage.getItem(config.userKey);
     return u ? JSON.parse(u) : null;
   } catch {
     return null;
   }
 };
 
+// Create authentication slice
 const authSlice = createSlice({
   name: 'auth',
+
   initialState: {
     user: loadUser(),
-    token: localStorage.getItem('entangle_admin_token'),
+    token: localStorage.getItem(config.tokenKey),
     isLoading: false,
     error: null,
     registerLoading: false,
     registerError: null,
   },
+
+  // Reducers for synchronous state updates
   reducers: {
     setCredentials: (state, { payload }) => {
       state.user = payload.user;
       state.token = payload.token;
       state.error = null;
-      if (payload.token) localStorage.setItem('entangle_admin_token', payload.token);
-      if (payload.user) localStorage.setItem('entangle_admin_user', JSON.stringify(payload.user));
+      if (payload.token) localStorage.setItem(config.tokenKey, payload.token);
+      if (payload.user) localStorage.setItem(config.userKey, JSON.stringify(payload.user));
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.error = null;
-      localStorage.removeItem('entangle_admin_token');
-      localStorage.removeItem('entangle_admin_user');
+      localStorage.removeItem(config.tokenKey);
+      localStorage.removeItem(config.userKey);
     },
     clearError: (state) => {
       state.error = null;
@@ -42,8 +47,12 @@ const authSlice = createSlice({
       state.registerError = null;
     },
   },
+
+  // Handle async API calls (login & registration)
   extraReducers: (builder) => {
     builder
+    
+      // ===Admin Login===
       .addCase(loginAdmin.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -53,13 +62,15 @@ const authSlice = createSlice({
         state.token = payload.token;
         state.isLoading = false;
         state.error = null;
-        if (payload.token) localStorage.setItem('entangle_admin_token', payload.token);
-        if (payload.user) localStorage.setItem('entangle_admin_user', JSON.stringify(payload.user));
+        if (payload.token) localStorage.setItem(config.tokenKey, payload.token);
+        if (payload.user) localStorage.setItem(config.userKey, JSON.stringify(payload.user));
       })
       .addCase(loginAdmin.rejected, (state, { payload }) => {
         state.isLoading = false;
         state.error = payload || 'Login failed';
       })
+
+      // ===User Registration===
       .addCase(registerUser.pending, (state) => {
         state.registerLoading = true;
         state.registerError = null;
@@ -75,9 +86,11 @@ const authSlice = createSlice({
   },
 });
 
+// Export reducer actions
 export const { setCredentials, logout, setLoading, setError, clearError, clearRegisterError } = authSlice.actions;
 export default authSlice.reducer;
 
+// Selectors to access authentication state
 export const selectCurrentUser = (state) => state.auth.user;
 export const selectToken = (state) => state.auth.token;
 export const selectAuthLoading = (state) => state.auth.isLoading;

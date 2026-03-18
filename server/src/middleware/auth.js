@@ -1,24 +1,30 @@
 const jwt = require('jsonwebtoken');
+const config = require('../config');
 
-module.exports = function auth(req, res, next) {
-  const header = req.headers.authorization || '';
-  const [scheme, token] = header.split(' ');
-
-  if (scheme !== 'Bearer' || !token) {
-    return res.status(401).json({ error: 'Authorization token required' });
+function auth(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid Authorization header' });
   }
-
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = payload.userId ?? payload.id ?? payload.user_id;
-    req.roleId = payload.roleId ?? payload.role_id;
-
-    if (!req.userId) {
-      return res.status(401).json({ error: 'Invalid token payload' });
-    }
-
+    const decoded = jwt.verify(header.slice(7), config.jwtSecret);
+    req.userId = decoded.userId;
+    req.roleId = decoded.roleId;
     next();
   } catch (err) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
-};
+}
+
+/** Sets req.userId and req.roleId when a valid token is present; does not 401 when missing. */
+function optionalAuth(req, res, next) {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) return next();
+  try {
+    const decoded = jwt.verify(header.slice(7), config.jwtSecret);
+    req.userId = decoded.userId;
+    req.roleId = decoded.roleId;
+  } catch (_) { /* ignore */ }
+  next();
+}
+

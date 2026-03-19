@@ -134,8 +134,6 @@ export default function CompanyProfile() {
               )}
             </div>
           </div>
-
-          {/* Reviews */}
           <div className="border-t border-slate-200 p-8">
             <h2 className="text-lg font-semibold text-slate-800 mb-4">Reviews</h2>
 
@@ -170,8 +168,6 @@ export default function CompanyProfile() {
                 ))}
               </div>
             )}
-
-            {/* Write Review */}
             <div className="mt-8 pt-6 border-t border-slate-200">
               <h3 className="text-base font-semibold text-slate-800 mb-4">
                 Write a review

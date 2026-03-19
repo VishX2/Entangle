@@ -1,0 +1,8 @@
+@import "@shared/design-tokens.css";
+@import "tailwindcss";
+@import "@shared/animations.css";
+
+/* Base */
+html, body {
+  height: 100%;
+}

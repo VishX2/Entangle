@@ -1,7 +1,3 @@
-/**
- * Email service - SendGrid
- * Sends password reset emails. No-op when SENDGRID_API_KEY is not set.
- */
 const sgMail = require('@sendgrid/mail');
 const config = require('../config');
 
@@ -9,12 +5,6 @@ function isAvailable() {
   return !!config.sendgridApiKey && config.sendgridApiKey.length > 0;
 }
 
-/**
- * Send password reset email
- * @param {string} to - recipient email
- * @param {string} resetLink - full URL to reset page with token
- * @param {string} firstName - user first name
- */
 async function sendPasswordResetEmail(to, resetLink, firstName) {
   if (!isAvailable()) {
     console.warn('[email] SENDGRID_API_KEY not set - skipping send. Reset link:', resetLink);

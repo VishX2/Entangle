@@ -1,9 +1,3 @@
-/**
- * OpenAI Embeddings Service
- * Used for semantic similarity in AI matchmaking.
- * Falls back gracefully when OPENAI_API_KEY is not set.
- */
-
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 let openaiClient = null;
 
@@ -32,11 +26,6 @@ function buildProfileText(company) {
   return parts.join(' ').trim().slice(0, 8000) || 'No profile';
 }
 
-/**
- * Get embedding vector for a company profile.
- * @param {Object} company - Company object
- * @returns {Promise<number[]|null>} Embedding vector or null if unavailable
- */
 async function getEmbedding(company) {
   const client = getClient();
   if (!client) return null;
@@ -56,11 +45,6 @@ async function getEmbedding(company) {
   }
 }
 
-/**
- * Get embeddings for multiple companies in batch (OpenAI allows up to 2048 inputs).
- * @param {Object[]} companies - Array of company objects
- * @returns {Promise<Map<number, number[]>>} Map of company id -> embedding
- */
 async function getEmbeddingsBatch(companies) {
   const client = getClient();
   if (!client || !companies.length) return new Map();
@@ -91,12 +75,6 @@ async function getEmbeddingsBatch(companies) {
   }
 }
 
-/**
- * Cosine similarity between two vectors.
- * @param {number[]} a
- * @param {number[]} b
- * @returns {number} Similarity 0-1
- */
 function cosineSimilarity(a, b) {
   if (!a || !b || a.length !== b.length) return 0.5;
   let dot = 0;
@@ -110,18 +88,13 @@ function cosineSimilarity(a, b) {
   const denom = Math.sqrt(normA) * Math.sqrt(normB);
   if (denom === 0) return 0.5;
   const sim = dot / denom;
-  return Math.max(0, Math.min(1, (sim + 1) / 2)); // map [-1,1] to [0,1]
+  return Math.max(0, Math.min(1, (sim + 1) / 2));
 }
 
 function isEmbeddingsAvailable() {
   return !!getClient();
 }
 
-/**
- * Get embedding for a search query string.
- * @param {string} query - Natural language search query
- * @returns {Promise<number[]|null>} Embedding vector or null
- */
 async function getEmbeddingForQuery(query) {
   const client = getClient();
   if (!client || !query || typeof query !== 'string') return null;

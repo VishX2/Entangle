@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Sparkles, Search } from "lucide-react";
@@ -24,6 +24,7 @@ import {
   selectMatchmakingLoading,
   selectSearchLoading,
 } from "../store/userSlice";
+import { selectCurrentUser } from "../store/authSlice";
 
 function MatchCard({ item, type, onView, redirectToRequests }) {
   const company = item.company || item;
@@ -84,11 +85,12 @@ export default function AiMatchmaking() {
   const searchLoading = useSelector(selectSearchLoading);
 
   const [prompt, setPrompt] = useState("");
-  const [searchType, setSearchType] = useState(""); // "" = all, investor, startup, entrepreneur
+  const [searchType, setSearchType] = useState("");
   const [selectedInvestorId, setSelectedInvestorId] = useState(null);
   const [selectedStartupId, setSelectedStartupId] = useState(null);
   const [selectedEntrepreneurId, setSelectedEntrepreneurId] = useState(null);
 
+  const currentUser = useSelector(selectCurrentUser);
   const companyType = location.pathname.startsWith("/investor")
     ? "investor"
     : location.pathname.startsWith("/startup")
@@ -99,10 +101,29 @@ export default function AiMatchmaking() {
   const startupsList = (companies || []).filter((c) => c.company_type === "startup");
   const entrepreneursList = (companies || []).filter((c) => c.company_type === "entrepreneur");
 
+  const myCompany = useMemo(() => {
+    if (!currentUser?.id || !companies?.length) return null;
+    return companies.find(
+      (c) => Number(c.created_by) === Number(currentUser.id) && c.company_type === companyType
+    ) || null;
+  }, [companies, currentUser?.id, companyType]);
+
   useEffect(() => {
     dispatch(fetchCompanies());
     if (companyType === "investor") dispatch(fetchInvestors());
   }, [dispatch, companyType]);
+
+  useEffect(() => {
+    if (!myCompany) return;
+    if (companyType === "investor") {
+      dispatch(fetchStartupsForInvestor({ investorId: myCompany.id }));
+      dispatch(fetchEntrepreneursForInvestor({ investorId: myCompany.id }));
+    } else if (companyType === "startup") {
+      dispatch(fetchInvestorsForStartup({ startupId: myCompany.id }));
+    } else if (companyType === "entrepreneur") {
+      dispatch(fetchInvestorsForEntrepreneur({ entrepreneurId: myCompany.id }));
+    }
+  }, [dispatch, companyType, myCompany?.id]);
 
   const runInvestorMatch = () => {
     if (selectedInvestorId) {
@@ -144,7 +165,7 @@ export default function AiMatchmaking() {
       ? "/investor/requests"
       : companyType === "startup"
       ? "/startup/requests"
-      : "/entrepreneur/connections";
+      : "/entrepreneur/requests";
 
   const startupMatchList = startupMatches?.matches ?? [];
   const entrepreneurMatchList = investorEntrepreneurMatches?.matches ?? [];
@@ -173,7 +194,6 @@ export default function AiMatchmaking() {
         </p>
       </div>
 
-      {/* AI PROMPT SEARCH */}
       <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
         <h2 className="text-lg font-medium mb-3 flex items-center gap-2">
           <Search className="w-5 h-5 text-orange-500" />
@@ -212,7 +232,6 @@ export default function AiMatchmaking() {
         </div>
       </div>
 
-      {/* SEARCH RESULTS */}
       {searchResults && (
         <div>
           <h2 className="text-lg font-medium mb-4">Search results for &quot;{searchResults.query}&quot;</h2>
@@ -230,38 +249,25 @@ export default function AiMatchmaking() {
         </div>
       )}
 
-      {/* INVESTOR: match startups + entrepreneurs */}
       {companyType === "investor" && (
         <div className="space-y-6">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-            <h2 className="text-lg font-medium mb-4">Match for your investor profile</h2>
+            <h2 className="text-lg font-medium mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-orange-500" />
+              Matches for your profile
+            </h2>
             <p className="text-sm text-slate-500 mb-4">
-              Select your investor profile to see matching startups and entrepreneurs
+              {myCompany
+                ? "Startups and entrepreneurs matched to your investment profile."
+                : "Load your profile to see personalized matches."}
             </p>
-            <div className="flex flex-wrap items-center gap-4">
-              <select
-                value={selectedInvestorId ?? ""}
-                onChange={(e) => setSelectedInvestorId(e.target.value ? Number(e.target.value) : null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 min-w-[220px]"
-              >
-                <option value="">— Select investor —</option>
-                {investorsList.map((i) => (
-                  <option key={i.id} value={i.id}>{i.name}</option>
-                ))}
-              </select>
-              <button
-                onClick={runInvestorMatch}
-                disabled={!selectedInvestorId || matchmakingLoading}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white font-medium hover:bg-orange-600 disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4" />
-                {matchmakingLoading ? "Matching…" : "Run AI Match"}
-              </button>
-            </div>
           </div>
 
-          {matchmakingLoading && selectedInvestorId && <Loader />}
-          {!matchmakingLoading && startupMatches && selectedInvestorId && startupMatchList.length > 0 && (
+          {matchmakingLoading && myCompany && <Loader />}
+          {!matchmakingLoading && myCompany && startupMatchList.length === 0 && entrepreneurMatchList.length === 0 && (
+            <p className="text-slate-500">No matches found yet. Complete your profile to improve matching.</p>
+          )}
+          {!matchmakingLoading && startupMatches && myCompany && startupMatchList.length > 0 && (
             <div>
               <h3 className="font-medium mb-3">Matching startups</h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -271,7 +277,7 @@ export default function AiMatchmaking() {
               </div>
             </div>
           )}
-          {!matchmakingLoading && investorEntrepreneurMatches && selectedInvestorId && entrepreneurMatchList.length > 0 && (
+          {!matchmakingLoading && investorEntrepreneurMatches && myCompany && entrepreneurMatchList.length > 0 && (
             <div>
               <h3 className="font-medium mb-3">Matching entrepreneurs</h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -284,36 +290,25 @@ export default function AiMatchmaking() {
         </div>
       )}
 
-      {/* STARTUP: match investors */}
       {companyType === "startup" && (
         <div className="space-y-6">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-            <h2 className="text-lg font-medium mb-4">Match for your startup</h2>
-            <p className="text-sm text-slate-500 mb-4">Select your startup to see matching investors</p>
-            <div className="flex flex-wrap items-center gap-4">
-              <select
-                value={selectedStartupId ?? ""}
-                onChange={(e) => setSelectedStartupId(e.target.value ? Number(e.target.value) : null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 min-w-[220px]"
-              >
-                <option value="">— Select startup —</option>
-                {startupsList.map((s) => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
-                ))}
-              </select>
-              <button
-                onClick={runStartupMatch}
-                disabled={!selectedStartupId || matchmakingLoading}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white font-medium hover:bg-orange-600 disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4" />
-                {matchmakingLoading ? "Matching…" : "Run AI Match"}
-              </button>
-            </div>
+            <h2 className="text-lg font-medium mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-orange-500" />
+              Matches for your startup
+            </h2>
+            <p className="text-sm text-slate-500 mb-4">
+              {myCompany
+                ? "Investors matched to your startup profile."
+                : "Complete your startup profile to see personalized matches."}
+            </p>
           </div>
 
-          {matchmakingLoading && selectedStartupId && <Loader />}
-          {!matchmakingLoading && investorMatches && investorForStartupList.length > 0 && (
+          {matchmakingLoading && myCompany && <Loader />}
+          {!matchmakingLoading && myCompany && investorForStartupList.length === 0 && (
+            <p className="text-slate-500">No matches found yet. Complete your profile to improve matching.</p>
+          )}
+          {!matchmakingLoading && investorMatches && myCompany && investorForStartupList.length > 0 && (
             <div>
               <h3 className="font-medium mb-3">Matching investors</h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -326,36 +321,25 @@ export default function AiMatchmaking() {
         </div>
       )}
 
-      {/* ENTREPRENEUR: match investors */}
       {companyType === "entrepreneur" && (
         <div className="space-y-6">
           <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
-            <h2 className="text-lg font-medium mb-4">Match for your entrepreneur profile</h2>
-            <p className="text-sm text-slate-500 mb-4">Select your profile to see matching investors</p>
-            <div className="flex flex-wrap items-center gap-4">
-              <select
-                value={selectedEntrepreneurId ?? ""}
-                onChange={(e) => setSelectedEntrepreneurId(e.target.value ? Number(e.target.value) : null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 min-w-[220px]"
-              >
-                <option value="">— Select entrepreneur —</option>
-                {entrepreneursList.map((e) => (
-                  <option key={e.id} value={e.id}>{e.name}</option>
-                ))}
-              </select>
-              <button
-                onClick={runEntrepreneurMatch}
-                disabled={!selectedEntrepreneurId || matchmakingLoading}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 text-white font-medium hover:bg-orange-600 disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4" />
-                {matchmakingLoading ? "Matching…" : "Run AI Match"}
-              </button>
-            </div>
+            <h2 className="text-lg font-medium mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-orange-500" />
+              Matches for your profile
+            </h2>
+            <p className="text-sm text-slate-500 mb-4">
+              {myCompany
+                ? "Investors matched to your entrepreneur profile."
+                : "Complete your profile to see personalized matches."}
+            </p>
           </div>
 
-          {matchmakingLoading && selectedEntrepreneurId && <Loader />}
-          {!matchmakingLoading && entrepreneurMatches && investorForEntrepreneurList.length > 0 && (
+          {matchmakingLoading && myCompany && <Loader />}
+          {!matchmakingLoading && myCompany && investorForEntrepreneurList.length === 0 && (
+            <p className="text-slate-500">No matches found yet. Complete your profile to improve matching.</p>
+          )}
+          {!matchmakingLoading && entrepreneurMatches && myCompany && investorForEntrepreneurList.length > 0 && (
             <div>
               <h3 className="font-medium mb-3">Matching investors</h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

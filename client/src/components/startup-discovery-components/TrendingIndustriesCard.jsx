@@ -1,8 +1,6 @@
 export default function TrendingIndustriesCard({ industries }) {
   return (
     <div className="bg-[#ece9e2] rounded-2xl p-6 shadow-sm">
-      
-      {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <div className="w-8 h-8 rounded-lg bg-[#f3e3dc] flex items-center justify-center">
           <TrendIcon />
@@ -11,15 +9,12 @@ export default function TrendingIndustriesCard({ industries }) {
           Trending Industries
         </h3>
       </div>
-
-      {/* List */}
       <div className="space-y-4">
         {industries.map((item, index) => (
           <div
             key={item.name}
             className="flex items-center justify-between"
           >
-            {/* Left side */}
             <div className="flex items-center gap-4">
               <span className="w-5 text-slate-500 font-semibold text-sm">
                 {index + 1}
@@ -28,8 +23,6 @@ export default function TrendingIndustriesCard({ industries }) {
                 {item.name}
               </span>
             </div>
-
-            {/* Right side */}
             <div className="flex items-center gap-3">
               <span className="text-[#ff6b4a] text-sm font-semibold">
                 {item.growth}
@@ -44,11 +37,6 @@ export default function TrendingIndustriesCard({ industries }) {
     </div>
   );
 }
-
-/* =====================================================
-   ICON
-   ===================================================== */
-
 function TrendIcon() {
   return (
     <svg

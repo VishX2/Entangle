@@ -3,22 +3,6 @@ import { useDispatch } from "react-redux";
 import { scanContent } from "../store/userApi";
 import PiiWarningModal from "../components/PiiWarningModal";
 
-/**
- * Hook to scan form content for PII before saving.
- * Returns { scanAndSave, PiiModal }.
- *
- * Usage:
- *   const { scanAndSave, PiiModal } = usePiiScanBeforeSave();
- *   const handleSave = async () => {
- *     await scanAndSave(
- *       [form.description, form.bio, form.notes].filter(Boolean),
- *       async () => {
- *         await dispatch(updateProfile(form));
- *         toast.success("Saved");
- *       }
- *     );
- *   };
- */
 export function usePiiScanBeforeSave() {
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);

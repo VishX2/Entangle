@@ -2,23 +2,17 @@ export default function StartupHero({ onRunAIMatch }) {
   return (
     <section className="relative bg-gradient-to-b from-[#4a657d] to-[#3e5a70] text-white pt-20 pb-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 text-center">
-        
-        {/* TITLE */}
         <h1 className="text-5xl md:text-6xl font-bold leading-tight">
           Discover the next
           <br />
           generation of{" "}
           <span className="text-[#ff6b4a]">startups.</span>
         </h1>
-
-        {/* SUBTEXT */}
         <p className="mt-6 text-lg text-gray-200 max-w-2xl mx-auto">
           Explore innovative ideas and connect with founders shaping the
           future. Whether you're an investor, entrepreneur, or startup
           enthusiast.
         </p>
-
-        {/* FEATURE CARDS */}
         <div className="grid md:grid-cols-3 gap-6 mt-12">
           <FeatureCard
             icon={<TargetIcon />}
@@ -36,8 +30,6 @@ export default function StartupHero({ onRunAIMatch }) {
             desc="Uncover high-potential startups before they hit mainstream radar."
           />
         </div>
-
-        {/* BUTTONS */}
         <div className="mt-10 flex justify-center gap-4">
           <button
             onClick={() => onRunAIMatch?.()}
@@ -51,17 +43,10 @@ export default function StartupHero({ onRunAIMatch }) {
           </a>
         </div>
       </div>
-
-      {/* CURVED BOTTOM */}
       <div className="absolute bottom-0 left-0 w-full h-20 bg-[#f5f3ef] rounded-t-[100%]" />
     </section>
   );
 }
-
-/* =====================================================
-   FEATURE CARD
-   ===================================================== */
-
 function FeatureCard({ icon, title, desc }) {
   return (
     <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center">
@@ -73,11 +58,6 @@ function FeatureCard({ icon, title, desc }) {
     </div>
   );
 }
-
-/* =====================================================
-   ICONS
-   ===================================================== */
-
 function TargetIcon() {
   return (
     <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">

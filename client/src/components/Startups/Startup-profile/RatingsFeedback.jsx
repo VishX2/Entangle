@@ -1,4 +1,33 @@
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompanies, fetchProfile, fetchReviewsByCompany } from "../../../store/userApi";
+import { selectCurrentUser } from "../../../store/authSlice";
+import { selectCompanies, selectCompanyReviews, selectProfile } from "../../../store/userSlice";
+
 export default function RatingsFeedback() {
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const companies = useSelector(selectCompanies);
+  const reviews = useSelector(selectCompanyReviews) || [];
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+  }, [dispatch]);
+
+  const user = profile ?? authUser;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "startup") || mine[0] || null;
+  }, [companies, user?.id]);
+
+  useEffect(() => {
+    if (myCompany?.id) dispatch(fetchReviewsByCompany(myCompany.id));
+  }, [dispatch, myCompany?.id]);
+
+  const averageRating = reviews.length ? (reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0) / reviews.length).toFixed(1) : "0.0";
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100">
 
@@ -25,10 +54,10 @@ export default function RatingsFeedback() {
 
           {/* SCORE */}
           <div className="text-center">
-            <div className="text-3xl font-semibold text-yellow-500">4.9</div>
-            <Stars count={5} />
+            <div className="text-3xl font-semibold text-yellow-500">{averageRating}</div>
+            <Stars count={Math.max(0, Math.min(5, Math.round(Number(averageRating))))} />
             <div className="text-xs text-slate-400 mt-1">
-              124 reviews
+              {reviews.length} reviews
             </div>
           </div>
 
@@ -61,35 +90,22 @@ export default function RatingsFeedback() {
           Recent Reviews
         </div>
 
-        <ReviewItem
-          initials="SC"
-          name="Sarah Chen"
-          company="TechFlow AI"
-          time="2 weeks ago"
-          text="Incredibly responsive and provided valuable strategic guidance beyond just capital."
-          rating={5}
-          color="bg-orange-100 text-orange-600"
-        />
-
-        <ReviewItem
-          initials="MJ"
-          name="Marcus Johnson"
-          company="GreenGrid"
-          time="1 month ago"
-          text="Professional approach and deep industry knowledge. Highly recommend!"
-          rating={5}
-          color="bg-rose-100 text-rose-600"
-        />
-
-        <ReviewItem
-          initials="EW"
-          name="Emma Williams"
-          company="HealthSync"
-          time="2 months ago"
-          text="Great mentor, always available for quick calls when needed."
-          rating={4}
-          color="bg-pink-100 text-pink-600"
-        />
+        {reviews.length === 0 ? (
+          <p className="text-sm text-slate-500">No reviews yet.</p>
+        ) : (
+          reviews.slice(0, 3).map((r, idx) => (
+            <ReviewItem
+              key={r.id || idx}
+              initials={String(r.reviewer?.first_name || "U").slice(0, 1)}
+              name={`${r.reviewer?.first_name || "User"} ${r.reviewer?.last_name || ""}`.trim()}
+              company={r.company?.name || "Company"}
+              time={new Date(r.created_at || Date.now()).toLocaleDateString()}
+              text={r.content || "No comment"}
+              rating={Number(r.rating || 0)}
+              color="bg-orange-100 text-orange-600"
+            />
+          ))
+        )}
       </div>
     </div>
   );

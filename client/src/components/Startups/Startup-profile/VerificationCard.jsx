@@ -1,4 +1,28 @@
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompanies, fetchProfile } from "../../../store/userApi";
+import { selectCurrentUser } from "../../../store/authSlice";
+import { selectCompanies, selectProfile } from "../../../store/userSlice";
+
 export default function VerificationTrustCard() {
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const companies = useSelector(selectCompanies);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+  }, [dispatch]);
+
+  const user = profile ?? authUser;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "startup") || mine[0] || null;
+  }, [companies, user?.id]);
+  const isVerified = !!myCompany?.is_verified;
+  const trustScore = isVerified ? 92 : 58;
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100">
       
@@ -15,13 +39,13 @@ export default function VerificationTrustCard() {
 
         <div className="text-sm text-slate-500">
           Trust Score{" "}
-          <span className="text-blue-600 font-semibold ml-1">92%</span>
+          <span className="text-blue-600 font-semibold ml-1">{trustScore}%</span>
         </div>
       </div>
 
       {/* PROGRESS BAR */}
       <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden mb-5">
-        <div className="h-full w-[92%] bg-orange-500 rounded-full" />
+        <div className="h-full bg-orange-500 rounded-full" style={{ width: `${trustScore}%` }} />
       </div>
 
       {/* VERIFICATION ITEMS */}
@@ -36,7 +60,7 @@ export default function VerificationTrustCard() {
       <div className="mt-5 flex items-center justify-between text-sm">
         <div className="flex items-center gap-2 text-blue-600">
           <CheckCircleIcon />
-          Fully Verified Investor
+          {isVerified ? "Fully Verified Startup" : "Verification In Progress"}
         </div>
 
         <div className="text-slate-400 text-xs">

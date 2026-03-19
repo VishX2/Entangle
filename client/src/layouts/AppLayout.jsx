@@ -1,32 +1,43 @@
-import InvestorSidebar from '../components/InvestorSidebar';
-import StartupSidebar from '../components/StartupSidebar';
-import EntrepreneurSidebar from '../components/EntrepreneurSidebar';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { Outlet, useLocation } from 'react-router-dom';
+import { UserSidebar, Header, Footer } from '../components/organisms/layout';
+import { Outlet, useLocation, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { selectCurrentUser } from '../store/authSlice';
+
+const DASHBOARDS = { investor: '/investor/dashboard', startup: '/startup/dashboard', entrepreneur: '/entrepreneur/dashboard' };
+const TYPE_LABELS = { investor: 'Investor', startup: 'Startup', entrepreneur: 'Entrepreneur' };
 
 const AppLayout = () => {
   const location = useLocation();
+  const user = useSelector(selectCurrentUser);
+  const userType = user?.user_type;
 
-  // Determine which sidebar to show based on route
-  const getSidebar = () => {
-    if (location.pathname.startsWith('/investor')) {
-      return <InvestorSidebar />;
-    } else if (location.pathname.startsWith('/startup')) {
-      return <StartupSidebar />;
-    } else if (location.pathname.startsWith('/entrepreneur')) {
-      return <EntrepreneurSidebar />;
+  const path = location.pathname;
+  const isTypeSpecific = path.startsWith('/investor') || path.startsWith('/startup') || path.startsWith('/entrepreneur');
+  const isAdmin = Number(user?.role_id) === 1;
+  if (isTypeSpecific && !isAdmin) {
+    if (!userType) {
+      toast('Please complete your profile to continue.', { icon: '👤' });
+      return <Navigate to="/select-type" replace />;
     }
-    // Default to Entrepreneur sidebar for legacy routes
-    return <EntrepreneurSidebar />;
-  };
+    const wrongType =
+      (path.startsWith('/investor') && userType !== 'investor') ||
+      (path.startsWith('/startup') && userType !== 'startup') ||
+      (path.startsWith('/entrepreneur') && userType !== 'entrepreneur');
+    if (wrongType) {
+      const correct = DASHBOARDS[userType];
+      if (correct) {
+        const label = TYPE_LABELS[userType] || userType;
+        toast(`You're signed in as ${label}. Redirecting to your dashboard.`, { icon: '↪️' });
+        return <Navigate to={correct} replace />;
+      }
+    }
+  }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      {getSidebar()}
+    <div className="flex min-h-screen bg-[#F5F0DD]">
+      <UserSidebar />
 
-      {/* Main Content */}
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header />
 

@@ -1,29 +1,40 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile } from "../../store/userApi";
-import { selectProfile, selectUserLoading } from "../../store/userSlice";
+import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../store/userApi";
 import { selectCurrentUser } from "../../store/authSlice";
+import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../store/userSlice";
+import defaultProfileImg from "../../assets/investor-profile/investor1.jpg";
+import defaultCoverImg from "../../assets/investor-profile/cover.jpg";
+
 
 export default function EntrepreneurProfile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [visibility, setVisibility] = useState(true);
   const [messages, setMessages] = useState(true);
-
   const profile = useSelector(selectProfile);
   const authUser = useSelector(selectCurrentUser);
-  const loading = useSelector(selectUserLoading);
+  const companies = useSelector(selectCompanies);
+  const sentRequests = useSelector(selectConnectionRequestsSent) || [];
 
   useEffect(() => {
     dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+    dispatch(fetchConnectionRequestsSent());
   }, [dispatch]);
 
-  const user = profile || authUser;
-  const nameParts = user ? [user.first_name, user.last_name].filter(Boolean).map((s) => String(s).trim()) : [];
-  const fullName = nameParts.length ? nameParts.join(" ").trim() : "Profile";
-  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : null;
+  const user = profile ?? authUser;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "entrepreneur") || mine[0] || null;
+  }, [companies, user?.id]);
+  const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Founder";
+  const profileImage = user?.profile_picture || defaultProfileImg;
+  const description = myCompany?.description || "Building and scaling an impactful venture.";
+  const location = myCompany?.headquarters || "—";
+  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : "—";
+  const acceptedConnections = sentRequests.filter((r) => r.status === "accepted").length;
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] px-8 py-8">
@@ -37,8 +48,7 @@ export default function EntrepreneurProfile() {
           <div
             className="h-56 bg-cover bg-center"
             style={{
-              backgroundImage:
-                "url(https://images.unsplash.com/photo-1506744038136-46273834b3fb)",
+              backgroundImage: `url(${defaultCoverImg})`,
             }}
           />
 
@@ -46,8 +56,7 @@ export default function EntrepreneurProfile() {
 
             <div className="-mt-24 relative w-fit group">
               <img
-                src={user?.profile_picture || "https://images.unsplash.com/photo-1494790108377-be9c29b29330"}
-                alt="Profile"
+                src={profileImage}
                 className="w-44 h-44 rounded-full border-4 border-white object-cover shadow-md group-hover:scale-105 transition"
               />
               <div className="absolute bottom-5 right-5 bg-blue-500 p-2 rounded-full shadow">
@@ -55,58 +64,58 @@ export default function EntrepreneurProfile() {
               </div>
             </div>
 
-            <div className="mt-6 flex justify-between flex-wrap gap-8">
+            <div className="mt-6 flex flex-col xl:flex-row xl:justify-between xl:items-start gap-8">
 
-              <div>
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-4 flex-wrap">
                   <h1 className="text-3xl font-semibold text-slate-900">
-                    {loading ? 'Loading...' : fullName}
+                    {fullName}
                   </h1>
 
                   <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium">
-                    FOUNDER
+                    {(myCompany?.company_type || "entrepreneur").toUpperCase()}
                   </span>
                 </div>
 
                 <div className="mt-2 text-sm text-slate-500 flex gap-5 flex-wrap">
-                  {user?.email && <span>{user.email}</span>}
-                  {joinedYear && <span>Joined {joinedYear}</span>}
+                  <span>{location}</span>
+                  <span>{user?.email || "—"}</span>
+                  {user?.phone && <span>{user.phone}</span>}
+                  <span>Joined {joinedYear}</span>
                 </div>
 
                 <p className="mt-4 text-sm text-slate-600 max-w-2xl">
-                  Backing visionary founders building the future of work,
-                  AI, and sustainable technology.
+                  {description}
                 </p>
+                {myCompany?.website_url?.trim() && (
+                  <p className="mt-2 text-sm">
+                    <a
+                      href={normalizeUrl(myCompany.website_url.trim())}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline break-all"
+                    >
+                      {myCompany.website_url.trim()}
+                    </a>
+                  </p>
+                )}
                 {/*  SOCIAL MEDIA  */}
                 <div className="flex gap-3 mt-5">
-
-                  <SocialIcon>
-                    <LinkedInIcon />
-                  </SocialIcon>
-
-                  <SocialIcon>
-                    <XIcon />
-                  </SocialIcon>
-
-                  <SocialIcon>
-                    <GlobeIcon />
-                  </SocialIcon>
-
-                  <SocialIcon>
-                    <MailIcon />
-                  </SocialIcon>
-
+                  <SocialIcon type="linkedin" href={getSocialUrl('linkedin', myCompany?.website_url)} />
+                  <SocialIcon type="x" href={getSocialUrl('x', myCompany?.website_url)} />
+                  <SocialIcon type="website" href={getSocialUrl('website', myCompany?.website_url)} />
+                  <SocialIcon type="email" href={user?.email ? `mailto:${user.email}` : null} />
                 </div>
 
 
                 <div className="flex gap-14 mt-7 text-sm">
-                  <Stat value="2.5K" label="Connections" />
+                  <Stat value={acceptedConnections} label="Connections" />
                   <Stat value="12.8K" label="Followers" />
                   <Stat value="847" label="Posts" />
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex flex-wrap xl:flex-nowrap items-center xl:justify-end gap-3 shrink-0">
                 <button
                   onClick={() => navigate("/entrepreneur/profile/edit")}
                   className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-slate-800 transition"
@@ -206,9 +215,7 @@ export default function EntrepreneurProfile() {
             }
           >
             <div className="bg-slate-50 rounded-xl p-6 text-sm text-slate-600 leading-relaxed">
-              Seasoned investor with over 15 years of experience in technology and venture capital.
-              Passionate about supporting innovative founders building solutions for real-world problems.
-              Former CTO of a Fortune 500 company with deep expertise in scaling startups.
+              {description}
             </div>
 
             {/* Stats */}
@@ -923,11 +930,37 @@ function CheckCircleIcon() {
     </svg>
   );
 }
-function SocialIcon({ children }) {
+function normalizeUrl(url) {
+  if (!url) return null;
+  return url.startsWith('http') ? url : `https://${url}`;
+}
+
+function getSocialUrl(type, websiteUrl) {
+  if (!websiteUrl || typeof websiteUrl !== 'string') return null;
+  const url = websiteUrl.trim();
+  if (!url) return null;
+  if (type === 'linkedin' && (url.includes('linkedin.com') || url.includes('linked.in'))) return url.startsWith('http') ? url : `https://${url}`;
+  if (type === 'x' && (url.includes('x.com') || url.includes('twitter.com'))) return url.startsWith('http') ? url : `https://${url}`;
+  if (type === 'website' && !url.includes('linkedin.com') && !url.includes('twitter.com') && !url.includes('x.com')) return url.startsWith('http') ? url : `https://${url}`;
+  return null;
+}
+
+function SocialIcon({ type, href }) {
+  const icons = { linkedin: <LinkedInIcon />, x: <XIcon />, website: <GlobeIcon />, email: <MailIcon /> };
+  const baseClass = "w-10 h-10 rounded-full border flex items-center justify-center text-slate-600 transition";
+  const activeClass = "border-slate-200 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-500 cursor-pointer";
+  const inactiveClass = "border-slate-200 opacity-60 cursor-default";
+  if (href) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={`${baseClass} ${activeClass}`} aria-label={type}>
+        {icons[type]}
+      </a>
+    );
+  }
   return (
-    <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-orange-50 hover:border-orange-300 hover:text-orange-500 transition cursor-pointer">
-      {children}
-    </div>
+    <span className={`${baseClass} ${inactiveClass}`} aria-label={`${type} (not set)`} title={`${type} not linked`}>
+      {icons[type]}
+    </span>
   );
 }
 

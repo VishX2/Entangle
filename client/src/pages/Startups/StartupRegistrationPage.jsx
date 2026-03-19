@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckCircle, Building2, Users, Globe, DollarSign, FileText } from 'lucide-react';
-import AuthSidebar from '../../components/AuthSidebar';
+import { CheckCircle, Building2, Users, Globe, DollarSign, FileText, Upload } from 'lucide-react';
+import { AuthSidebar } from '../../components/organisms/layout';
 import { registerUser } from '../../store/authApi';
+import { uploadDocument } from '../../store/userApi';
 import { selectAuthLoading, selectAuthError } from '../../store/authSlice';
-import { clearError } from '../../store/authSlice';
+import { clearError, setError } from '../../store/authSlice';
 
 export default function StartupRegistration() {
   const navigate = useNavigate();
@@ -25,12 +26,32 @@ export default function StartupRegistration() {
     description: '',
     businessRegistrationAddress: '',
     patentId: '',
+    profilePicture: null,
+    companyLogo: null,
     agreeToTerms: false
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(clearError());
+    let profile_picture = null;
+    let logo_url = null;
+    if (formData.profilePicture) {
+      const up = await dispatch(uploadDocument(formData.profilePicture));
+      if (uploadDocument.rejected.match(up)) {
+        dispatch(setError(up.payload || 'Failed to upload profile picture'));
+        return;
+      }
+      profile_picture = up.payload?.file_url;
+    }
+    if (formData.companyLogo) {
+      const up = await dispatch(uploadDocument(formData.companyLogo));
+      if (uploadDocument.rejected.match(up)) {
+        dispatch(setError(up.payload || 'Failed to upload company logo'));
+        return;
+      }
+      logo_url = up.payload?.file_url;
+    }
     const parts = (formData.founderName || '').trim().split(/\s+/);
     const first_name = parts[0] || '';
     const last_name = parts.slice(1).join(' ').trim() || '.';
@@ -39,6 +60,7 @@ export default function StartupRegistration() {
       password: formData.password || 'demo123',
       first_name,
       last_name,
+      profile_picture,
       user_type: 'startup',
       company: {
         name: formData.companyName || 'My Startup',
@@ -50,6 +72,7 @@ export default function StartupRegistration() {
         founderName: formData.founderName || null,
         business_registration_address: formData.businessRegistrationAddress || null,
         patent_id: formData.patentId || null,
+        logo_url,
       },
     }));
     if (registerUser.fulfilled.match(result)) {
@@ -67,20 +90,13 @@ export default function StartupRegistration() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
-
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
-        {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#465775]/10 rounded-full blur-3xl"></div>
         </div>
-
-        {/* Main Content */}
         <main className="relative max-w-4xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Header Section */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-5 py-2.5 rounded-full mb-6 border border-[#8AABCD]/30">
             <CheckCircle className="w-5 h-5 text-[#465775]" />
@@ -97,8 +113,6 @@ export default function StartupRegistration() {
             Register your startup to connect with verified investors through our AI-powered matching platform
           </p>
         </div>
-
-        {/* Registration Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-10 border border-[#8AABCD]/20">
           {error && (
             <div className="mb-6 p-3 rounded-xl bg-red-100 text-red-700 text-sm">{error}</div>
@@ -115,7 +129,28 @@ export default function StartupRegistration() {
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Company Name */}
+              <div>
+                <label className="block text-sm font-semibold text-[#2F3848] mb-2">Profile picture</label>
+                <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-4 text-center hover:border-[#465775] transition bg-[#F5F3E7]/30">
+                  <input type="file" id="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files?.[0] || null })} className="hidden" accept="image/*" />
+                  <label htmlFor="profilePicture" className="cursor-pointer flex flex-col items-center gap-2">
+                    <Upload className="w-8 h-8 text-[#8AABCD]" />
+                    <span className="text-sm text-[#2F3848]">{formData.profilePicture?.name || 'Upload your photo'}</span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#2F3848] mb-2">Company logo</label>
+                <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-4 text-center hover:border-[#465775] transition bg-[#F5F3E7]/30">
+                  <input type="file" id="companyLogo" onChange={(e) => setFormData({ ...formData, companyLogo: e.target.files?.[0] || null })} className="hidden" accept="image/*" />
+                  <label htmlFor="companyLogo" className="cursor-pointer flex flex-col items-center gap-2">
+                    <Building2 className="w-8 h-8 text-[#8AABCD]" />
+                    <span className="text-sm text-[#2F3848]">{formData.companyLogo?.name || 'Upload logo (optional)'}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Company Name *
@@ -135,8 +170,6 @@ export default function StartupRegistration() {
                   />
                 </div>
               </div>
-
-              {/* Business Email */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Business Email *
@@ -151,8 +184,6 @@ export default function StartupRegistration() {
                   required
                 />
               </div>
-
-              {/* Password */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Password *
@@ -168,8 +199,6 @@ export default function StartupRegistration() {
                   required
                 />
               </div>
-
-              {/* Founder Name */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Founder Name *
@@ -189,8 +218,6 @@ export default function StartupRegistration() {
                   />
                 </div>
               </div>
-
-              {/* Phone Number */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Phone Number *
@@ -205,8 +232,6 @@ export default function StartupRegistration() {
                   required
                 />
               </div>
-
-              {/* Website */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Website
@@ -225,8 +250,6 @@ export default function StartupRegistration() {
                   />
                 </div>
               </div>
-
-              {/* Industry */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Industry *
@@ -248,8 +271,6 @@ export default function StartupRegistration() {
                   <option value="other">Other</option>
                 </select>
               </div>
-
-              {/* Stage */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Stage *
@@ -269,8 +290,6 @@ export default function StartupRegistration() {
                   <option value="expansion">Expansion</option>
                 </select>
               </div>
-
-              {/* Funding Needed */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Funding Needed *
@@ -296,8 +315,6 @@ export default function StartupRegistration() {
                   </select>
                 </div>
               </div>
-
-              {/* Business Registration Address */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Business Registration Address *
@@ -312,8 +329,6 @@ export default function StartupRegistration() {
                   required
                 />
               </div>
-
-              {/* Patent ID (optional) */}
               <div>
                 <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                   Patent ID <span className="text-slate-400 font-normal">(optional)</span>
@@ -328,8 +343,6 @@ export default function StartupRegistration() {
                 />
               </div>
             </div>
-
-            {/* Company Description */}
             <div>
               <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                 Company Description *
@@ -349,8 +362,6 @@ export default function StartupRegistration() {
                 ></textarea>
               </div>
             </div>
-
-            {/* Terms Agreement */}
             <div className="flex items-start gap-3">
               <input
                 type="checkbox"
@@ -365,8 +376,6 @@ export default function StartupRegistration() {
                 I agree to the <Link to="#" className="text-[#E5654E] font-semibold hover:underline">Terms & Conditions</Link> and <Link to="#" className="text-[#E5654E] font-semibold hover:underline">Privacy Policy</Link>. I understand that my information will be verified and shared with potential investors.
               </label>
             </div>
-
-            {/* Submit Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 type="submit"
@@ -387,8 +396,6 @@ export default function StartupRegistration() {
             </div>
           </form>
         </div>
-
-        {/* Trust Indicators */}
         <div className="grid md:grid-cols-3 gap-4 mt-10">
           <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-[#8AABCD]/20">
             <div className="w-10 h-10 bg-[#465775]/10 rounded-lg flex items-center justify-center">
@@ -409,8 +416,6 @@ export default function StartupRegistration() {
             <span className="text-[#2F3848] font-medium text-sm">Secure Messaging</span>
           </div>
         </div>
-
-        {/* Back Link */}
         <div className="text-center mt-8">
           <Link to="/select-type" className="text-[#465775] hover:text-[#E5654E] font-medium transition-colors">
             ← Back to account type selection

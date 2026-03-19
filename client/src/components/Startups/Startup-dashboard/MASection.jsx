@@ -1,4 +1,13 @@
-export default function MASection() {
+export default function MASection({ deals = [] }) {
+  const cards =
+    (deals || []).length > 0
+      ? deals.slice(0, 3)
+      : [
+          { id: 1, name: "TechCorp", value: "$120M" },
+          { id: 2, name: "FinanceHub", value: "$85M" },
+          { id: 3, name: "HealthFirst", value: "$210M" },
+        ];
+
   return (
     <section>
       <h2 className="text-lg font-semibold mb-4">
@@ -6,9 +15,13 @@ export default function MASection() {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <DealCard title="TechCorp → DataFlow" value="$120M" />
-        <DealCard title="FinanceHub → PayLink" value="$85M" />
-        <DealCard title="HealthFirst → MediBot" value="$210M" />
+        {cards.map((d) => (
+          <DealCard
+            key={d?.id || d?.name}
+            title={`${d?.name || "Company"} → Dealflow`}
+            value={d?.value || "$120M"}
+          />
+        ))}
       </div>
     </section>
   );

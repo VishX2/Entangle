@@ -1,4 +1,32 @@
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompanies, fetchProfile } from "../../../store/userApi";
+import { selectCurrentUser } from "../../../store/authSlice";
+import { selectCompanies, selectProfile } from "../../../store/userSlice";
+
 export default function BackgroundExperience() {
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const companies = useSelector(selectCompanies);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+  }, [dispatch]);
+
+  const user = profile ?? authUser;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "startup") || mine[0] || null;
+  }, [companies, user?.id]);
+
+  const description =
+    myCompany?.description ||
+    "Building and scaling an ambitious startup with strong product execution and market focus.";
+  const yearsExperience = myCompany?.years_experience ? `${myCompany.years_experience}+` : "—";
+  const investmentsMade = myCompany?.team_size ? `${myCompany.team_size}+` : "—";
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100">
 
@@ -14,16 +42,14 @@ export default function BackgroundExperience() {
 
       {/* DESCRIPTION */}
       <div className="bg-slate-50 rounded-xl p-4 text-sm text-slate-600 leading-relaxed mb-5">
-        With over 12 years of experience in building and scaling technology-driven companies. 
-        Passionate about transforming bold ideas into impactful products that solve real-world challenges. 
-        Former product leader at a high-growth startup with deep expertise in innovation, execution, and sustainable growth.
+        {description}
       </div>
 
       {/* STATS */}
       <div className="flex items-center gap-6 bg-orange-50 rounded-xl p-4 mb-6">
-        <StatBlock value="15+" label="Years Experience" />
+        <StatBlock value={yearsExperience} label="Years Experience" />
         <div className="w-px h-10 bg-orange-200" />
-        <StatBlock value="50+" label="Investments Made" />
+        <StatBlock value={investmentsMade} label="Team Size" />
       </div>
 
       {/* AREAS OF EXPERTISE */}

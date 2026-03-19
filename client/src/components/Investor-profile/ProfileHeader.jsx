@@ -1,26 +1,39 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import profileImg from "../../assets/investor-profile/investor1.jpg";
 import coverImg from "../../assets/investor-profile/cover.jpg";
-import { fetchProfile } from "../../store/userApi";
-import { selectProfile, selectUserLoading } from "../../store/userSlice";
+import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../store/userApi";
 import { selectCurrentUser } from "../../store/authSlice";
+import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../store/userSlice";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const profile = useSelector(selectProfile);
   const authUser = useSelector(selectCurrentUser);
-  const loading = useSelector(selectUserLoading);
+  const companies = useSelector(selectCompanies);
+  const sentRequests = useSelector(selectConnectionRequestsSent) || [];
 
   useEffect(() => {
     dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+    dispatch(fetchConnectionRequestsSent());
   }, [dispatch]);
 
   const user = profile ?? authUser;
-  const fullName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Profile' : 'Loading...';
-  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : null;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "investor") || mine[0] || null;
+  }, [companies, user?.id]);
+
+  const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Profile";
+  const companyType = (myCompany?.company_type || "investor").toUpperCase();
+  const location = myCompany?.headquarters || "—";
+  const email = user?.email || "—";
+  const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : "—";
+  const description = myCompany?.description || "—";
+  const connectionCount = sentRequests.filter((r) => r.status === "accepted").length;
 
   return (
     <div className="rounded-3xl overflow-hidden bg-white">
@@ -38,7 +51,7 @@ export default function ProfileHeader() {
         <div className="-mt-24 relative inline-block">
           <img
             src={user?.profile_picture || profileImg}
-            alt="Profile"
+            alt="Investor profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />
 
@@ -63,25 +76,51 @@ export default function ProfileHeader() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-semibold text-slate-900">
-                {loading ? 'Loading...' : fullName}
+                {fullName}
               </h1>
 
               <span className="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600 font-medium">
-                ANGEL INVESTOR
+                {companyType}
               </span>
             </div>
 
             <div className="mt-2 text-sm text-slate-600 flex flex-wrap gap-4">
-              {user?.email && <span>{user.email}</span>}
-              {joinedYear && <span>Joined {joinedYear}</span>}
+              <span>{location}</span>
+              <span>{email}</span>
+              {user?.phone && <span>{user.phone}</span>}
+              <span>Joined {joinedYear}</span>
             </div>
+
+            <p className="mt-4 max-w-2xl text-sm text-slate-700 leading-relaxed">
+              {description}
+            </p>
+
+            {myCompany?.website_url?.trim() && (
+              <p className="mt-2 text-sm">
+                <a
+                  href={normalizeUrl(myCompany.website_url.trim())}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline break-all"
+                >
+                  {myCompany.website_url.trim()}
+                </a>
+              </p>
+            )}
 
             {/* SOCIAL ICONS */}
             <div className="flex gap-4 mt-6">
-              <SocialIcon type="linkedin" />
-              <SocialIcon type="x" />
-              <SocialIcon type="website" />
-              <SocialIcon type="email" />
+              <SocialIcon type="linkedin" href={getSocialUrl('linkedin', myCompany?.website_url)} />
+              <SocialIcon type="x" href={getSocialUrl('x', myCompany?.website_url)} />
+              <SocialIcon type="website" href={getSocialUrl('website', myCompany?.website_url)} />
+              <SocialIcon type="email" href={user?.email ? `mailto:${user.email}` : null} />
+            </div>
+
+            {/* STATS */}
+            <div className="flex gap-12 mt-7 text-sm">
+              <Stat value={connectionCount} label="Connections" />
+              <Stat value="12.8K" label="Followers" />
+              <Stat value="847" label="Posts" />
             </div>
           </div>
 
@@ -107,6 +146,15 @@ export default function ProfileHeader() {
    HELPER COMPONENTS
    ===================================================== */
 
+function Stat({ value, label }) {
+  return (
+    <div>
+      <div className="font-semibold text-slate-900">{value}</div>
+      <div className="text-xs text-slate-500">{label}</div>
+    </div>
+  );
+}
+
 function ActionButton({ children, primary, accent, onClick }) {
   return (
     <button
@@ -130,7 +178,22 @@ function ActionButton({ children, primary, accent, onClick }) {
   );
 }
 
-function SocialIcon({ type }) {
+function normalizeUrl(url) {
+  if (!url) return null;
+  return url.startsWith('http') ? url : `https://${url}`;
+}
+
+function getSocialUrl(type, websiteUrl) {
+  if (!websiteUrl || typeof websiteUrl !== 'string') return null;
+  const url = websiteUrl.trim();
+  if (!url) return null;
+  if (type === 'linkedin' && (url.includes('linkedin.com') || url.includes('linked.in'))) return url.startsWith('http') ? url : `https://${url}`;
+  if (type === 'x' && (url.includes('x.com') || url.includes('twitter.com'))) return url.startsWith('http') ? url : `https://${url}`;
+  if (type === 'website' && !url.includes('linkedin.com') && !url.includes('twitter.com') && !url.includes('x.com')) return url.startsWith('http') ? url : `https://${url}`;
+  return null;
+}
+
+function SocialIcon({ type, href }) {
   const icons = {
     linkedin: (
       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V9h4v2zM2 9h4v12H2zM4 2a2 2 0 1 1 0 4a2 2 0 0 1 0-4z" />
@@ -154,16 +217,45 @@ function SocialIcon({ type }) {
     ),
   };
 
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="
+          w-11 h-11 rounded-full border border-slate-300
+          flex items-center justify-center
+          transition-all duration-200 ease-out
+          hover:bg-slate-100 hover:-translate-y-0.5
+          active:scale-95
+        "
+        aria-label={type}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#0f172a"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          {icons[type]}
+        </svg>
+      </a>
+    );
+  }
   return (
-    <button
+    <span
       className="
-        w-11 h-11 rounded-full border border-slate-300
+        w-11 h-11 rounded-full border border-slate-200
         flex items-center justify-center
-        transition-all duration-200 ease-out
-        hover:bg-slate-100 hover:-translate-y-0.5
-        active:scale-95
+        cursor-default opacity-60
       "
-      aria-label={type}
+      aria-label={`${type} (not set)`}
+      title={`${type} not linked`}
     >
       <svg
         width="18"
@@ -177,6 +269,6 @@ function SocialIcon({ type }) {
       >
         {icons[type]}
       </svg>
-    </button>
+    </span>
   );
 }

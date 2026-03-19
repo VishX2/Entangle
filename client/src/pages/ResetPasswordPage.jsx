@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Lock, Eye, EyeOff, ArrowRight, CheckCircle, XCircle, ShieldCheck } from 'lucide-react';
-import AuthSidebar from '../components/AuthSidebar';
+import { AuthSidebar } from '../components/organisms/layout';
 import { resetPassword } from '../store/authApi';
 
 export default function ResetPasswordPage() {
@@ -72,10 +72,7 @@ export default function ResetPasswordPage() {
   if (isSuccess) {
     return (
       <div className="min-h-screen flex">
-        {/* Sidebar */}
         <AuthSidebar />
-
-        {/* Main Content */}
         <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -110,10 +107,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
-
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -138,7 +132,6 @@ export default function ResetPasswordPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#8AABCD]/20">
-          {/* Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#465775] to-[#2F3848] flex items-center justify-center">
               <Lock className="w-8 h-8 text-white" />
@@ -146,7 +139,6 @@ export default function ResetPasswordPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* New Password Field */}
             <div>
               <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                 New Password
@@ -171,8 +163,6 @@ export default function ResetPasswordPage() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-
-              {/* Password Strength Bar */}
               {password && (
                 <div className="mt-3">
                   <div className="flex items-center justify-between mb-1">
@@ -193,8 +183,6 @@ export default function ResetPasswordPage() {
                 </div>
               )}
             </div>
-
-            {/* Confirm Password Field */}
             <div>
               <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                 Confirm Password
@@ -232,8 +220,6 @@ export default function ResetPasswordPage() {
                 </p>
               )}
             </div>
-
-            {/* Password Requirements */}
             <div className="bg-[#F5F3E7] rounded-xl p-4">
               <h3 className="text-sm font-semibold text-[#2F3848] mb-3">Password Requirements</h3>
               <div className="space-y-2">
@@ -257,8 +243,6 @@ export default function ResetPasswordPage() {
                 <p className="text-sm text-red-600">{error}</p>
               </div>
             )}
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading || !allRequirementsMet || !passwordsMatch}

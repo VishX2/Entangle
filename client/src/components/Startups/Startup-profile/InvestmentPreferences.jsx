@@ -1,4 +1,36 @@
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../../store/userApi";
+import { selectCurrentUser } from "../../../store/authSlice";
+import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../../store/userSlice";
+
 export default function InvestmentPreferences() {
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const companies = useSelector(selectCompanies);
+  const sentRequests = useSelector(selectConnectionRequestsSent) || [];
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+    dispatch(fetchConnectionRequestsSent());
+  }, [dispatch]);
+
+  const user = profile ?? authUser;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "startup") || mine[0] || null;
+  }, [companies, user?.id]);
+
+  const totalInvestments = myCompany?.total_investments || sentRequests.length || 0;
+  const activeInvestments = sentRequests.filter((r) => r.status === "accepted").length;
+  const exitedInvestments = sentRequests.filter((r) => r.status === "rejected").length;
+  const avgInvestment =
+    myCompany?.min_investment && myCompany?.max_investment
+      ? `$${Math.round((Number(myCompany.min_investment) + Number(myCompany.max_investment)) / 2).toLocaleString()}`
+      : "—";
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100">
 
@@ -16,22 +48,22 @@ export default function InvestmentPreferences() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           icon={<BagIcon />}
-          value="47"
+          value={String(totalInvestments)}
           label="Total Investments"
         />
         <StatCard
           icon={<TrendIcon />}
-          value="23"
+          value={String(activeInvestments)}
           label="Active Investments"
         />
         <StatCard
           icon={<ExitIcon />}
-          value="18"
+          value={String(exitedInvestments)}
           label="Exited"
         />
         <StatCard
           icon={<DollarIcon />}
-          value="$125K"
+          value={avgInvestment}
           label="Avg. Investment"
         />
       </div>

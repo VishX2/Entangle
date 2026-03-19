@@ -1,11 +1,14 @@
-export function MarketSnapshot() {
+export function MarketSnapshot({
+  fundingValue = "$1.2B",
+  dealsValue = "47",
+}) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow">
       <h3 className="font-semibold mb-3">Market Snapshot</h3>
       <p className="text-sm">Funding This Week</p>
-      <p className="text-lg font-semibold">$1.2B</p>
+      <p className="text-lg font-semibold">{fundingValue}</p>
       <p className="text-sm mt-3">Deals Closed</p>
-      <p className="text-lg font-semibold">47</p>
+      <p className="text-lg font-semibold">{dealsValue}</p>
     </div>
   );
 }
@@ -31,15 +34,20 @@ export function TrendingIndustries() {
   );
 }
 
-export function RecommendedStartups() {
+export function RecommendedStartups({ investors = [] }) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow">
       <h3 className="font-semibold mb-3">
         Recommended Investors
       </h3>
-      <p className="text-sm">Lumosa AI</p>
-      <p className="text-sm">EcoVolt</p>
-      <p className="text-sm">Paystream</p>
+      {(investors || []).slice(0, 3).map((inv) => (
+        <p
+          key={inv?.id || inv?.name}
+          className="text-sm"
+        >
+          {inv?.name || "Investor"}
+        </p>
+      ))}
 
       <button className="mt-4 w-full bg-[#E66A4B] text-white py-2 rounded-xl">
         Explore More Investors

@@ -1,9 +1,5 @@
 import { AlertTriangle } from "lucide-react";
 
-/**
- * Modal shown when PII/sensitive data is detected before saving.
- * User can cancel or confirm to proceed anyway.
- */
 export default function PiiWarningModal({ open, warnings = [], onConfirm, onCancel }) {
   if (!open) return null;
 

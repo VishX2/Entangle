@@ -1,0 +1,67 @@
+import { Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, UserCheck, Shield, FileText, LogOut } from 'lucide-react';
+
+export default function AuthSidebar() {
+  const location = useLocation();
+
+  const navItems = [
+    { path: '/login', label: 'Login', icon: LayoutDashboard, matchPaths: ['/login'] },
+    {
+      path: '/select-type',
+      label: 'Register',
+      icon: UserCheck,
+      matchPaths: ['/select-type', '/register/investor', '/register/entrepreneur', '/register/startup'],
+    },
+    { path: '/verify', label: 'Verification', icon: Shield, matchPaths: ['/verify'] },
+    {
+      path: '/forgot-password',
+      label: 'Password Recovery',
+      icon: FileText,
+      matchPaths: ['/forgot-password', '/reset-password'],
+    },
+  ];
+
+  const isActive = (item) => {
+    return item.matchPaths.some((p) => location.pathname === p || location.pathname.startsWith(p + '/'));
+  };
+
+  return (
+    <div className="w-64 min-h-screen bg-[#1a2234] flex flex-col">
+      <div className="p-6">
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/logo.png" alt="Entangle" className="w-8 h-8 object-contain" />
+          <span className="text-xl font-semibold text-white">Entangle</span>
+        </Link>
+      </div>
+
+      <nav className="flex-1 px-4 space-y-2">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item);
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                active ? 'bg-[#E5654E] text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t border-white/10">
+        <Link
+          to="/"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 hover:text-white transition-all"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="font-medium">Back to Home</span>
+        </Link>
+      </div>
+    </div>
+  );
+}

@@ -1,20 +1,23 @@
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Search, 
-  Sparkles, 
-  User, 
-  Trophy, 
-  MessageSquare, 
-  LogOut 
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {
+  Home,
+  Search,
+  Sparkles,
+  User,
+  Trophy,
+  MessageSquare,
+  LogOut,
 } from 'lucide-react';
+import { logout } from '../store/authSlice';
 
 export default function InvestorSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const navItems = [
     { path: '/investor/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/investor/recommendations', label: 'Recommendations', icon: Search },
     { path: '/investor/ai-matchmaking', label: 'AI Matchmaking', icon: Sparkles },
     { path: '/investor/profile', label: 'Profile', icon: User },
     { path: '/investor/messages', label: 'Messages', icon: MessageSquare },
@@ -29,7 +32,7 @@ export default function InvestorSidebar() {
     <aside className="w-64 bg-[#2F3B4B] text-[#9EC0DB] flex flex-col min-h-screen">
       <div className="px-6 py-5 border-b border-[#465B77]">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/favicon.png" alt="Entangle Logo" className="w-9 h-9 object-contain" />
+          <img src="/logo.png" alt="Entangle Logo" className="w-9 h-9 object-contain" />
           <span className="text-xl font-bold text-white">Entangle</span>
         </Link>
         <div className="mt-6 inline-block text-xs font-semibold uppercase tracking-wider bg-[#465B77] text-[#9EC0DB] px-3 py-1 rounded">
@@ -57,13 +60,14 @@ export default function InvestorSidebar() {
       </nav>
 
       <div className="p-6 border-t border-[#465B77]">
-        <Link
-          to="/login"
-          className="flex items-center gap-3 cursor-pointer font-medium text-[#9EC0DB]/80 hover:text-white transition"
+        <button
+          type="button"
+          onClick={() => { dispatch(logout()); navigate('/login', { replace: true }); }}
+          className="flex items-center gap-3 w-full cursor-pointer font-medium text-[#9EC0DB]/80 hover:text-white transition"
         >
           <LogOut size={20} />
           <span>Log out</span>
-        </Link>
+        </button>
       </div>
     </aside>
   );

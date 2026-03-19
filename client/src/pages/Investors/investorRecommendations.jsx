@@ -20,7 +20,6 @@ import {
 
 export default function InvestorRecommendations() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const companies = useSelector(selectCompanies);
   const matches = useSelector(selectInvestorMatches);
   const loading = useSelector(selectMatchmakingLoading);
@@ -48,7 +47,6 @@ export default function InvestorRecommendations() {
 
   return (
     <div className="min-h-screen bg-[#F5F1E3] px-6 py-10 space-y-10">
-      {/* HEADER */}
       <section className="space-y-2 max-w-4xl">
         <h1 className="text-3xl font-semibold text-[#2B3443]">
           Recommended Investors
@@ -58,7 +56,6 @@ export default function InvestorRecommendations() {
         </p>
       </section>
 
-      {/* STARTUP SELECTOR + RUN AI MATCH */}
       <section className="flex flex-wrap items-center gap-4">
         <label className="text-sm font-medium text-[#2B3443]">
           Select your startup:
@@ -91,7 +88,6 @@ export default function InvestorRecommendations() {
         </button>
       </section>
 
-      {/* FILTER STRIP */}
       <section className="flex flex-wrap gap-3">
         {["All", "Top Match", "Verified Only", "Seed Stage", "FinTech"].map(
           (filter) => (
@@ -108,7 +104,6 @@ export default function InvestorRecommendations() {
         )}
       </section>
 
-      {/* INVESTOR CARDS */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {!hasData && (
           <p className="col-span-full text-[#3F5D7D]">
@@ -157,9 +152,9 @@ export default function InvestorRecommendations() {
   );
 }
 
-/* COMPONENTS */
 
 function InvestorCard({ investor, match }) {
+  const navigate = useNavigate();
   const focus = (investor.investment_focus || "")
     .split(/[,;|]/)
     .map((s) => s.trim())
@@ -171,7 +166,6 @@ function InvestorCard({ investor, match }) {
       className="bg-white rounded-3xl p-6 transition-all duration-300
                  hover:-translate-y-1 hover:shadow-xl"
     >
-      {/* Top Row */}
       <div className="flex justify-between items-start mb-4">
         <div className="space-y-1">
           <h2 className="text-xl font-semibold text-[#2B3443] flex items-center gap-2">
@@ -186,7 +180,6 @@ function InvestorCard({ investor, match }) {
           </div>
         </div>
 
-        {/* Match Score */}
         <div className="text-right">
           <p className="text-xs text-[#3F5D7D]">Match Score</p>
           <div className="flex items-center gap-1 text-[#EF6C4E] font-semibold">
@@ -196,7 +189,6 @@ function InvestorCard({ investor, match }) {
         </div>
       </div>
 
-      {/* Focus Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
         {focus.length > 0 ? (
           focus.map((tag) => (
@@ -215,7 +207,6 @@ function InvestorCard({ investor, match }) {
         )}
       </div>
 
-      {/* Meta Info */}
       <div className="flex items-center gap-6 text-sm text-[#3F5D7D] mb-6">
         <div className="flex items-center gap-2">
           <Briefcase size={16} />
@@ -227,7 +218,6 @@ function InvestorCard({ investor, match }) {
         </div>
       </div>
 
-      {/* CTA */}
       <div className="flex justify-between items-center gap-2 flex-wrap">
         <button
           onClick={() => navigate(`/investor/company/${investor.id}`)}

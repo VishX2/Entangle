@@ -1,12 +1,11 @@
 import { useState } from "react";
-import InvestorProfile from "./InvestorProfile";
+import ProfilePage from "../ProfilePage";
 
 function InvestorAgreement({ onAccept, onCancel }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F1E3] px-6">
       <div className="bg-white max-w-2xl w-full rounded-2xl shadow-lg p-8 space-y-6">
 
-        {/* Header */}
         <div>
           <h1 className="text-2xl font-semibold text-[#2B3443]">
             Startup Data Access Agreement
@@ -15,8 +14,6 @@ function InvestorAgreement({ onAccept, onCancel }) {
             Please review and accept this agreement before accessing this startup’s profile.
           </p>
         </div>
-
-        {/* Agreement Text */}
         <div className="bg-gray-100 rounded-xl p-4 h-56 overflow-y-auto text-sm text-[#2B3443] space-y-4">
           <p>
             <strong>1. Confidentiality</strong><br />
@@ -48,7 +45,6 @@ function InvestorAgreement({ onAccept, onCancel }) {
           </p>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-4">
           <button
             onClick={onAccept}
@@ -88,5 +84,5 @@ export default function InvestorProfileGate() {
     );
   }
 
-  return <InvestorProfile />;
+  return <ProfilePage userType="investor" />;
 }

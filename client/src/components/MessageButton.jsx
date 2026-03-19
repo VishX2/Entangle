@@ -6,10 +6,6 @@ import { MessageCircle } from "lucide-react";
 import { getOrCreateConversation, fetchConversations } from "../store/userApi";
 import { selectToken, selectCurrentUser } from "../store/authSlice";
 
-/**
- * MessageButton - Opens or creates a conversation with the company owner and navigates to messages.
- * Requires company with created_by (user id). Hidden if messaging self or not logged in.
- */
 export default function MessageButton({ company, variant = "default", className = "" }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();

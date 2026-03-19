@@ -1,12 +1,11 @@
 import { useState } from "react";
-import StartupProfile from "./startupProfile";
+import ProfilePage from "../ProfilePage";
 
 function StartupAgreement({ onAccept, onCancel }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F1E3] px-6">
       <div className="bg-white max-w-2xl w-full rounded-2xl shadow-lg p-8 space-y-6">
 
-        {/* Header */}
         <div>
           <h1 className="text-2xl font-semibold text-[#2B3443]">
             Startup Data Access Agreement
@@ -16,7 +15,6 @@ function StartupAgreement({ onAccept, onCancel }) {
           </p>
         </div>
 
-        {/* Agreement Text */}
         <div className="bg-gray-100 rounded-xl p-4 h-56 overflow-y-auto text-sm text-[#2B3443] space-y-4">
           <p>
             <strong>1. Confidentiality</strong><br />
@@ -48,7 +46,6 @@ function StartupAgreement({ onAccept, onCancel }) {
           </p>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-4">
           <button
             onClick={onAccept}
@@ -88,5 +85,5 @@ export default function StartupProfileGate() {
     );
   }
 
-  return <StartupProfile />;
+  return <ProfilePage userType="startup" />;
 }

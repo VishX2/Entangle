@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
-/*  MOCK DATA  */
 const conversations = [
   {
     id: 1,
@@ -105,7 +104,6 @@ const conversations = [
   },
 ];
 
-/*  COMPONENT  */
 export default function EntrepreneurMessages() {
   const [selected, setSelected] = useState(conversations[0]);
   const [message, setMessage] = useState("");
@@ -134,10 +132,7 @@ export default function EntrepreneurMessages() {
                       grid grid-cols-1 md:grid-cols-[360px_1fr]
                       overflow-hidden">
 
-        {/*  LEFT: CONVERSATIONS  */}
         <div className="border-r border-[#3F5C7D]/20 bg-gradient-to-b from-white to-[#FAF9F6]">
-
-          {/* Header */}
           <div className="p-5 border-b border-[#3F5C7D]/20">
             <h2 className="text-xl font-bold text-[#0F172A]">
               Messages
@@ -153,7 +148,6 @@ export default function EntrepreneurMessages() {
             </div>
           </div>
 
-          {/* Conversation List */}
           <div className="divide-y divide-[#3F5C7D]/10">
             {conversations.map((c) => (
               <button
@@ -201,10 +195,7 @@ export default function EntrepreneurMessages() {
           </div>
         </div>
 
-        {/*  RIGHT: CHAT  */}
         <div className="flex flex-col">
-
-          {/* Chat Header */}
           <div className="p-5 border-b border-[#3F5C7D]/20
                           flex justify-between items-center
                           bg-gradient-to-r from-white to-[#FAF9F6]">
@@ -230,7 +221,6 @@ export default function EntrepreneurMessages() {
             </button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 p-6 space-y-4 overflow-y-auto">
             {selected.messages.map((m, i) => (
               <div
@@ -252,7 +242,6 @@ export default function EntrepreneurMessages() {
             <div ref={endRef} />
           </div>
 
-          {/* Input */}
           <div className="p-5 border-t border-[#3F5C7D]/20 bg-white">
             <div className="flex items-center gap-3">
               <input

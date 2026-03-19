@@ -12,8 +12,6 @@ export default function FeedbackAndRisk() {
 
   return (
     <div className="min-h-screen bg-[#F5F1E3] px-6 py-12 space-y-16">
-
-      {/* HEADER */}
       <section className="max-w-4xl space-y-4">
         <h1 className="text-3xl font-semibold text-[#2B3443]">
           Safety, Privacy & Legal Protection
@@ -24,8 +22,6 @@ export default function FeedbackAndRisk() {
           are enforced by design.
         </p>
       </section>
-
-      {/* TRUST GRID */}
       <section className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <TrustCard
@@ -72,8 +68,6 @@ export default function FeedbackAndRisk() {
           </TrustCard>
         </div>
       </section>
-
-      {/* ACKNOWLEDGEMENT */}
       <section className="max-w-4xl space-y-4">
         <div
           className={`rounded-3xl p-6 transition-all

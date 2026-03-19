@@ -13,8 +13,6 @@ export default function FilterBar({
   return (
     <div className="bg-[#e7e4dc] rounded-2xl p-4">
       <div className="flex flex-wrap items-center gap-3">
-
-        {/* Search */}
         <div className="flex items-center bg-[#f3f1ea] border border-[#d8d5cc] rounded-xl px-4 py-2 flex-1 min-w-[260px]">
           <SearchIcon />
           <input
@@ -25,8 +23,6 @@ export default function FilterBar({
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-
-        {/* Industry */}
         <Dropdown
           value={industry}
           onChange={setIndustry}
@@ -44,8 +40,6 @@ export default function FilterBar({
             "Logistics",
           ]}
         />
-
-        {/* Stage */}
         <Dropdown
           value={stage}
           onChange={setStage}
@@ -57,8 +51,6 @@ export default function FilterBar({
             "Series B",
           ]}
         />
-
-        {/* Location */}
         <Dropdown
           value={location}
           onChange={setLocation}
@@ -78,8 +70,6 @@ export default function FilterBar({
             "New York, NY",
           ]}
         />
-
-        {/* Sort Tabs (Exact style) */}
         <div className="bg-[#f3f1ea] border border-[#d8d5cc] rounded-2xl p-1 flex gap-1">
           <SortButton
             label="Top Rated"
@@ -102,11 +92,6 @@ export default function FilterBar({
     </div>
   );
 }
-
-/* =====================================================
-   SORT BUTTON
-   ===================================================== */
-
 function SortButton({ label, active, onClick }) {
   return (
     <button
@@ -124,11 +109,6 @@ function SortButton({ label, active, onClick }) {
     </button>
   );
 }
-
-/* =====================================================
-   DROPDOWN
-   ===================================================== */
-
 function Dropdown({ value, onChange, options }) {
   return (
     <select
@@ -142,11 +122,6 @@ function Dropdown({ value, onChange, options }) {
     </select>
   );
 }
-
-/* =====================================================
-   SEARCH ICON
-   ===================================================== */
-
 function SearchIcon() {
   return (
     <svg

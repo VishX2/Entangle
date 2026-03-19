@@ -41,15 +41,12 @@ export default function EditNotificationSettings() {
 
   return (
     <div className="bg-white rounded-3xl p-6 shadow">
-      {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <Bell className="text-orange-500" size={18} />
         <h3 className="font-semibold text-slate-900">
           Notifications
         </h3>
       </div>
-
-      {/* Notification rows */}
       <div className="space-y-3">
         {items.map((item) => {
           const Icon = item.icon;

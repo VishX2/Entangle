@@ -11,6 +11,8 @@ import ReportsAndComplaints from "./pages/ReportsAndComplaints";
 import UserManagement from "./pages/UserManagement";
 import ConnectionRequests from "./pages/ConnectionRequests";
 import AIMatchmaking from "./pages/AIMatchmaking";
+import AdminProfile from "./pages/AdminProfile";
+import AdminEditProfile from "./pages/AdminEditProfile";
 import { selectToken, selectIsAdmin } from "./store/authSlice";
 
 // Redirect root path depending on authentication state
@@ -45,6 +47,8 @@ export default function App() {
         <Route path="/register" element={<RegisterOrRedirect />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/profile/edit" element={<ProtectedRoute><AdminEditProfile /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
         <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
         <Route path="/connection-requests" element={<ProtectedRoute><ConnectionRequests /></ProtectedRoute>} />
         <Route path="/investor-verification" element={<ProtectedRoute><InvestorVerification /></ProtectedRoute>} />

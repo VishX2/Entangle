@@ -74,10 +74,12 @@ export default function UserManagement() {
             <p className="text-slate-500 text-sm">Total Users</p>
             <p className="text-2xl font-bold">{users.length}</p>
           </div>
+
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
             <p className="text-slate-500 text-sm">Admins</p>
             <p className="text-2xl font-bold">{adminCount}</p>
           </div>
+
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
             <p className="text-slate-500 text-sm">Regular Users</p>
             <p className="text-2xl font-bold">{userCount}</p>
@@ -101,6 +103,7 @@ export default function UserManagement() {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
+
               <tbody>
                 {users.map((u) => (
                   <tr
@@ -110,6 +113,7 @@ export default function UserManagement() {
                     <td className="px-6 py-4 font-medium">
                       {u.first_name} {u.last_name}
                     </td>
+
                     <td className="px-6 py-4 text-slate-600">{u.email}</td>
                     <td className="px-6 py-4">
                       <span
@@ -120,6 +124,7 @@ export default function UserManagement() {
                         {ROLE_MAP[u.role_id] ?? "User"}
                       </span>
                     </td>
+
                     <td className="px-6 py-4">
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium ${
@@ -129,6 +134,7 @@ export default function UserManagement() {
                         {u.is_active ? "Active" : "Inactive"}
                       </span>
                     </td>
+
                     <td className="px-6 py-4 text-slate-500">
                       {u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}
                     </td>
@@ -158,6 +164,7 @@ export default function UserManagement() {
                       >
                         {u.is_active ? "Deactivate" : "Activate"}
                       </button>
+                      
                     </td>
                   </tr>
                 ))}
@@ -168,7 +175,7 @@ export default function UserManagement() {
           {/* Show message if no users exist */}
           {!loading && users.length === 0 && (
             <div className="p-8 text-center text-slate-500">
-                No users yet. Run seed to create admin.
+              No users yet. Run seed to create admin.
             </div>
           )}
         </div>

@@ -14,10 +14,11 @@ import {
   Tooltip,
   Cell,
 } from "recharts";
-import { Building2, AlertTriangle, Users } from "lucide-react";
+import { Building2, AlertTriangle, Users, Link2 } from "lucide-react";
 import { selectCurrentUser } from "../store/authSlice";
 import { selectDashboard, selectAdminLoading } from "../store/adminSlice";
 
+// Chart color constants
 const CHART_COLORS = {
   gold: "#eab308",
   silver: "#94a3b8",
@@ -35,30 +36,38 @@ export default function AdminDashboard() {
     dispatch(fetchDashboardStats());
   }, [dispatch]);
 
+  // Extract data with fallback defaults
   const stats = dashboard?.stats || {};
   const lineData = dashboard?.lineData || [];
   const barData = dashboard?.barData || [];
   const recentActivity = dashboard?.recentActivity || [];
 
   return (
-    <div className="flex min-h-screen bg-[#f7f3ec]">
+    <div className="flex min-h-screen bg-[#F5F0DD]">
       <Sidebar />
       <main className="flex-1 p-8 space-y-8 overflow-y-auto h-screen">
         <Header name={user?.first_name} />
+
+        {/* Statistics cards */}
         <Stats
           startupsCount={stats.startupsCount ?? 0}
           investorsCount={stats.investorsCount ?? 0}
           companiesCount={stats.companiesCount ?? 0}
           reportsCount={stats.reportsCount ?? 0}
+          pendingConnectionsCount={stats.pendingConnectionsCount ?? 0}
           loading={loading}
         />
+
+        {/* Charts section */}
         <Charts lineData={lineData} barData={barData} loading={loading} />
+        {/* Recent activity feed */}
         <RecentActivity items={recentActivity} loading={loading} />
       </main>
     </div>
   );
 }
 
+// Displays welcome message with admin name
 function Header({ name }) {
   return (
     <div>
@@ -70,16 +79,18 @@ function Header({ name }) {
   );
 }
 
-function Stats({ startupsCount, investorsCount, companiesCount, reportsCount, loading }) {
+// Displays key platform metrics (cards)
+function Stats({ startupsCount, investorsCount, companiesCount, reportsCount, pendingConnectionsCount, loading }) {
   const cards = [
     { title: "Total Startups", value: loading ? "…" : String(startupsCount), sub: "In database", icon: Building2 },
     { title: "Total Companies", value: loading ? "…" : String(companiesCount), sub: "All types", icon: Building2 },
     { title: "Active Investors", value: loading ? "…" : String(investorsCount), sub: "Investor entities", icon: Users },
     { title: "Reported Content", value: loading ? "…" : String(reportsCount), sub: "Pending review", danger: reportsCount > 0, icon: AlertTriangle },
+    { title: "Connection Requests", value: loading ? "…" : String(pendingConnectionsCount ?? 0), sub: "Awaiting approval", danger: (pendingConnectionsCount ?? 0) > 0, icon: Link2 },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
       {cards.map((c) => {
         const Icon = c.icon;
         return (
@@ -108,7 +119,10 @@ function Stats({ startupsCount, investorsCount, companiesCount, reportsCount, lo
   );
 }
 
+// Displays data visualizations (line + bar charts)
 function Charts({ lineData, barData, loading }) {
+
+  // Default fallback data (prevents empty chart crash)
   const defaultLineData = [
     { month: "Aug", gold: 0, silver: 0, bronze: 0 },
     { month: "Sep", gold: 0, silver: 0, bronze: 0 },
@@ -117,7 +131,10 @@ function Charts({ lineData, barData, loading }) {
     { month: "Dec", gold: 0, silver: 0, bronze: 0 },
     { month: "Jan", gold: 0, silver: 0, bronze: 0 },
   ];
+  
   const line = lineData.length ? lineData : defaultLineData;
+
+  // Default bar data
   const bar = barData.length ? barData : [
     { name: "Verifications", value: 0, fill: CHART_COLORS.bronze },
     { name: "Reports", value: 0, fill: CHART_COLORS.dark },
@@ -190,6 +207,7 @@ function Legend({ label, color }) {
   );
 }
 
+// Displays latest system actions (admin activity feed)
 function RecentActivity({ items, loading }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

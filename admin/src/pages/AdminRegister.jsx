@@ -11,6 +11,7 @@ export default function AdminRegister() {
   const dispatch = useDispatch();
   const isLoading = useSelector(selectRegisterLoading);
 
+  // Local state for form inputs
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,13 +28,17 @@ export default function AdminRegister() {
         password,
       })
     );
+
+    // Check if registration was successful
     if (registerUser.fulfilled.match(result)) {
       toast.success("Account created successfully");
+      // Redirect to login page with success flag
       navigate("/login", { replace: true, state: { registered: true } });
     }
   };
 
   const error = useSelector(selectRegisterError);
+  // Show error toast when error changes
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
@@ -43,13 +48,15 @@ export default function AdminRegister() {
       <div className="relative bg-gradient-to-br from-[#0F1C2E] via-[#162840] to-[#0F1C2E] text-white px-10 py-12 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 mb-16">
-            <div className="h-10 w-10 rounded-full bg-orange-500 flex items-center justify-center font-bold">E</div>
+            <img src="/logo.png" alt="Entangle" className="h-10 w-10 object-contain" />
             <span className="text-xl font-semibold">Entangle</span>
           </div>
           <h1 className="text-4xl font-bold leading-tight max-w-md">
             Create your account
           </h1>
           <p className="mt-4 text-gray-300">Join the platform as a new user</p>
+
+          {/* Feature list */}
           <ul className="mt-10 space-y-5">
             <li className="flex gap-4 items-start">
               <span className="text-orange-500">✔</span>
@@ -58,6 +65,7 @@ export default function AdminRegister() {
                 <p className="text-sm text-gray-400">Get started in minutes</p>
               </div>
             </li>
+
             <li className="flex gap-4 items-start">
               <span className="text-orange-500">✔</span>
               <div>
@@ -65,6 +73,7 @@ export default function AdminRegister() {
                 <p className="text-sm text-gray-400">Your data is protected</p>
               </div>
             </li>
+
             <li className="flex gap-4 items-start">
               <span className="text-orange-500">✔</span>
               <div>
@@ -74,21 +83,25 @@ export default function AdminRegister() {
             </li>
           </ul>
         </div>
+
         <p className="text-xs text-gray-400">© 2026 Entangle. Enterprise Administration Portal.</p>
       </div>
 
+      {/* RIGHT SIDE - Registration form */}
       <div className="flex items-center justify-center px-6">
         <div className="w-full max-w-md bg-[#F3EFE7] rounded-2xl shadow-xl p-8">
           <div className="flex justify-center mb-6">
-            <div className="h-14 w-14 rounded-full bg-[#3E516A] flex items-center justify-center text-white text-xl">📝</div>
+            <img src="/logo.png" alt="Entangle" className="h-14 w-14 object-contain" />
           </div>
           <h2 className="text-center text-2xl font-semibold text-[#1F2F46]">Create Account</h2>
           <p className="text-center text-sm text-gray-500 mb-8">Register a new user account</p>
 
+          {/* Error display */}
           {error && (
             <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-700 text-sm">{error}</div>
           )}
 
+          {/* Registration form */}
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -103,6 +116,7 @@ export default function AdminRegister() {
                   required
                 />
               </div>
+
               <div>
                 <label htmlFor="lastName" className="block text-sm font-medium mb-1">Last name</label>
                 <input
@@ -114,8 +128,9 @@ export default function AdminRegister() {
                   className="w-full rounded-lg border px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                 />
-              </div>
+              </div>             
             </div>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
               <input
@@ -128,6 +143,7 @@ export default function AdminRegister() {
                 required
               />
             </div>
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
               <input
@@ -141,6 +157,8 @@ export default function AdminRegister() {
                 required
               />
             </div>
+
+            {/* Submit button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -150,6 +168,7 @@ export default function AdminRegister() {
             </button>
           </form>
 
+          {/* Navigation to login */}
           <p className="text-sm text-gray-500 mt-6 text-center">
             Already have an account?{" "}
             <Link to="/login" className="text-orange-500 font-medium hover:text-orange-600">

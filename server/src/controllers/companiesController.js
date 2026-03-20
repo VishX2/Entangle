@@ -70,7 +70,10 @@ async function create(req, res, next) {
       founder_name, years_experience, investment_focus, min_investment, max_investment,
       funding_stage, team_size, is_verified, verification_tier,
     } = req.body;
+
     if (!name || !company_type) return res.status(400).json({ error: 'name and company_type required' });
+
+    // Create new company record
     const company = await prisma.company.create({
       data: {
         name,
@@ -89,13 +92,12 @@ async function create(req, res, next) {
         team_size: team_size ?? null,
         is_verified: is_verified ?? false,
         verification_tier: verification_tier || null,
-
-        // Track who created and last updated the record
         created_by: req.userId,
         updated_by: req.userId,
       },
       select: selectFields,
     });
+
     res.status(201).json(company);
   } catch (err) {
     if (err.code === 'P2003' || err.message?.includes('Invalid enum')) return res.status(400).json({ error: 'Invalid company_type. Use: entrepreneur, investor, startup' });
@@ -107,6 +109,8 @@ async function create(req, res, next) {
 async function update(req, res, next) {
   try {
     const { id } = req.params;
+
+    // Extract fields from request body
     const {
       name, company_type, description, logo_url, website_url, headquarters, founded_year,
       is_verified, verification_tier, is_active, founder_name, years_experience, investment_focus,
@@ -132,21 +136,68 @@ async function update(req, res, next) {
     if (max_investment !== undefined) data.max_investment = max_investment;
     if (funding_stage !== undefined) data.funding_stage = funding_stage;
     if (team_size !== undefined) data.team_size = team_size;
-
-    if (Object.keys(data).length === 0) 
-        return res.status(400).json({ error: 'No fields to update' });
-
+    
+    if (Object.keys(data).length === 0) return res.status(400).json({ error: 'No fields to update' });
     data.updated_by = req.userId;
 
+    // Update company record
     const company = await prisma.company.update({
       where: { id: parseInt(id, 10) },
       data,
       select: selectFields,
     });
+
     res.json(company);
   } catch (err) {
-    if (err.code === 'P2025') 
-        return res.status(404).json({ error: 'Company not found' });
+    if (err.code === 'P2025') return res.status(404).json({ error: 'Company not found' });
+    next(err);
+  }
+}
+
+//Update the company profile of the authenticated user
+async function updateMyCompany(req, res, next) {
+  try {
+    const myCompany = await prisma.company.findFirst({
+      where: { created_by: req.userId, is_active: true },
+      select: { id: true },
+      orderBy: { created_at: 'desc' },
+    });
+    
+    if (!myCompany) return res.status(404).json({ error: 'No active company profile found for this user' });
+
+    const {
+      name, description, logo_url, website_url, headquarters,
+      founder_name, years_experience, investment_focus, min_investment,
+      max_investment, funding_stage, team_size,
+    } = req.body;
+
+    // Build update object
+    const data = {};
+    if (name !== undefined) data.name = name;
+    if (description !== undefined) data.description = description;
+    if (logo_url !== undefined) data.logo_url = logo_url;
+    if (website_url !== undefined) data.website_url = website_url;
+    if (headquarters !== undefined) data.headquarters = headquarters;
+    if (founder_name !== undefined) data.founder_name = founder_name;
+    if (years_experience !== undefined) data.years_experience = years_experience;
+    if (investment_focus !== undefined) data.investment_focus = investment_focus;
+    if (min_investment !== undefined) data.min_investment = min_investment;
+    if (max_investment !== undefined) data.max_investment = max_investment;
+    if (funding_stage !== undefined) data.funding_stage = funding_stage;
+    if (team_size !== undefined) data.team_size = team_size;
+
+    if (Object.keys(data).length === 0) return res.status(400).json({ error: 'No fields to update' });
+    data.updated_by = req.userId;
+
+    // Update user's company
+    const company = await prisma.company.update({
+      where: { id: myCompany.id },
+      data,
+      select: selectFields,
+    });
+
+    res.json(company);
+  } catch (err) {
     next(err);
   }
 }
@@ -160,10 +211,9 @@ async function remove(req, res, next) {
     });
     res.status(204).send();
   } catch (err) {
-    if (err.code === 'P2025') 
-        return res.status(404).json({ error: 'Company not found' });
+    if (err.code === 'P2025') return res.status(404).json({ error: 'Company not found' });
     next(err);
   }
 }
 
-module.exports = { list, summary, getById, create, update, remove };
+module.exports = { list, summary, getById, create, update, updateMyCompany, remove };

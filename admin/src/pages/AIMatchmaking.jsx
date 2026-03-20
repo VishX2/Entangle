@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Sparkles } from "lucide-react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/organisms/Sidebar";
 import {
   fetchCompanies,
   fetchInvestorsForStartup,
@@ -21,7 +21,6 @@ import {
 
 export default function AIMatchmaking() {
   const dispatch = useDispatch();
-
   // Redux selectors for companies and matchmaking results
   const companies = useSelector(selectCompanies);
   const investorMatches = useSelector(selectInvestorMatches);
@@ -30,8 +29,7 @@ export default function AIMatchmaking() {
   const investorEntrepreneurMatches = useSelector(selectInvestorEntrepreneurMatches);
   const loading = useSelector(selectMatchmakingLoading);
 
-  // Local UI state for current matchmaking mode and selected entities
-  const [mode, setMode] = useState("investors"); // "investors" | "entrepreneurs" | "startups"
+  const [mode, setMode] = useState("investors");
   const [selectedInvestorId, setSelectedInvestorId] = useState(null);
   const [selectedEntrepreneurId, setSelectedEntrepreneurId] = useState(null);
   const [selectedStartupId, setSelectedStartupId] = useState(null);
@@ -75,20 +73,20 @@ export default function AIMatchmaking() {
 
   // Animated loader displayed while matchmaking request is running
   const MatchmakingLoader = () => (
-    <div className="animate-matchmaking-pulse bg-white rounded-xl shadow-lg border border-orange-200 overflow-hidden">
+    <div className="animate-matchmaking-pulse bg-white rounded-xl shadow-lg border border-[#EF6F5B]/30 overflow-hidden">
       <div className="animate-matchmaking-shimmer px-8 py-16 text-center">
         <div className="flex justify-center gap-2 mb-4">
-          <Sparkles className="w-8 h-8 text-orange-500 animate-matchmaking-sparkle" />
-          <Sparkles className="w-8 h-8 text-orange-400 animate-matchmaking-sparkle" style={{ animationDelay: "0.2s" }} />
-          <Sparkles className="w-8 h-8 text-orange-500 animate-matchmaking-sparkle" style={{ animationDelay: "0.4s" }} />
+          <Sparkles className="w-8 h-8 text-[#EF6F5B] animate-matchmaking-sparkle" />
+          <Sparkles className="w-8 h-8 text-[#EF6F5B]/80 animate-matchmaking-sparkle" style={{ animationDelay: "0.2s" }} />
+          <Sparkles className="w-8 h-8 text-[#EF6F5B] animate-matchmaking-sparkle" style={{ animationDelay: "0.4s" }} />
         </div>
-        <p className="text-lg font-medium text-slate-700">AI is analyzing profiles...</p>
-        <p className="text-sm text-slate-500 mt-1">Finding the best matches for you</p>
+        <p className="text-lg font-medium text-[#2F3B4B]">AI is analyzing profiles...</p>
+        <p className="text-sm text-[#5a6575] mt-1">Finding the best matches for you</p>
         <div className="flex justify-center gap-1 mt-6">
           {[0, 1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 rounded-full bg-orange-400 animate-bounce"
+              className="w-2 h-2 rounded-full bg-[#EF6F5B] animate-bounce"
               style={{ animationDelay: `${i * 0.1}s`, animationDuration: "0.6s" }}
             />
           ))}
@@ -99,12 +97,12 @@ export default function AIMatchmaking() {
 
   // Reusable table component to display matchmaking results
   const MatchTable = ({ title, matches, type }) => (
-    <div className="animate-matchmaking-fade-in bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div className="px-6 py-4 bg-slate-50 border-b border-slate-200">
+    <div className="animate-matchmaking-fade-in bg-white rounded-xl shadow-sm border border-[#e2ddd0] overflow-hidden">
+      <div className="px-6 py-4 bg-[#F5F0DD] border-b border-[#e2ddd0]">
         <span className="font-medium">{title}</span>
       </div>
       <table className="w-full text-sm">
-        <thead className="bg-gray-100 border-b border-slate-200">
+        <thead className="bg-[#F5F0DD] border-b border-[#e2ddd0]">
           <tr>
             <th className="px-6 py-4 text-left">{type}</th>
             <th className="px-6 py-4 text-left">Focus</th>
@@ -117,20 +115,20 @@ export default function AIMatchmaking() {
           {matches.map(({ company, score, breakdown }, idx) => (
             <tr
               key={company.id}
-              className="border-b border-slate-200 last:border-0 hover:bg-gray-50 animate-matchmaking-fade-in"
+              className="border-b border-[#e2ddd0] last:border-0 hover:bg-[#F5F0DD]/50 animate-matchmaking-fade-in"
               style={{ animationDelay: `${idx * 0.03}s`, animationFillMode: "both" }}
             >
               <td className="px-6 py-4 font-medium">{company.name}</td>
-              <td className="px-6 py-4 text-slate-500">
+              <td className="px-6 py-4 text-[#5a6575]">
                 {company.investment_focus || "—"}
               </td>
-              <td className="px-6 py-4 text-slate-500">
+              <td className="px-6 py-4 text-[#5a6575]">
                 {company.funding_stage || "—"}
               </td>
               <td className="px-6 py-4">
-                <span className="font-semibold text-orange-600">{score}%</span>
+                <span className="font-semibold text-[#EF6F5B]">{score}%</span>
               </td>
-              <td className="px-6 py-4 text-slate-500 text-xs">
+              <td className="px-6 py-4 text-[#5a6575] text-xs">
                 {breakdown
                   ? `Ind:${breakdown.industry} Stg:${breakdown.stage} Chk:${breakdown.checkSize} Loc:${breakdown.location} Trust:${breakdown.trust}${breakdown.semantic != null ? ` Sem:${breakdown.semantic}` : ""}`
                   : "—"}
@@ -140,7 +138,7 @@ export default function AIMatchmaking() {
         </tbody>
       </table>
       {matches.length === 0 && (
-        <div className="p-8 text-center text-slate-500">No matches found</div>
+        <div className="p-8 text-center text-[#5a6575]">No matches found</div>
       )}
     </div>
   );
@@ -151,13 +149,13 @@ export default function AIMatchmaking() {
 
       <main className="flex-1 p-8 overflow-y-auto">
         <h1 className="text-2xl font-semibold flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-orange-500" />
+          <Sparkles className="w-6 h-6 text-[#EF6F5B]" />
           AI Matchmaking
         </h1>
-        <p className="text-slate-500 mb-6">
+        <p className="text-[#5a6575] mb-6">
           Match investors, entrepreneurs, and startups using AI-powered scoring
           {(investorMatches?.aiEnabled || startupMatches?.aiEnabled || entrepreneurMatches?.aiEnabled || investorEntrepreneurMatches?.aiEnabled) && (
-            <span className="ml-2 inline-flex items-center gap-1 text-orange-600 font-medium">
+            <span className="ml-2 inline-flex items-center gap-1 text-[#e85a45] font-medium">
               <Sparkles className="w-4 h-4" />
               OpenAI embeddings enabled
             </span>
@@ -170,8 +168,8 @@ export default function AIMatchmaking() {
             onClick={() => setMode("investors")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               mode === "investors"
-                ? "bg-orange-500 text-white"
-                : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                ? "bg-[#EF6F5B] text-white"
+                : "bg-white text-[#465B77] hover:bg-[#F5F0DD] border border-[#e2ddd0]"
             }`}
           >
             Investors
@@ -180,8 +178,8 @@ export default function AIMatchmaking() {
             onClick={() => setMode("entrepreneurs")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               mode === "entrepreneurs"
-                ? "bg-orange-500 text-white"
-                : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                ? "bg-[#EF6F5B] text-white"
+                : "bg-white text-[#465B77] hover:bg-[#F5F0DD] border border-[#e2ddd0]"
             }`}
           >
             Entrepreneurs
@@ -190,8 +188,8 @@ export default function AIMatchmaking() {
             onClick={() => setMode("startups")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               mode === "startups"
-                ? "bg-orange-500 text-white"
-                : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                ? "bg-[#EF6F5B] text-white"
+                : "bg-white text-[#465B77] hover:bg-[#F5F0DD] border border-[#e2ddd0]"
             }`}
           >
             Startups
@@ -201,19 +199,19 @@ export default function AIMatchmaking() {
         {/* INVESTORS TAB */}
         {mode === "investors" && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2ddd0]">
               <h2 className="text-lg font-medium mb-4">Match for an investor</h2>
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-[#5a6575] mb-4">
                 Select an investor to see matching startups and entrepreneurs
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <label className="text-sm text-slate-600">Investor:</label>
+                <label className="text-sm text-[#465B77]">Investor:</label>
                 <select
                   value={selectedInvestorId ?? ""}
                   onChange={(e) =>
                     setSelectedInvestorId(e.target.value ? Number(e.target.value) : null)
                   }
-                  className="px-4 py-2 rounded-lg border border-slate-200 min-w-[220px]"
+                  className="px-4 py-2 rounded-lg border border-[#e2ddd0] min-w-[220px]"
                 >
                   <option value="">— Select investor —</option>
                   {investors.map((i) => (
@@ -225,14 +223,14 @@ export default function AIMatchmaking() {
                 <button
                   onClick={runInvestorsMatch}
                   disabled={!selectedInvestorId || loading}
-                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[#EF6F5B] text-white font-medium hover:bg-[#e85a45] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Sparkles className="w-4 h-4" />
                   {loading ? "Matching…" : "Run AI Match"}
                 </button>
               </div>
               {investors.length === 0 && (
-                <p className="mt-2 text-sm text-slate-500">No investors in the database.</p>
+                <p className="mt-2 text-sm text-[#5a6575]">No investors in the database.</p>
               )}
             </div>
 
@@ -257,19 +255,19 @@ export default function AIMatchmaking() {
         {/* ENTREPRENEURS TAB */}
         {mode === "entrepreneurs" && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2ddd0]">
               <h2 className="text-lg font-medium mb-4">Match for an entrepreneur</h2>
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-[#5a6575] mb-4">
                 Select an entrepreneur to see matching investors
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <label className="text-sm text-slate-600">Entrepreneur:</label>
+                <label className="text-sm text-[#465B77]">Entrepreneur:</label>
                 <select
                   value={selectedEntrepreneurId ?? ""}
                   onChange={(e) =>
                     setSelectedEntrepreneurId(e.target.value ? Number(e.target.value) : null)
                   }
-                  className="px-4 py-2 rounded-lg border border-slate-200 min-w-[220px]"
+                  className="px-4 py-2 rounded-lg border border-[#e2ddd0] min-w-[220px]"
                 >
                   <option value="">— Select entrepreneur —</option>
                   {entrepreneurs.map((e) => (
@@ -281,14 +279,14 @@ export default function AIMatchmaking() {
                 <button
                   onClick={runEntrepreneursMatch}
                   disabled={!selectedEntrepreneurId || loading}
-                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[#EF6F5B] text-white font-medium hover:bg-[#e85a45] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Sparkles className="w-4 h-4" />
                   {loading ? "Matching…" : "Run AI Match"}
                 </button>
               </div>
               {entrepreneurs.length === 0 && (
-                <p className="mt-2 text-sm text-slate-500">No entrepreneurs in the database.</p>
+                <p className="mt-2 text-sm text-[#5a6575]">No entrepreneurs in the database.</p>
               )}
             </div>
 
@@ -306,19 +304,19 @@ export default function AIMatchmaking() {
         {/* STARTUPS TAB */}
         {mode === "startups" && (
           <div className="space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-[#e2ddd0]">
               <h2 className="text-lg font-medium mb-4">Match for a startup</h2>
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-[#5a6575] mb-4">
                 Select a startup to see matching investors
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <label className="text-sm text-slate-600">Startup:</label>
+                <label className="text-sm text-[#465B77]">Startup:</label>
                 <select
                   value={selectedStartupId ?? ""}
                   onChange={(e) =>
                     setSelectedStartupId(e.target.value ? Number(e.target.value) : null)
                   }
-                  className="px-4 py-2 rounded-lg border border-slate-200 min-w-[220px]"
+                  className="px-4 py-2 rounded-lg border border-[#e2ddd0] min-w-[220px]"
                 >
                   <option value="">— Select startup —</option>
                   {startups.map((s) => (
@@ -330,14 +328,14 @@ export default function AIMatchmaking() {
                 <button
                   onClick={runStartupsMatch}
                   disabled={!selectedStartupId || loading}
-                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[#EF6F5B] text-white font-medium hover:bg-[#e85a45] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Sparkles className="w-4 h-4" />
                   {loading ? "Matching…" : "Run AI Match"}
                 </button>
               </div>
               {startups.length === 0 && (
-                <p className="mt-2 text-sm text-slate-500">No startups in the database.</p>
+                <p className="mt-2 text-sm text-[#5a6575]">No startups in the database.</p>
               )}
             </div>
 

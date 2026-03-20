@@ -1,0 +1,45 @@
+{
+  "name": "lama-dev-next-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^5.7.5",
+    "@clerk/shared": "^4.3.1",
+    "@clerk/types": "^4.101.20",
+    "@hookform/resolvers": "^3.9.0",
+    "@prisma/client": "^5.22.0",
+    "@types/react-big-calendar": "^1.8.9",
+    "moment": "^2.30.1",
+    "next": "^14.2.35",
+    "next-cloudinary": "^6.17.5",
+    "prisma": "^5.22.0",
+    "react": "^18",
+    "react-big-calendar": "^1.13.2",
+    "react-calendar": "^5.0.0",
+    "react-dom": "^18",
+    "react-hook-form": "^7.52.2",
+    "react-toastify": "^10.0.5",
+    "recharts": "^2.12.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  }
+}

@@ -1,4 +1,6 @@
-export default function FundingNews() {
+export default function FundingNews({ investors = [] }) {
+  const primary = investors[0];
+  const secondary = investors[1];
   return (
     <section>
       <h2 className="text-lg font-semibold mb-4">
@@ -10,7 +12,6 @@ export default function FundingNews() {
           <div className="overflow-hidden">
             <img
               src="/images/building.svg"
-              alt="Funding news"
               className="h-64 w-full object-cover hover:scale-105 transition duration-300"
             />
           </div>
@@ -19,7 +20,9 @@ export default function FundingNews() {
               Funding Round
             </span>
             <h3 className="font-semibold mt-2">
-              FinTech investor raises major round
+              {primary?.name
+                ? `${primary.name} backs a new round`
+                : "FinTech investor raises major round"}
             </h3>
             <p className="text-sm text-gray-500">
               $25M Series A · 2h ago
@@ -29,7 +32,11 @@ export default function FundingNews() {
 
         <div className="space-y-4">
           <SmallFundingCard
-            title="AI platform secures growth funding"
+            title={
+              secondary?.name
+                ? `${secondary.name} secures growth funding`
+                : "AI platform secures growth funding"
+            }
             tag="Investor Insight"
             image="/images/ai.svg"
           />
@@ -50,7 +57,6 @@ function SmallFundingCard({ title, tag, image }) {
       <div className="overflow-hidden">
         <img
           src={image}
-          alt=""
           className="h-32 w-full object-cover hover:scale-105 transition duration-300"
         />
       </div>

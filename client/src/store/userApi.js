@@ -82,7 +82,15 @@ export const updateProfile = createAsyncThunk('user/updateProfile', async (body,
   }
 });
 
-// ----- AI Matchmaking -----
+export const getImageKitAuth = createAsyncThunk('user/imageKitAuth', async (_, { rejectWithValue }) => {
+  try {
+    const { data } = await api.get('/imagekit/auth');
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.error || err.message);
+  }
+});
+
 export const fetchInvestorsForStartup = createAsyncThunk(
   'user/investorsForStartup',
   async ({ startupId, limit }, { rejectWithValue }) => {
@@ -155,7 +163,6 @@ export const uploadDocument = createAsyncThunk(
   }
 );
 
-// ----- Messaging -----
 export const fetchConversations = createAsyncThunk('user/conversations', async (_, { rejectWithValue }) => {
   try {
     const { data } = await api.get('/conversations');
@@ -192,7 +199,6 @@ export const sendMessage = createAsyncThunk('user/sendMessage', async ({ convers
   }
 });
 
-// ----- Notifications -----
 export const fetchNotifications = createAsyncThunk('user/notifications', async (_, { rejectWithValue }) => {
   try {
     const { data } = await api.get('/notifications');
@@ -252,7 +258,6 @@ export const fetchConnectionRequestsSent = createAsyncThunk(
   }
 );
 
-// ----- Content scan (PII detection) -----
 export const scanContent = createAsyncThunk('user/scanContent', async ({ text, fields }, { rejectWithValue }) => {
   try {
     const { data } = await api.post('/content/scan', { text, fields });

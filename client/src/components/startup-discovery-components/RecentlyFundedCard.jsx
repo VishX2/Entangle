@@ -1,8 +1,6 @@
 export default function RecentlyFundedCard({ startups }) {
   return (
     <div className="bg-[#ece9e2] rounded-2xl p-6 shadow-sm">
-      
-      {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-[#f3e3dc] flex items-center justify-center">
@@ -18,8 +16,6 @@ export default function RecentlyFundedCard({ startups }) {
           <ArrowIcon />
         </button>
       </div>
-
-      {/* List */}
       <div className="space-y-5">
         {startups.map((startup) => (
           <FundedItem key={startup.name} startup={startup} />
@@ -28,16 +24,9 @@ export default function RecentlyFundedCard({ startups }) {
     </div>
   );
 }
-
-/* =====================================================
-   ITEM
-   ===================================================== */
-
 function FundedItem({ startup }) {
   return (
     <div className="flex items-center justify-between">
-      
-      {/* Left */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-[#dcdad4] flex items-center justify-center text-sm font-semibold text-slate-600">
           {startup.initials}
@@ -52,8 +41,6 @@ function FundedItem({ startup }) {
           </p>
         </div>
       </div>
-
-      {/* Right */}
       <div className="text-right">
         <p className="text-[#ff6b4a] font-semibold text-sm">
           {startup.amount}
@@ -65,11 +52,6 @@ function FundedItem({ startup }) {
     </div>
   );
 }
-
-/* =====================================================
-   ICONS
-   ===================================================== */
-
 function FundingIcon() {
   return (
     <svg

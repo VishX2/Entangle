@@ -9,6 +9,7 @@ const registerSchema = z.object({
   first_name: z.string().min(1, 'First name is required').max(100),
   last_name: z.string().max(100).optional(),
   user_type: z.enum(['investor', 'startup', 'entrepreneur']).optional(),
+  profile_picture: z.string().min(1).optional().nullable(),
   company: z.record(z.string(), z.unknown()).optional(),
 });
 

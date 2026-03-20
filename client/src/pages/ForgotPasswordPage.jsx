@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Mail, ArrowRight, KeyRound, CheckCircle, ArrowLeft } from 'lucide-react';
-import AuthSidebar from '../components/AuthSidebar';
+import { AuthSidebar } from '../components/organisms/layout';
 import { forgotPassword } from '../store/authApi';
 
 export default function ForgotPasswordPage() {
@@ -39,10 +39,7 @@ export default function ForgotPasswordPage() {
   if (isSubmitted) {
     return (
       <div className="min-h-screen flex">
-        {/* Sidebar */}
         <AuthSidebar />
-
-        {/* Main Content */}
         <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -96,10 +93,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
-
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -124,7 +118,6 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#8AABCD]/20">
-          {/* Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#465775] to-[#2F3848] flex items-center justify-center">
               <Mail className="w-8 h-8 text-white" />
@@ -132,7 +125,6 @@ export default function ForgotPasswordPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
             <div>
               <label className="block text-sm font-semibold text-[#2F3848] mb-2">
                 Email Address
@@ -156,8 +148,6 @@ export default function ForgotPasswordPage() {
                 <p className="mt-2 text-sm text-red-500">{error}</p>
               )}
             </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -177,8 +167,6 @@ export default function ForgotPasswordPage() {
             </button>
           </form>
         </div>
-
-        {/* Help Text */}
         <div className="mt-8 bg-white/80 backdrop-blur-sm border border-[#8AABCD]/20 rounded-xl p-4">
           <div className="flex items-start gap-3">
             <KeyRound className="w-5 h-5 text-[#465775] mt-0.5" />

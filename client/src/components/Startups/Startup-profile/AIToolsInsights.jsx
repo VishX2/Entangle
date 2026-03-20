@@ -1,4 +1,28 @@
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCompanies, fetchProfile } from "../../../store/userApi";
+import { selectCurrentUser } from "../../../store/authSlice";
+import { selectCompanies, selectProfile } from "../../../store/userSlice";
+
 export default function AIToolsInsights() {
+  const dispatch = useDispatch();
+  const profile = useSelector(selectProfile);
+  const authUser = useSelector(selectCurrentUser);
+  const companies = useSelector(selectCompanies);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+    dispatch(fetchCompanies());
+  }, [dispatch]);
+
+  const user = profile ?? authUser;
+  const myCompany = useMemo(() => {
+    const mine = (companies || []).filter((c) => Number(c.created_by) === Number(user?.id));
+    return mine.find((c) => c.company_type === "startup") || mine[0] || null;
+  }, [companies, user?.id]);
+  const profileFields = [user?.first_name, user?.last_name, user?.email, user?.profile_picture, myCompany?.name, myCompany?.description, myCompany?.website_url, myCompany?.headquarters];
+  const completeness = Math.round((profileFields.filter(Boolean).length / profileFields.length) * 100);
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-slate-100 space-y-5">
 
@@ -19,12 +43,12 @@ export default function AIToolsInsights() {
             <TargetIcon />
             Profile Completeness
           </div>
-          <span className="text-orange-500 font-semibold">85%</span>
+          <span className="text-orange-500 font-semibold">{completeness}%</span>
         </div>
 
         {/* PROGRESS BAR */}
         <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
-          <div className="h-full w-[85%] bg-orange-500 rounded-full" />
+          <div className="h-full bg-orange-500 rounded-full" style={{ width: `${completeness}%` }} />
         </div>
 
         {/* SUGGESTIONS */}

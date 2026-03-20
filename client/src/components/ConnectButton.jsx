@@ -6,10 +6,6 @@ import { ArrowRight } from "lucide-react";
 import { sendConnectionRequest } from "../store/userApi";
 import { selectToken } from "../store/authSlice";
 
-/**
- * ConnectButton - Sends a connection request and shows "Connect request sent" toast.
- * Use redirectToRequests to navigate to connection requests page after success.
- */
 export default function ConnectButton({ companyId, variant = "default", className = "", children, redirectToRequests }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();

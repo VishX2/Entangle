@@ -51,8 +51,6 @@ export default function StartupCollaborations() {
 
   return (
     <div className="min-h-screen bg-[#F7F3E6] p-10 space-y-12">
-
-      {/*  HEADER  */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-[#0F172A]">
           Startup Collaboration Opportunities
@@ -62,8 +60,6 @@ export default function StartupCollaborations() {
           growth opportunities.
         </p>
       </div>
-
-      {/*  SEARCH & FILTER  */}
       <div
         className="flex flex-col md:flex-row gap-4
                    bg-gradient-to-br from-white to-[#FAF9F6]
@@ -94,8 +90,6 @@ export default function StartupCollaborations() {
           Filters
         </button>
       </div>
-
-      {/*  RESULTS  */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {filtered.map((item) => (
           <div
@@ -106,10 +100,7 @@ export default function StartupCollaborations() {
                        shadow-sm transition
                        hover:shadow-xl hover:-translate-y-1"
           >
-            {/* Accent bar */}
             <div className="absolute left-0 top-6 w-1 h-12 bg-[#F97316] rounded-r" />
-
-            {/* Header */}
             <div className="space-y-1">
               <h2 className="text-xl font-bold text-[#0F172A]">
                 {item.title}
@@ -118,8 +109,6 @@ export default function StartupCollaborations() {
                 {item.company}
               </p>
             </div>
-
-            {/* Meta */}
             <div className="flex flex-wrap gap-4 mt-4 text-sm text-[#475569]">
               <span className="flex items-center gap-1">
                 <MapPin size={14} />
@@ -130,13 +119,9 @@ export default function StartupCollaborations() {
                 {item.stage}
               </span>
             </div>
-
-            {/* Description */}
             <p className="mt-4 text-[#64748B] leading-relaxed">
               {item.description}
             </p>
-
-            {/* Industries */}
             <div className="flex flex-wrap gap-2 mt-5">
               {item.industries.map((ind) => (
                 <span
@@ -148,8 +133,6 @@ export default function StartupCollaborations() {
                 </span>
               ))}
             </div>
-
-            {/* CTA */}
             <button
               className="mt-6 w-full flex items-center justify-center gap-2
                          rounded-xl py-3
@@ -165,8 +148,6 @@ export default function StartupCollaborations() {
           </div>
         ))}
       </div>
-
-      {/*  EMPTY STATE  */}
       {filtered.length === 0 && (
         <div className="text-center py-20">
           <Briefcase size={40} className="mx-auto text-[#64748B]" />

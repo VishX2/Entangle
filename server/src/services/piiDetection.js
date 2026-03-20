@@ -1,7 +1,3 @@
-/**
- * Basic PII/sensitive data detection for live content monitoring.
- * Returns warnings if potentially sensitive patterns are found.
- */
 const PATTERNS = [
   { name: 'Credit card', regex: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/, message: 'Possible credit card number detected' },
   { name: 'SSN', regex: /\b\d{3}-\d{2}-\d{4}\b/, message: 'Possible SSN format detected' },

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Eye } from "lucide-react";
-import Sidebar from "../components/Sidebar";
-import InvestorActionDropdown from "../components/InvestorActionDropdown";
-
-/* STATUS STYLES */
+import Sidebar from "../components/organisms/Sidebar";
+import { fetchCompanies, updateCompany } from "../store/adminApi";
+import { selectCompanies, selectAdminLoading } from "../store/adminSlice";
 
 const STATUS_STYLES = {
   Pending: "bg-blue-100 text-blue-700",
@@ -11,124 +11,65 @@ const STATUS_STYLES = {
   Rejected: "bg-red-100 text-red-700",
 };
 
-/* PAGE */
+const TIERS = ["gold", "silver", "bronze", "none"];
 
 export default function InvestorVerification() {
-  const [investors, setInvestors] = useState([
-    {
-      id: 1,
-      name: "Capital Partners LLC",
-      type: "Institution",
-      idNumber: "BRN-2024-001234",
-      status: "Pending",
-      kycSubmitted: true,
-      brnVerified: false,
-      documents: 6,
-      submitted: "2024-01-15",
-    },
-    {
-      id: 2,
-      name: "John Anderson",
-      type: "Individual",
-      idNumber: "ID-98765432",
-      status: "Verified",
-      kycSubmitted: true,
-      brnVerified: true,
-      documents: 4,
-      submitted: "2024-01-10",
-    },
-    {
-      id: 3,
-      name: "Venture Holdings Inc.",
-      type: "Company",
-      idNumber: "BRN-2024-005678",
-      status: "Verified",
-      kycSubmitted: true,
-      brnVerified: true,
-      documents: 8,
-      submitted: "2024-01-08",
-    },
-    {
-      id: 4,
-      name: "Sarah Mitchell",
-      type: "Individual",
-      idNumber: "ID-12345678",
-      status: "Pending",
-      kycSubmitted: true,
-      brnVerified: false,
-      documents: 3,
-      submitted: "2024-01-14",
-    },
-    {
-      id: 5,
-      name: "Global Investments Group",
-      type: "Institution",
-      idNumber: "BRN-2024-009012",
-      status: "Rejected",
-      kycSubmitted: true,
-      brnVerified: false,
-      documents: 5,
-      submitted: "2024-01-05",
-    },
-    {
-      id: 6,
-      name: "TechFund Capital",
-      type: "Company",
-      idNumber: "BRN-2024-003456",
-      status: "Pending",
-      kycSubmitted: false,
-      brnVerified: false,
-      documents: 7,
-      submitted: "2024-01-13",
-    },
-  ]);
+  const dispatch = useDispatch();
 
-  /* ACTION HANDLERS */
+  // Get investor data and loading state from Redux store
+  const investors = useSelector(selectCompanies);
+  const loading = useSelector(selectAdminLoading);
 
+  // Fetch investor-type companies when component mounts
+  useEffect(() => {
+    dispatch(fetchCompanies({ type: "investor" }));
+  }, [dispatch]);
+
+  // Mark an investor as verified
   const markVerified = (id) => {
-    setInvestors((prev) =>
-      prev.map((i) =>
-        i.id === id
-          ? { ...i, status: "Verified", brnVerified: true }
-          : i
-      )
-    );
+    dispatch(updateCompany({ id, is_verified: true }));
   };
 
+  // Reject an investor (set inactive)
   const rejectInvestor = (id) => {
-    setInvestors((prev) =>
-      prev.map((i) =>
-        i.id === id ? { ...i, status: "Rejected" } : i
-      )
-    );
+    dispatch(updateCompany({ id, is_active: false }));
   };
 
-  /* COUNTS */
+  // Update verification tier
+  const setTier = (id, verification_tier) => {
+    dispatch(updateCompany({ id, verification_tier }));
+  };
 
+  // Determine status label based on company properties
+  const getStatus = (c) => {
+    if (!c.is_active) return "Rejected";
+    return c.is_verified ? "Verified" : "Pending";
+  };
+
+  // Compute dashboard counts for each status category
   const counts = {
-    Pending: investors.filter((i) => i.status === "Pending").length,
-    Verified: investors.filter((i) => i.status === "Verified").length,
-    Rejected: investors.filter((i) => i.status === "Rejected").length,
-    "KYC Submitted": investors.filter((i) => i.kycSubmitted).length,
-    "BRN Verified": investors.filter((i) => i.brnVerified).length,
+    Pending: investors.filter((c) => c.is_active && !c.is_verified).length,
+    Verified: investors.filter((c) => c.is_verified).length,
+    Rejected: investors.filter((c) => !c.is_active).length,
   };
 
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
       <Sidebar />
 
+      {/* Main content area */}
       <main className="flex-1 p-8 overflow-y-auto">
         <h1 className="text-2xl font-semibold">Investor Verification</h1>
         <p className="text-slate-500 mb-6">
           Manage investor identity & compliance verification
         </p>
 
-        {/* SUMMARY CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        {/* Summary cards showing counts of each status */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {Object.entries(counts).map(([label, value]) => (
             <div
               key={label}
-              className="bg-white rounded-xl p-5 border border-gray-200"
+              className="bg-white rounded-xl p-5 shadow-sm border border-slate-200"
             >
               <p className="text-slate-500 text-sm">{label}</p>
               <p className="text-2xl font-bold">{value}</p>
@@ -136,90 +77,108 @@ export default function InvestorVerification() {
           ))}
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white rounded-xl border border-gray-200 ">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-100 border-b">
-              <tr>
-                <th className="px-6 py-4 text-left">Investor Name</th>
-                <th className="px-6 py-4 text-left">Investor Type</th>
-                <th className="px-6 py-4 text-left">BRN / ID Number</th>
-                <th className="px-6 py-4 text-left">Status</th>
-                <th className="px-6 py-4 text-left">Documents</th>
-                <th className="px-6 py-4 text-left">Submitted</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {investors.map((i) => (
-                <tr key={i.id} className="border-b last:border-0">
-                  <td className="px-6 py-4 font-medium">{i.name}</td>
-                  <td className="px-6 py-4 text-slate-500">{i.type}</td>
-                  <td className="px-6 py-4 text-slate-500">
-                    {i.idNumber}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[i.status]}`}
-                    >
-                      {i.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-500">
-                    {i.documents} files
-                  </td>
-                  <td className="px-6 py-4 text-slate-500">
-                    {i.submitted}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-end items-center gap-4">
-                      {/* View */}
-                      <button
-                        className="text-slate-500 hover:text-slate-800 transition"
-                        title="View Details"
-                      >
-                        <Eye className="w-5 h-5" />
-                      </button>
-
-                      {/* Approve / Reject */}
-                      {i.status === "Pending" && (
-                        <>
-                          <button
-                            onClick={() => markVerified(i.id)}
-                            className="text-green-600 hover:scale-110 transition"
-                            title="Approve"
-                          >
-                            ✔
-                          </button>
-                          <button
-                            onClick={() => rejectInvestor(i.id)}
-                            className="text-red-500 hover:scale-110 transition"
-                            title="Reject"
-                          >
-                            ✖
-                          </button>
-                        </>
-                      )}
-
-                      {/* Actions Dropdown */}
-                      <InvestorActionDropdown
-                        onVerify={() => markVerified(i.id)}
-                        onViewDocs={() =>
-                          alert(`Viewing documents for ${i.name}`)
-                        }
-                        onRequestInfo={() =>
-                          alert(
-                            `Requesting additional info from ${i.name}`
-                          )
-                        }
-                      />
-                    </div>
-                  </td>
+        {/* Table container */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          {loading ? (
+            <div className="p-8 text-center text-slate-500">Loading...</div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="bg-gray-100 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-4 text-left">Investor Name</th>
+                  <th className="px-6 py-4 text-left">Type</th>
+                  <th className="px-6 py-4 text-left">Verification Tier</th>
+                  <th className="px-6 py-4 text-left">Status</th>
+                  <th className="px-6 py-4 text-left">Created</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {investors.map((c) => {
+                  const status = getStatus(c);
+                  return (
+                    <tr key={c.id} className="border-b border-slate-200 last:border-0 hover:bg-gray-50 transition">
+                      <td className="px-6 py-4 font-medium">{c.name}</td>
+                      <td className="px-6 py-4 text-slate-500 capitalize">
+                        {c.company_type}
+                      </td>
+
+                      <td className="px-6 py-4 text-slate-500 capitalize">
+                        {c.verification_tier || "none"}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[status]}`}
+                        >
+                          {status}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 text-slate-500">
+                        {c.created_at
+                          ? new Date(c.created_at).toLocaleDateString()
+                          : "-"}
+                      </td>
+
+                      {/* Status badge */}
+                      <td className="px-6 py-4">
+                        <div className="flex justify-end items-center gap-2 flex-wrap">
+                          <button
+                            className="text-slate-500 hover:text-slate-800 transition"
+                            title="View Details"
+                          >
+                            <Eye className="w-5 h-5" />
+                          </button>
+
+                          {status === "Pending" && (
+                            <>
+                              <button
+                                onClick={() => markVerified(c.id)}
+                                className="text-green-600 hover:scale-110 transition px-2"
+                                title="Verify"
+                              >
+                                ✔
+                              </button>
+                              <button
+                                onClick={() => rejectInvestor(c.id)}
+                                className="text-red-500 hover:scale-110 transition px-2"
+                                title="Reject"
+                              >
+                                ✖
+                              </button>
+                            </>
+                          )}
+
+                          {/* Dropdown to change verification tier */}
+                          <select
+                            value={c.verification_tier || "none"}
+                            onChange={(e) =>
+                              setTier(c.id, e.target.value || null)
+                            }
+                            className="text-sm border border-slate-200 rounded px-2 py-1"
+                          >
+                            {TIERS.map((t) => (
+                              <option key={t} value={t}>
+                                {t}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+          
+          {!loading && investors.length === 0 && (
+            <div className="p-8 text-center text-slate-500">
+              No investors found
+            </div>
+          )}
         </div>
       </main>
     </div>

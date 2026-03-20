@@ -1,0 +1,14 @@
+[
+  {
+    "source": "/api/<*>",
+    "status": "200",
+    "target": "http://13.63.159.74/api/<*>",
+    "condition": null
+  },
+  {
+    "source": "/api",
+    "status": "200",
+    "target": "http://13.63.159.74/api",
+    "condition": null
+  }
+]

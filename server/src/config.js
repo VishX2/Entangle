@@ -3,6 +3,7 @@ require('dotenv').config();
 const config = {
   port: parseInt(process.env.PORT, 10) || 8000,
   nodeEnv: process.env.NODE_ENV || 'development',
+  apiUrl: process.env.API_URL || `http://localhost:${process.env.PORT || 8000}`,
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET,
   openaiApiKey: process.env.OPENAI_API_KEY || '',

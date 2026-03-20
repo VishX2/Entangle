@@ -10,9 +10,9 @@ describe('Home', () => {
         <Home />
       </MemoryRouter>
     );
-    const logo = screen.getByAltText('Entangle');
-    expect(logo).toBeInTheDocument();
-    expect(logo).toHaveAttribute('src', '/favicon.png');
+    const logos = screen.getAllByAltText('Entangle Logo');
+    expect(logos.length).toBeGreaterThan(0);
+    expect(logos[0]).toHaveAttribute('src', '/logo.png');
   });
 
   it('renders main heading', () => {
@@ -22,9 +22,8 @@ describe('Home', () => {
       </MemoryRouter>
     );
     const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toHaveTextContent(/Connect/);
-    expect(heading).toHaveTextContent(/Verify/);
-    expect(heading).toHaveTextContent(/Invest/);
+    expect(heading).toHaveTextContent(/Connecting Startups & Investors with/i);
+    expect(heading).toHaveTextContent(/AI Intelligence/i);
   });
 
   it('renders login and sign up links', () => {
@@ -33,8 +32,10 @@ describe('Home', () => {
         <Home />
       </MemoryRouter>
     );
-    expect(screen.getByRole('link', { name: /login/i })).toHaveAttribute('href', '/login');
-    expect(screen.getByRole('link', { name: /sign up/i })).toHaveAttribute('href', '/select-type');
+
+    expect(screen.getByRole('link', { name: /Startup Login/i })).toHaveAttribute('href', '/login');
+    expect(screen.getByRole('link', { name: /Investor Login/i })).toHaveAttribute('href', '/login');
+    expect(screen.getByRole('link', { name: /Entrepreneur Login/i })).toHaveAttribute('href', '/login');
   });
 
   it('renders Get Started button', () => {

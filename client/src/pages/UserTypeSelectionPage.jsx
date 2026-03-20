@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CheckCircle, TrendingUp, Briefcase, ArrowRight, Shield, Zap, Users } from 'lucide-react';
-import AuthSidebar from '../components/AuthSidebar';
+import { AuthSidebar } from '../components/organisms/layout';
 
 export default function UserTypeSelection() {
   const [selectedType, setSelectedType] = useState(null);
@@ -19,10 +19,8 @@ export default function UserTypeSelection() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
 
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -51,7 +49,6 @@ export default function UserTypeSelection() {
           <h2 className="text-2xl font-bold text-center text-[#2F3848] mb-10">Choose Your Account Type</h2>
           
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Investor Card */}
             <div
               onClick={() => setSelectedType('investor')}
               className={`relative bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 border-2 ${
@@ -98,7 +95,6 @@ export default function UserTypeSelection() {
               </div>
             </div>
 
-            {/* Entrepreneur Card */}
             <div
               onClick={() => setSelectedType('entrepreneur')}
               className={`relative bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 border-2 ${
@@ -145,7 +141,6 @@ export default function UserTypeSelection() {
               </div>
             </div>
 
-            {/* Startup Card */}
             <div
               onClick={() => setSelectedType('startup')}
               className={`relative bg-white rounded-2xl p-8 cursor-pointer transition-all duration-300 border-2 ${
@@ -194,7 +189,6 @@ export default function UserTypeSelection() {
           </div>
         </div>
 
-        {/* Continue Button */}
         <div className="text-center">
           <button
             onClick={handleContinue}
@@ -213,7 +207,6 @@ export default function UserTypeSelection() {
           )}
         </div>
 
-        {/* Trust Indicators */}
         <div className="grid md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto">
           <div className="text-center">
             <div className="flex justify-center mb-3">
@@ -246,7 +239,6 @@ export default function UserTypeSelection() {
           </div>
         </div>
 
-        {/* Already have account */}
         <div className="text-center mt-10">
           <span className="text-[#465775]/70">Already have an account? </span>
           <Link to="/login" className="text-[#E5654E] font-semibold hover:underline">Sign in</Link>

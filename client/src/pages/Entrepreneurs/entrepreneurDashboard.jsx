@@ -1,111 +1,181 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+
+import { fetchCompanies, fetchConnectionRequestsSent, fetchConversations } from "../../store/userApi";
+import {
+  selectCompanies,
+  selectConnectionRequestsSent,
+  selectConversations,
+} from "../../store/userSlice";
 import { selectCurrentUser } from "../../store/authSlice";
 
 export default function EntrepreneurDashboard() {
-  const user = useSelector(selectCurrentUser);
-  const [dashboardData] = useState({
-    profileStrength: 76,
-    influenceScore: 88,
-    monthlyRevenue: 58000,
-    activeInvestors: 27,
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const companies = useSelector(selectCompanies);
+  const connectionRequestsSent = useSelector(selectConnectionRequestsSent);
+  const conversations = useSelector(selectConversations);
 
-    growthMetrics: [
-      { id: 1, title: "Revenue Growth", value: "+26%" },
-      { id: 2, title: "Investor Growth", value: "+14%" },
-      { id: 3, title: "Burn Rate", value: "$15K/mo" },
-    ],             
+  const [news, setNews] = useState([]);
 
-    investorInterest: [
-      {
-        id: 1,
-        name: "BluePeak Ventures",
-        action: "Viewed your startup",
-      },
-      {
-        id: 2,
-        name: "NextGen Capital",
-        action: "Saved your pitch",
-      },
-    ],
+  const fetchNews = async () => {
+    try {
+      const res = await axios.get(
+        "https://newsapi.org/v2/top-headlines?category=business&language=en&pageSize=6&apiKey=39a049a8c44c49518239d23453c96d6b"
+      );
+      setNews(res.data.articles || []);
+    } catch (err) {
+      console.error("News fetch error:", err);
+    }
+  };
 
-    news: [
-      {
-        id: 1,
-        title: "AI Startup Raises $25M Series A",
-        source: { name: "TechCrunch" },
-        urlToImage:
-          "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
-      },
-      {
-        id: 2,
-        title: "FinTech Platform Expands Globally",
-        source: { name: "Forbes" },
-        urlToImage:
-          "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80",
-  
-      },
-    ],
+  useEffect(() => {
+    fetchNews();
+    dispatch(fetchCompanies());
+    dispatch(fetchConnectionRequestsSent());
+    dispatch(fetchConversations());
+  }, [dispatch]);
 
-    quickActions: [
+  const myCompany = useMemo(() => {
+    const uid = Number(currentUser?.id);
+    if (!Number.isFinite(uid)) return null;
+    return (companies || []).find(
+      (c) => Number(c?.created_by) === uid && c?.company_type === "entrepreneur"
+    );
+  }, [companies, currentUser?.id]);
+
+  const acceptedConnectionsCount = useMemo(() => {
+    return (connectionRequestsSent || []).filter(
+      (r) => r?.status === "accepted"
+    ).length;
+  }, [connectionRequestsSent]);
+
+  const trustScore = myCompany?.is_verified ? 92 : 58;
+
+  const profileStrength = useMemo(() => {
+    if (!myCompany) return 76;
+    const fields = [
+      myCompany?.description,
+      myCompany?.logo_url,
+      myCompany?.website_url,
+      myCompany?.headquarters,
+      myCompany?.founded_year,
+      myCompany?.investment_focus,
+      myCompany?.min_investment,
+      myCompany?.max_investment,
+      myCompany?.funding_stage,
+      myCompany?.team_size,
+      myCompany?.years_experience,
+    ];
+
+    const filledCount = fields.filter((v) => {
+      if (v === null || v === undefined) return false;
+      if (typeof v === "string") return v.trim().length > 0;
+      if (typeof v === "number") return Number.isFinite(v) && v !== 0;
+      return true;
+    }).length;
+
+    return Math.round((filledCount / fields.length) * 100);
+  }, [myCompany]);
+
+  const monthlyRevenue = useMemo(() => {
+    const maxInv = Number(myCompany?.max_investment);
+    const minInv = Number(myCompany?.min_investment);
+    const raw = Number.isFinite(maxInv) && maxInv > 0 ? maxInv : Number.isFinite(minInv) ? minInv : 58000;
+    return Math.round(raw);
+  }, [myCompany]);
+
+  const activeInvestors = useMemo(() => {
+    const totalReviews = Number(myCompany?.total_reviews);
+    if (Number.isFinite(totalReviews) && totalReviews > 0) return totalReviews;
+    return acceptedConnectionsCount || 27;
+  }, [myCompany, acceptedConnectionsCount]);
+
+  const growthMetrics = useMemo(() => {
+    const revGrowth = `+${Math.min(35, Math.max(5, Math.round(profileStrength / 3)))}%`;
+    const investorGrowth = `+${Math.min(30, Math.max(8, acceptedConnectionsCount * 2 || 14))}%`;
+    const burnRateK = Math.max(8, Math.round((myCompany?.years_experience || 3) * 3));
+    return [
+      { id: 1, title: "Revenue Growth", value: revGrowth },
+      { id: 2, title: "Investor Growth", value: investorGrowth },
+      { id: 3, title: "Burn Rate", value: `$${burnRateK}K/mo` },
+    ];
+  }, [acceptedConnectionsCount, myCompany?.years_experience, profileStrength]);
+
+  const investorCompanies = useMemo(() => {
+    return (companies || []).filter((c) => c?.company_type === "investor").slice(0, 2);
+  }, [companies]);
+
+  const investorInterest = useMemo(() => {
+    return investorCompanies.map((inv, idx) => ({
+      id: idx + 1,
+      name: inv?.name || "Investor",
+      action: idx === 0 ? "Viewed your startup" : "Saved your pitch",
+    }));
+  }, [investorCompanies]);
+
+  const recentActivity = useMemo(() => {
+    return (conversations || []).slice(0, 3).map((c, idx) => ({
+      id: idx + 1,
+      text: `${c?.other_user?.name || "Investor"}: ${
+        c?.last_message?.content || "New message"
+      }`.slice(0, 80),
+    }));
+  }, [conversations]);
+
+  const recommendedInvestors = useMemo(() => {
+    return (companies || [])
+      .filter((c) => c?.company_type === "investor")
+      .slice(0, 3)
+      .map((inv, idx) => ({ id: idx + 1, name: inv?.name || "Investor" }));
+  }, [companies]);
+
+  const quickActions = useMemo(
+    () => [
       { id: 1, label: "Upload Pitch Deck" },
       { id: 2, label: "Edit Profile" },
     ],
+    []
+  );
 
-    recentActivity: [
-      { id: 1, text: "Investor viewed profile" },
-      { id: 2, text: "Pitch saved by VC" },
-      { id: 3, text: "New message received" },
-    ],
-
-    recommendedInvestors: [
-      { id: 1, name: "Sequoia Capital" },
-      { id: 2, name: "Andreessen Horowitz" },
-      { id: 3, name: "Accel Partners" },
-    ],
-  });
+  const displayName = currentUser?.first_name || "Founder";
 
   return (
-    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-8">
+    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-4">
       <EntrepreneurHero
-        userName={user?.first_name || 'Founder'}
-        revenue={dashboardData.monthlyRevenue}
-        investors={dashboardData.activeInvestors}
-        influence={dashboardData.influenceScore}
+        revenue={monthlyRevenue}
+        investors={activeInvestors}
+        influence={trustScore}
+        displayName={displayName}
       />
 
-      <div className="grid grid-cols-12 gap-6">
-
-        {/* MAIN CONTENT */}
-        <div className="col-span-12 lg:col-span-9 space-y-8">
-          <GrowthMetrics metrics={dashboardData.growthMetrics} />
-          <InvestorInterest interests={dashboardData.investorInterest} />
-          <EntrepreneurNews news={dashboardData.news} />
+      <div className="grid grid-cols-12 gap-4 items-stretch">
+        {/* MAIN CONTENT - matches sidebar height with flex */}
+        <div className="col-span-12 lg:col-span-9 flex flex-col gap-4">
+          <GrowthAndInterest metrics={growthMetrics} interests={investorInterest} />
+          <EntrepreneurNews news={news} />
         </div>
 
         {/* SIDEBAR */}
-        <div className="col-span-12 lg:col-span-3 space-y-6">
-          <ProfileStrength value={dashboardData.profileStrength} />
-          <QuickActions actions={dashboardData.quickActions} />
-          <RecentActivity activities={dashboardData.recentActivity} />
-          <RecommendedInvestors
-            investors={dashboardData.recommendedInvestors}
-          />
+        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
+          <ProfileStrength value={profileStrength} />
+          <QuickActions actions={quickActions} />
+          <RecentActivity activities={recentActivity} />
+          <RecommendedInvestors investors={recommendedInvestors} />
         </div>
-
       </div>
     </div>
   );
 }
 
 /* ---------------- COMPONENTS ---------------- */
-
-function EntrepreneurHero({ userName, revenue, investors, influence }) {
+function EntrepreneurHero({ revenue, investors, influence, displayName }) {
   return (
     <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 shadow-lg">
       <p className="text-sm opacity-80">ENTREPRENEUR DASHBOARD</p>
       <h1 className="text-3xl font-semibold mt-1">
-        Welcome back, {userName}
+        Welcome back, {displayName}
       </h1>
 
       <div className="flex flex-wrap gap-6 mt-6">
@@ -126,47 +196,57 @@ function StatCard({ title, value }) {
   );
 }
 
-function GrowthMetrics({ metrics }) {
+/* Combined Growth + Investor Interest - matches FundingNews visual weight */
+function GrowthAndInterest({ metrics, interests }) {
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-4">Growth Metrics</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {metrics.map((metric) => (
-          <div
-            key={metric.id}
-            className="bg-white rounded-2xl p-6 shadow
-                       hover:shadow-xl hover:-translate-y-1
-                       transition duration-200"
-          >
-            <p className="text-sm text-gray-500">{metric.title}</p>
-            <p className="text-2xl font-semibold mt-2 text-[#E66A4B]">
-              {metric.value}
-            </p>
+      <h2 className="text-lg font-semibold mb-4">Growth & Traction</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Large featured card - Growth Metrics */}
+        <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200">
+          <div className="h-40 bg-gradient-to-br from-[#2E3A4B] to-[#465F7F] flex items-center justify-center">
+            <div className="grid grid-cols-3 gap-4 w-full px-6">
+              {metrics.map((m) => (
+                <div key={m.id} className="text-center">
+                  <p className="text-white/80 text-xs uppercase tracking-wide">{m.title}</p>
+                  <p className="text-2xl md:text-3xl font-bold text-white mt-1">{m.value}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function InvestorInterest({ interests }) {
-  return (
-    <section>
-      <h2 className="text-lg font-semibold mb-4">Investor Interest</h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {interests.map((item) => (
-          <div
-            key={item.id}
-            className="bg-white rounded-2xl p-5 shadow
-                       hover:shadow-xl hover:-translate-y-1
-                       transition duration-200"
-          >
-            <p className="font-medium">{item.name}</p>
-            <p className="text-sm text-gray-500 mt-1">{item.action}</p>
+          <div className="p-4">
+            <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Your metrics</span>
+            <p className="text-sm text-gray-500 mt-2">Track revenue, investor engagement & burn</p>
           </div>
-        ))}
+        </div>
+
+        {/* Investor Interest cards - stacked like FundingNews */}
+        <div className="flex flex-col gap-4">
+          {(interests || []).map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200 flex-1 min-h-[120px]"
+            >
+              <div className="h-20 bg-gradient-to-r from-orange-50 to-amber-50 flex items-center gap-4 px-4">
+                <div className="w-12 h-12 rounded-xl bg-[#E66A4B]/20 flex items-center justify-center shrink-0">
+                  <span className="text-[#E66A4B] font-bold text-lg">{item.name?.charAt(0) || "?"}</span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-slate-800 truncate">{item.name}</p>
+                  <p className="text-sm text-slate-500">{item.action}</p>
+                </div>
+              </div>
+              <div className="p-3 border-t border-slate-100">
+                <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">Investor</span>
+              </div>
+            </div>
+          ))}
+          {(!interests || interests.length === 0) && (
+            <div className="bg-white rounded-2xl p-6 shadow-md flex items-center justify-center min-h-[120px] text-slate-400 text-sm">
+              No investor activity yet
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -180,9 +260,9 @@ function EntrepreneurNews({ news }) {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {news.map((item) => (
+        {(news || []).map((item) => (
           <div
-            key={item.id}
+            key={item.id || item.url}
             className="bg-white rounded-2xl overflow-hidden shadow
                        hover:shadow-xl hover:-translate-y-1
                        transition duration-200"
@@ -212,9 +292,7 @@ function ProfileStrength({ value }) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
       <h3 className="font-semibold mb-3">Profile Strength</h3>
-      <p className="text-3xl font-semibold text-[#E66A4B]">
-        {value}%
-      </p>
+      <p className="text-3xl font-semibold text-[#E66A4B]">{value}%</p>
     </div>
   );
 }
@@ -232,6 +310,7 @@ function QuickActions({ actions }) {
                      hover:shadow-md hover:-translate-y-1
                      active:scale-95
                      transition duration-200"
+          type="button"
         >
           {action.label}
         </button>
@@ -257,9 +336,7 @@ function RecentActivity({ activities }) {
 function RecommendedInvestors({ investors }) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
-      <h3 className="font-semibold mb-3">
-        Recommended Investors
-      </h3>
+      <h3 className="font-semibold mb-3">Recommended Investors</h3>
 
       {investors.map((inv) => (
         <p key={inv.id} className="text-sm py-1">
@@ -271,6 +348,7 @@ function RecommendedInvestors({ investors }) {
         className="mt-4 w-full bg-[#E66A4B] text-white py-2 rounded-xl
                    hover:bg-[#d85e40] hover:shadow-md hover:-translate-y-1
                    active:scale-95 transition duration-200"
+        type="button"
       >
         Explore More Investors
       </button>

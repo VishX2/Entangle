@@ -9,12 +9,8 @@ export default function StartupCard({ startup, matchScore }) {
 
   return (
     <div className="bg-[#f1eee7] rounded-2xl p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
-
-      {/* Top Section */}
       <div>
         <div className="flex items-start justify-between">
-          
-          {/* Logo + Name */}
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-[#e0e4e6] flex items-center justify-center overflow-hidden">
               {startup.logo ? (
@@ -40,27 +36,19 @@ export default function StartupCard({ startup, matchScore }) {
               </p>
             </div>
           </div>
-
-          {/* Rating / Match Score */}
           <div className="bg-[#ffe4dc] text-[#ff6b4a] text-sm font-semibold px-3 py-1 rounded-full flex items-center gap-1">
             <StarIcon />
             {matchScore != null ? `${matchScore}% match` : startup.rating}
           </div>
         </div>
-
-        {/* Description */}
         <p className="mt-4 text-slate-600 text-sm leading-relaxed">
           {startup.description}
         </p>
-
-        {/* Tags */}
         <div className="flex gap-2 mt-4 flex-wrap">
           <Tag label={startup.industry} />
           <Tag label={startup.stage} />
         </div>
       </div>
-
-      {/* Buttons */}
       <div className="mt-5 flex gap-3 flex-wrap">
         <button
           onClick={() => navigate(`${base}/company/${startup.id}`)}
@@ -75,11 +63,6 @@ export default function StartupCard({ startup, matchScore }) {
     </div>
   );
 }
-
-/* =====================================================
-   TAG
-   ===================================================== */
-
 function Tag({ label }) {
   return (
     <span className="bg-[#e7e4dc] text-slate-600 text-xs px-3 py-1 rounded-full">
@@ -87,11 +70,6 @@ function Tag({ label }) {
     </span>
   );
 }
-
-/* =====================================================
-   ICONS
-   ===================================================== */
-
 function LocationIcon() {
   return (
     <svg

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CheckCircle, Lightbulb, User, Building2, Upload, Eye, EyeOff } from 'lucide-react';
-import AuthSidebar from '../../components/AuthSidebar';
+import { AuthSidebar } from '../../components/organisms/layout';
 import { registerUser } from '../../store/authApi';
 import { uploadDocument } from '../../store/userApi';
 import { selectAuthLoading, selectAuthError } from '../../store/authSlice';
@@ -16,7 +16,7 @@ export default function EntrepreneurRegistration() {
   const [formData, setFormData] = useState({
     fullName: '', email: '', phone: '', nicId: '', password: '', confirmPassword: '',
     companyName: '', industry: '', businessStage: '', fundingNeeded: '',
-    idDocument: null, businessPlan: null, referenceLetter: null, agreeToTerms: false
+    profilePicture: null, idDocument: null, businessPlan: null, referenceLetter: null, agreeToTerms: false
   });
 
   const handleInputChange = (e) => {
@@ -43,6 +43,15 @@ export default function EntrepreneurRegistration() {
       return;
     }
     dispatch(clearError());
+    let profile_picture = null;
+    if (formData.profilePicture) {
+      const up = await dispatch(uploadDocument(formData.profilePicture));
+      if (uploadDocument.rejected.match(up)) {
+        dispatch(setError(up.payload || 'Failed to upload profile picture'));
+        return;
+      }
+      profile_picture = up.payload?.file_url;
+    }
     let referenceLetterUrl = null;
     if (formData.referenceLetter) {
       const uploadResult = await dispatch(uploadDocument(formData.referenceLetter));
@@ -60,6 +69,7 @@ export default function EntrepreneurRegistration() {
       password: formData.password,
       first_name,
       last_name,
+      profile_picture,
       phone: formData.phone || null,
       nic_id: formData.nicId || null,
       reference_letter_url: referenceLetterUrl,
@@ -78,10 +88,7 @@ export default function EntrepreneurRegistration() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
-
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -104,8 +111,6 @@ export default function EntrepreneurRegistration() {
             Get verified and connect with trusted investors through our AI-powered matching platform
           </p>
         </div>
-
-        {/* Progress Steps */}
         <div className="mb-10">
           <div className="flex items-center justify-between max-w-xl mx-auto">
             {[1, 2, 3].map((step) => (
@@ -135,7 +140,6 @@ export default function EntrepreneurRegistration() {
             <div className="mb-6 p-3 rounded-xl bg-red-100 text-red-700 text-sm">{error}</div>
           )}
           <form onSubmit={handleSubmit}>
-            {/* Step 1: Personal Information */}
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
@@ -145,6 +149,16 @@ export default function EntrepreneurRegistration() {
                   <h2 className="text-xl font-bold text-[#2F3848]">Personal Information</h2>
                 </div>
                 
+                <div>
+                  <label className="block text-sm font-semibold text-[#2F3848] mb-2">Profile picture</label>
+                  <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-4 text-center hover:border-[#465775] transition bg-[#F5F3E7]/30">
+                    <input type="file" id="profilePicture" onChange={(e) => handleFileChange(e, 'profilePicture')} className="hidden" accept="image/*" />
+                    <label htmlFor="profilePicture" className="cursor-pointer flex flex-col items-center gap-2">
+                      <Upload className="w-8 h-8 text-[#8AABCD]" />
+                      <span className="text-sm text-[#2F3848]">{formData.profilePicture?.name || 'Upload your photo'}</span>
+                    </label>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-sm font-semibold text-[#2F3848] mb-2">Full Name *</label>
                   <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange}
@@ -201,8 +215,6 @@ export default function EntrepreneurRegistration() {
                 </div>
               </div>
             )}
-
-            {/* Step 2: Business Details */}
             {currentStep === 2 && (
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
@@ -258,8 +270,6 @@ export default function EntrepreneurRegistration() {
                 </div>
               </div>
             )}
-
-            {/* Step 3: Verification */}
             {currentStep === 3 && (
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
@@ -324,8 +334,6 @@ export default function EntrepreneurRegistration() {
                 </div>
               </div>
             )}
-
-            {/* Navigation Buttons */}
             <div className="flex justify-between mt-10 pt-6 border-t border-[#8AABCD]/20">
               {currentStep > 1 ? (
                 <button type="button" onClick={() => setCurrentStep(currentStep - 1)}

@@ -36,7 +36,7 @@ export default function InvestorMessages() {
   const conversations = conversationsList.map((c) => ({
     id: c.id,
     name: c.other_user?.name || c.other_user?.email || "Unknown",
-    avatar: null,
+    avatar: c.other_user?.profile_picture || null,
     lastMessage: c.last_message,
   }));
 
@@ -92,11 +92,9 @@ export default function InvestorMessages() {
 
   return (
     <div className="h-screen flex bg-[#D8D4C5] font-sans">
-      {/* Sidebar */}
       <div className="w-72.5 bg-[#2E3A4B] text-white flex flex-col">
         <div className="px-6 py-5 text-lg font-semibold">Messages</div>
 
-        {/* Search */}
         <div className="px-4 pb-4">
           <div className="flex items-center bg-[#465F7F] rounded-lg px-3 py-2">
             <Search size={16} className="text-gray-300" />
@@ -107,7 +105,6 @@ export default function InvestorMessages() {
           </div>
         </div>
 
-        {/* Conversations */}
         <div className="flex-1 overflow-y-auto">
           {conversations.map((c) => (
             <div
@@ -141,15 +138,21 @@ export default function InvestorMessages() {
         </div>
       </div>
 
-      {/* Chat section */}
       <div className="flex-1 flex flex-col">
         {activeChat ? (
           <>
-        {/* Header */}
         <div className="h-16 bg-white flex items-center justify-between px-6 border-b">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
-              <User size={20} className="text-[#465F7F]" />
+              {activeChat.avatar ? (
+                <img
+                  src={activeChat.avatar}
+                  alt={activeChat.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              ) : (
+                <User size={20} className="text-[#465F7F]" />
+              )}
             </div>
             <div>
               <div className="font-semibold text-sm">{activeChat.name}</div>
@@ -163,7 +166,6 @@ export default function InvestorMessages() {
           </div>
         </div>
 
-        {/* Messages */}
         <div className="flex-1 p-6 space-y-5 overflow-y-auto">
           {messages.map((msg, i) => (
             <div
@@ -192,7 +194,6 @@ export default function InvestorMessages() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
         <div className="bg-white px-5 py-3 flex items-center gap-3 border-t">
           <Paperclip className="text-gray-500" size={20} />
           <Smile className="text-gray-500" size={20} />

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Smartphone, ArrowRight, RefreshCw, Shield, CheckCircle } from 'lucide-react';
-import AuthSidebar from '../components/AuthSidebar';
+import { AuthSidebar } from '../components/organisms/layout';
 
 export default function VerificationPage() {
   const navigate = useNavigate();
@@ -65,10 +65,7 @@ export default function VerificationPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
-
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -93,7 +90,6 @@ export default function VerificationPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-[#8AABCD]/20">
-          {/* Verification Type Tabs */}
           <div className="flex gap-3 mb-8">
             <button
               onClick={() => {
@@ -124,8 +120,6 @@ export default function VerificationPage() {
               <span>Phone</span>
             </button>
           </div>
-
-          {/* Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-full bg-[#465775]/10 flex items-center justify-center">
               {verificationType === 'email' ? (
@@ -135,16 +129,12 @@ export default function VerificationPage() {
               )}
             </div>
           </div>
-
-          {/* Message */}
           <div className="text-center mb-8">
             <h2 className="text-lg font-bold text-[#2F3848] mb-2">Enter Verification Code</h2>
             <p className="text-sm text-[#465775]/70">
               Code sent to <span className="font-semibold text-[#2F3848]">{verificationType === 'email' ? email : phone}</span>
             </p>
           </div>
-
-          {/* Code Input */}
           <div className="flex justify-center gap-3 mb-6">
             {verificationCode.map((digit, index) => (
               <input
@@ -161,8 +151,6 @@ export default function VerificationPage() {
               />
             ))}
           </div>
-
-          {/* Resend Code */}
           <div className="text-center mb-6">
             {canResend ? (
               <button
@@ -179,8 +167,6 @@ export default function VerificationPage() {
               </p>
             )}
           </div>
-
-          {/* Verify Button */}
           <button
             onClick={handleVerify}
             disabled={!isCodeComplete}
@@ -194,8 +180,6 @@ export default function VerificationPage() {
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>
-
-        {/* Security Note */}
         <div className="mt-8 bg-white/80 backdrop-blur-sm border border-[#8AABCD]/20 rounded-xl p-4">
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-[#465775] mt-0.5" />

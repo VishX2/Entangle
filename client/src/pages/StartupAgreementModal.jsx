@@ -6,10 +6,7 @@ export default function StartupAccessAgreement() {
 
   return (
     <div className="min-h-screen bg-[#D6D3C2] flex items-center justify-center p-4">
-      {/* Main Card */}
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
-        
-        {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
             <FileText className="text-[#2E3A4B]" size={20} />
@@ -18,13 +15,9 @@ export default function StartupAccessAgreement() {
             ENTANGLE PLATFORM
           </span>
         </div>
-
-        {/* Title */}
         <h1 className="text-3xl font-semibold text-[#2E3A4B] mb-3">
           Startup Data Access Agreement
         </h1>
-
-        {/* Subtitle */}
         <p className="text-[#6B7280] mb-6 leading-relaxed">
           Please review and accept this agreement before accessing startup
           information. Your commitment to these terms ensures a trusted
@@ -32,11 +25,7 @@ export default function StartupAccessAgreement() {
         </p>
 
         <hr className="mb-6" />
-
-        {/* Agreement Scroll Box */}
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 h-64 overflow-y-auto space-y-5">
-          
-          {/* Section 1 */}
           <div className="flex gap-3">
             <Lock className="text-[#87A6B9]" size={20} />
             <div>
@@ -51,8 +40,6 @@ export default function StartupAccessAgreement() {
               </p>
             </div>
           </div>
-
-          {/* Section 2 */}
           <div className="flex gap-3">
             <Shield className="text-[#87A6B9]" size={20} />
             <div>
@@ -66,8 +53,6 @@ export default function StartupAccessAgreement() {
               </p>
             </div>
           </div>
-
-          {/* Section 3 */}
           <div className="flex gap-3">
             <Eye className="text-[#87A6B9]" size={20} />
             <div>
@@ -81,8 +66,6 @@ export default function StartupAccessAgreement() {
               </p>
             </div>
           </div>
-
-          {/* Section 4 */}
           <div>
             <h3 className="font-semibold text-[#2E3A4B] mb-1">
               4. Platform Disclaimer
@@ -93,8 +76,6 @@ export default function StartupAccessAgreement() {
               legality, or outcomes of any information shared between parties.
             </p>
           </div>
-
-          {/* Section 5 */}
           <div>
             <h3 className="font-semibold text-[#2E3A4B] mb-1">
               5. Legal Responsibility
@@ -106,8 +87,6 @@ export default function StartupAccessAgreement() {
             </p>
           </div>
         </div>
-
-        {/* Checkbox */}
         <label className="flex items-center gap-3 mt-6 cursor-pointer">
           <input
             type="checkbox"
@@ -119,8 +98,6 @@ export default function StartupAccessAgreement() {
             I have read and agree to the Startup Data Access Agreement.
           </span>
         </label>
-
-        {/* Buttons */}
         <div className="flex gap-4 mt-6">
           <button
             disabled={!agreed}
@@ -138,8 +115,6 @@ export default function StartupAccessAgreement() {
             Cancel
           </button>
         </div>
-
-        {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-6">
           Protected by Entangle's Investor Trust Framework · v2.1
         </p>

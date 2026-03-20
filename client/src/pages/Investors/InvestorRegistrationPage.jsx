@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CheckCircle, TrendingUp, User, Briefcase, DollarSign, Linkedin, Globe, FileText } from 'lucide-react';
-import AuthSidebar from '../../components/AuthSidebar';
+import { CheckCircle, TrendingUp, User, Briefcase, DollarSign, Linkedin, Globe, FileText, Upload } from 'lucide-react';
+import { AuthSidebar } from '../../components/organisms/layout';
 import { registerUser } from '../../store/authApi';
+import { uploadDocument } from '../../store/userApi';
 import { selectAuthLoading, selectAuthError } from '../../store/authSlice';
-import { clearError } from '../../store/authSlice';
+import { clearError, setError } from '../../store/authSlice';
 
 export default function InvestorRegistration() {
   const navigate = useNavigate();
@@ -27,12 +28,32 @@ export default function InvestorRegistration() {
     linkedIn: '',
     portfolio: '',
     experience: '',
+    profilePicture: null,
+    companyLogo: null,
     agreeToTerms: false
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(clearError());
+    let profile_picture = null;
+    let logo_url = null;
+    if (formData.profilePicture) {
+      const up = await dispatch(uploadDocument(formData.profilePicture));
+      if (uploadDocument.rejected.match(up)) {
+        dispatch(setError(up.payload || 'Failed to upload profile picture'));
+        return;
+      }
+      profile_picture = up.payload?.file_url;
+    }
+    if (formData.companyLogo) {
+      const up = await dispatch(uploadDocument(formData.companyLogo));
+      if (uploadDocument.rejected.match(up)) {
+        dispatch(setError(up.payload || 'Failed to upload logo'));
+        return;
+      }
+      logo_url = up.payload?.file_url;
+    }
     const parts = (formData.fullName || '').trim().split(/\s+/);
     const first_name = parts[0] || '';
     const last_name = parts.slice(1).join(' ').trim() || '.';
@@ -43,6 +64,7 @@ export default function InvestorRegistration() {
       password: formData.password || 'demo123',
       first_name,
       last_name,
+      profile_picture,
       phone: formData.phone || null,
       nic_id: formData.nicId || null,
       user_type: 'investor',
@@ -55,6 +77,7 @@ export default function InvestorRegistration() {
         linkedIn: formData.linkedIn || null,
         yearsExperience,
         experience: formData.experience || null,
+        logo_url,
       },
     }));
     if (registerUser.fulfilled.match(result)) {
@@ -72,10 +95,7 @@ export default function InvestorRegistration() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
       <AuthSidebar />
-
-      {/* Main Content */}
       <div className="flex-1 bg-[#F5F3E7] relative overflow-auto">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 right-0 w-96 h-96 bg-[#8AABCD]/10 rounded-full blur-3xl"></div>
@@ -120,6 +140,28 @@ export default function InvestorRegistration() {
                 <User className="w-5 h-5 text-[#8AABCD]" />
                 Personal Information
               </h3>
+              <div className="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-[#2F3848] mb-2">Profile picture</label>
+                  <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-4 text-center hover:border-[#465775] transition bg-[#F5F3E7]/30">
+                    <input type="file" id="profilePicture" onChange={(e) => setFormData({ ...formData, profilePicture: e.target.files?.[0] || null })} className="hidden" accept="image/*" />
+                    <label htmlFor="profilePicture" className="cursor-pointer flex flex-col items-center gap-2">
+                      <Upload className="w-8 h-8 text-[#8AABCD]" />
+                      <span className="text-sm text-[#2F3848]">{formData.profilePicture?.name || 'Upload your photo'}</span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#2F3848] mb-2">Company / firm logo</label>
+                  <div className="border-2 border-dashed border-[#8AABCD]/50 rounded-xl p-4 text-center hover:border-[#465775] transition bg-[#F5F3E7]/30">
+                    <input type="file" id="companyLogo" onChange={(e) => setFormData({ ...formData, companyLogo: e.target.files?.[0] || null })} className="hidden" accept="image/*" />
+                    <label htmlFor="companyLogo" className="cursor-pointer flex flex-col items-center gap-2">
+                      <Briefcase className="w-8 h-8 text-[#8AABCD]" />
+                      <span className="text-sm text-[#2F3848]">{formData.companyLogo?.name || 'Upload logo (optional)'}</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-[#2F3848] mb-2">Full Name *</label>

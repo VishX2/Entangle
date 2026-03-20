@@ -68,13 +68,15 @@ model PasswordResetToken {
 }
 
 model Company {
-  id               Int          @id @default(autoincrement())
-  name             String       @db.VarChar(255)
-  company_type     CompanyType
-  description      String?      @db.Text
-  logo_url         String?      @db.Text
-  website_url      String?      @db.VarChar(500)
-  headquarters     String?      @db.VarChar(255)
+  id                        Int          @id @default(autoincrement())
+  name                      String       @db.VarChar(255)
+  company_type              CompanyType
+  description               String?      @db.Text
+  logo_url                  String?      @db.Text
+  website_url               String?      @db.VarChar(500)
+  headquarters              String?      @db.VarChar(255)
+  business_registration_address String?   @db.Text
+  patent_id                 String?      @db.VarChar(100)
   founded_year     Int?
   is_verified      Boolean      @default(false)
   verification_tier VerificationTier? @default(none)
@@ -96,6 +98,8 @@ model Company {
   updatedByUser    User?        @relation("UpdatedBy", fields: [updated_by], references: [id])
   reviews         Review[]
   reports         Report[]
+  connection_requests ConnectionRequest[] @relation("ConnectionRequestsTo")
+  documents       Document[]
 }
 
 model Conversation {
@@ -170,7 +174,6 @@ model Review {
   user         User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
 }
 
-
 model Report {
   id         Int       @id @default(autoincrement())
   type       String    @db.VarChar(50)
@@ -197,4 +200,3 @@ model ConnectionRequest {
 
   @@unique([from_user_id, to_company_id])
 }
-

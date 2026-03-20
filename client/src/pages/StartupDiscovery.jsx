@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import StartupHero from "../components/startup-discovery-components/StartupHero";
-import StartupCard from "../components/startup-discovery-components/StartupCard";
-import FilterBar from "../components/startup-discovery-components/FilterBar";
-import TopRatedCard from "../components/startup-discovery-components/TopRatedCard";
-import TrendingIndustriesCard from "../components/startup-discovery-components/TrendingIndustriesCard";
-import RecentlyFundedCard from "../components/startup-discovery-components/RecentlyFundedCard";
+import {
+  StartupHero,
+  StartupCard,
+  FilterBar,
+  TopRatedCard,
+  TrendingIndustriesCard,
+  RecentlyFundedCard,
+} from "../components/organisms/discovery";
 import { Sparkles } from "lucide-react";
 import { fetchCompanies, fetchInvestors, fetchStartupsForInvestor } from "../store/userApi";
 import { selectCompanies, selectInvestors, selectStartupMatches, selectMatchmakingLoading, selectUserLoading } from "../store/userSlice";
@@ -173,7 +175,6 @@ export default function StartupDiscovery() {
 
   const data = startupsData.length > 0 ? startupsData : FALLBACK_DATA;
 
-  // AI Match results: map to startup format with match score
   const aiMatchList = startupMatches?.matches ?? [];
   const aiMatchStartups = aiMatchList.map(({ company, score }) => ({
     ...mapCompanyToStartup(company),
@@ -182,14 +183,12 @@ export default function StartupDiscovery() {
 
   const showAIMatchResults = selectedInvestorId && aiMatchList.length > 0;
 
-  // FILTER STATES
   const [search, setSearch] = useState("");
   const [industry, setIndustry] = useState("All Industries");
   const [stage, setStage] = useState("All Stages");
   const [location, setLocation] = useState("All Locations");
   const [sort, setSort] = useState("top");
 
-  // FILTER LOGIC
   const filteredStartups = data
     .filter((s) => {
       return (
@@ -205,7 +204,6 @@ export default function StartupDiscovery() {
       return 0;
     });
 
-  // TOP RATED SIDEBAR DATA
   const topRated = [...data]
     .filter((s) => s.rating > 0)
     .sort((a, b) => b.rating - a.rating)
@@ -225,10 +223,8 @@ export default function StartupDiscovery() {
 
   return (
     <div className="bg-[#f5f3ef] min-h-screen">
-      {/* HERO */}
       <StartupHero onRunAIMatch={() => aiMatchRef.current?.scrollIntoView({ behavior: "smooth" })} />
 
-      {/* AI MATCH SECTION */}
       <section ref={aiMatchRef} id="ai-match" className="max-w-7xl mx-auto px-6 mt-8">
         <div className="bg-white/80 rounded-2xl p-6 shadow-sm border border-slate-200">
           <h2 className="text-lg font-semibold text-slate-800 mb-4">AI Match — Get personalized startup recommendations</h2>
@@ -258,7 +254,6 @@ export default function StartupDiscovery() {
         </div>
       </section>
 
-      {/* FILTER BAR */}
       <div id="browse" className="max-w-7xl mx-auto px-6 mt-8">
         <FilterBar
           search={search}
@@ -274,9 +269,7 @@ export default function StartupDiscovery() {
         />
       </div>
 
-      {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-6 mt-8 grid lg:grid-cols-4 gap-8">
-        {/* Startup Grid */}
         <div className="lg:col-span-3 grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {loading && startupsData.length === 0 ? (
             <div className="col-span-full py-12 text-center text-slate-500">Loading startups…</div>
@@ -314,7 +307,6 @@ export default function StartupDiscovery() {
           )}
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
           <TopRatedCard startups={topRated} />
 

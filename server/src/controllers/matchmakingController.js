@@ -6,19 +6,21 @@ const {
   rankEntrepreneursForInvestorAsync,
   isEmbeddingsAvailable,
 } = require('../services/aiMatchingService');
+const {
+  getEmbeddingForQuery,
+  getEmbeddingsBatch,
+  cosineSimilarity,
+  buildProfileText,
+} = require('../services/embeddingsService');
 
 const selectFields = {
   id: true, name: true, company_type: true, description: true, logo_url: true, website_url: true,
   headquarters: true, founded_year: true, is_verified: true, verification_tier: true, is_active: true,
   founder_name: true, years_experience: true, investment_focus: true, min_investment: true, max_investment: true,
   funding_stage: true, team_size: true, total_reviews: true, average_rating: true,
-  created_at: true,
+  created_by: true, created_at: true,
 };
 
-/**
- * GET /matchmaking/investors-for-startup/:startupId
- * Returns ranked investors for a startup (AI matchmaking).
- */
 async function investorsForStartup(req, res, next) {
   try {
     const startupId = parseInt(req.params.startupId, 10);
@@ -53,10 +55,6 @@ async function investorsForStartup(req, res, next) {
   }
 }
 
-/**
- * GET /matchmaking/startups-for-investor/:investorId
- * Returns ranked startups for an investor (AI matchmaking).
- */
 async function startupsForInvestor(req, res, next) {
   try {
     const investorId = parseInt(req.params.investorId, 10);
@@ -90,10 +88,6 @@ async function startupsForInvestor(req, res, next) {
   }
 }
 
-/**
- * GET /matchmaking/investors-for-entrepreneur/:entrepreneurId
- * Returns ranked investors for an entrepreneur.
- */
 async function investorsForEntrepreneur(req, res, next) {
   try {
     const entrepreneurId = parseInt(req.params.entrepreneurId, 10);
@@ -128,10 +122,6 @@ async function investorsForEntrepreneur(req, res, next) {
   }
 }
 
-/**
- * GET /matchmaking/entrepreneurs-for-investor/:investorId
- * Returns ranked entrepreneurs for an investor.
- */
 async function entrepreneursForInvestor(req, res, next) {
   try {
     const investorId = parseInt(req.params.investorId, 10);
@@ -166,9 +156,80 @@ async function entrepreneursForInvestor(req, res, next) {
   }
 }
 
+async function searchByPrompt(req, res, next) {
+  try {
+    const query = (req.body?.prompt || req.body?.q || req.query?.q || req.query?.prompt || '').trim();
+    const limit = Math.min(parseInt(req.query?.limit, 10) || 20, 50);
+    const typeFilter = req.query?.type || req.body?.type;
+
+    if (!query) {
+      return res.status(400).json({ error: 'Query (prompt or q) is required' });
+    }
+
+    const where = { is_active: true };
+    if (typeFilter && ['investor', 'startup', 'entrepreneur'].includes(String(typeFilter).toLowerCase())) {
+      where.company_type = typeFilter.toLowerCase();
+    }
+
+    const companies = await prisma.company.findMany({
+      where,
+      select: selectFields,
+    });
+
+    if (companies.length === 0) {
+      return res.json({ matches: [], aiEnabled: false, query });
+    }
+
+    const queryEmbedding = await getEmbeddingForQuery(query);
+
+    if (queryEmbedding) {
+      const embeddingMap = await getEmbeddingsBatch(companies);
+      const scored = companies
+        .map((c) => {
+          const emb = embeddingMap.get(c.id);
+          const score = emb ? cosineSimilarity(queryEmbedding, emb) * 100 : 0;
+          return { company: c, score: Math.round(score) };
+        })
+        .filter((x) => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
+
+      return res.json({
+        matches: scored,
+        aiEnabled: true,
+        query,
+      });
+    }
+
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const scored = companies
+      .map((c) => {
+        const text = buildProfileText(c).toLowerCase();
+        let hits = 0;
+        for (const term of terms) {
+          if (term.length >= 2 && text.includes(term)) hits++;
+        }
+        const score = terms.length > 0 ? Math.round((hits / terms.length) * 100) : 0;
+        return { company: c, score };
+      })
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
+
+    res.json({
+      matches: scored.length > 0 ? scored : companies.slice(0, limit).map((c) => ({ company: c, score: 50 })),
+      aiEnabled: false,
+      query,
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   investorsForStartup,
   startupsForInvestor,
   investorsForEntrepreneur,
   entrepreneursForInvestor,
+  searchByPrompt,
 };

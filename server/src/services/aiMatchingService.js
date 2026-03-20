@@ -1,9 +1,3 @@
-/**
- * AI Matchmaking Service
- * Hybrid: rule-based scoring + OpenAI embeddings for semantic similarity.
- * When OPENAI_API_KEY is set, uses embeddings; otherwise rule-based only.
- */
-
 const { getEmbeddingsBatch, cosineSimilarity, isEmbeddingsAvailable } = require('./embeddingsService');
 
 function normalizeText(str) {
@@ -26,7 +20,7 @@ function parseStages(stageStr) {
 function industryOverlap(startupFocus, investorFocus) {
   const s = parseFocus(startupFocus);
   const i = parseFocus(investorFocus);
-  if (s.length === 0 || i.length === 0) return 0.5; // neutral if missing
+  if (s.length === 0 || i.length === 0) return 0.5;
   const overlap = s.filter(x => i.some(y => y.includes(x) || x.includes(y))).length;
   return Math.min(1, overlap / Math.max(s.length, i.length));
 }
@@ -44,7 +38,7 @@ function stageMatch(startupStage, investorStage) {
 }
 
 function checkSizeFit(startupAsk, investorMin, investorMax) {
-  if (!investorMin && !investorMax) return 0.7; // unknown, neutral
+  if (!investorMin && !investorMax) return 0.7;
   const ask = Number(startupAsk) || 0;
   const min = Number(investorMin) || 0;
   const max = Number(investorMax) || Infinity;
@@ -59,7 +53,6 @@ function locationMatch(startupLoc, investorLoc) {
   const s = normalizeText(startupLoc);
   const i = normalizeText(investorLoc);
   if (s === i) return 1;
-  // Same region/country (simple heuristic)
   const sParts = s.split(/[,\s]+/);
   const iParts = i.split(/[,\s]+/);
   const overlap = sParts.filter(p => p.length > 2 && iParts.some(ip => ip.includes(p) || p.includes(ip))).length;
@@ -79,12 +72,6 @@ function trustScore(company) {
   return Math.min(1, score);
 }
 
-/**
- * Compute match score between a startup and an investor (0-100).
- * @param {Object} startup - Startup company
- * @param {Object} investor - Investor company
- * @returns {{ score: number, breakdown: Object }}
- */
 function scoreMatch(startup, investor) {
   const industry = industryOverlap(startup.investment_focus, investor.investment_focus);
   const stage = stageMatch(startup.funding_stage, investor.funding_stage);
@@ -116,9 +103,6 @@ function scoreMatch(startup, investor) {
   return { score: Math.min(100, Math.max(0, score)), breakdown };
 }
 
-/**
- * Rank investors for a given startup (sync, rule-based only).
- */
 function rankInvestorsForStartup(startup, investors, limit = 20) {
   return investors
     .map(inv => {
@@ -129,9 +113,6 @@ function rankInvestorsForStartup(startup, investors, limit = 20) {
     .slice(0, limit);
 }
 
-/**
- * Rank startups for a given investor (sync).
- */
 function rankStartupsForInvestor(investor, startups, limit = 20) {
   return startups
     .map(s => {
@@ -142,16 +123,10 @@ function rankStartupsForInvestor(investor, startups, limit = 20) {
     .slice(0, limit);
 }
 
-/**
- * Rank investors for a given entrepreneur (same logic as startup).
- */
 function rankInvestorsForEntrepreneur(entrepreneur, investors, limit = 20) {
   return rankInvestorsForStartup(entrepreneur, investors, limit);
 }
 
-/**
- * Rank entrepreneurs for a given investor.
- */
 function rankEntrepreneursForInvestor(investor, entrepreneurs, limit = 20) {
   return entrepreneurs
     .map(e => {
@@ -162,13 +137,9 @@ function rankEntrepreneursForInvestor(investor, entrepreneurs, limit = 20) {
     .slice(0, limit);
 }
 
-/** Blend rule score with embedding similarity. RULE_WEIGHT + SEMANTIC_WEIGHT = 1 */
 const RULE_WEIGHT = 0.5;
 const SEMANTIC_WEIGHT = 0.5;
 
-/**
- * Async: Rank investors for startup with optional OpenAI embeddings.
- */
 async function rankInvestorsForStartupAsync(startup, investors, limit = 20) {
   const ruleMatches = rankInvestorsForStartup(startup, investors, limit);
 
@@ -195,9 +166,6 @@ async function rankInvestorsForStartupAsync(startup, investors, limit = 20) {
   return withSemantic.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
-/**
- * Async: Rank startups for investor with optional embeddings.
- */
 async function rankStartupsForInvestorAsync(investor, startups, limit = 20) {
   const ruleMatches = rankStartupsForInvestor(investor, startups, limit);
 
@@ -224,16 +192,10 @@ async function rankStartupsForInvestorAsync(investor, startups, limit = 20) {
   return withSemantic.sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
-/**
- * Async: Rank investors for entrepreneur.
- */
 async function rankInvestorsForEntrepreneurAsync(entrepreneur, investors, limit = 20) {
   return rankInvestorsForStartupAsync(entrepreneur, investors, limit);
 }
 
-/**
- * Async: Rank entrepreneurs for investor.
- */
 async function rankEntrepreneursForInvestorAsync(investor, entrepreneurs, limit = 20) {
   const ruleMatches = rankEntrepreneursForInvestor(investor, entrepreneurs, limit);
 

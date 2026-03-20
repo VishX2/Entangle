@@ -16,7 +16,6 @@ function auth(req, res, next) {
   }
 }
 
-/** Sets req.userId and req.roleId when a valid token is present; does not 401 when missing. */
 function optionalAuth(req, res, next) {
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer ')) return next();

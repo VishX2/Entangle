@@ -1,6 +1,3 @@
-/**
- * Server configuration - all env variables accessed via config
- */
 require('dotenv').config();
 
 const config = {
@@ -14,6 +11,11 @@ const config = {
   corsOrigins: process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',').map((s) => s.trim())
     : ['http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174'],
+  imageKit: {
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || 'https://ik.imagekit.io/nilonbee',
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY || '',
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY || '',
+  },
 };
 
 function validate() {

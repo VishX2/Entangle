@@ -1,14 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 
+// Dropdown component for investor actions
 const InvestorActionDropdown = ({
   onVerify,
   onViewDocs,
   onRequestInfo,
 }) => {
+  // State to control dropdown visibility
   const [open, setOpen] = useState(false);
   const [openUpwards, setOpenUpwards] = useState(true);
   const ref = useRef(null);
 
+  // Handle closing dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -16,22 +19,25 @@ const InvestorActionDropdown = ({
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup event listener on unmount
     return () =>
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Toggle dropdown and calculate opening direction
   const handleToggle = () => {
     if (!ref.current) return;
 
     const rect = ref.current.getBoundingClientRect();
 
-    // If dropdown would go above viewport - open DOWN
     setOpenUpwards(rect.top > 180);
     setOpen((prev) => !prev);
   };
 
   return (
     <div className="relative" ref={ref}>
+      {/* Action button */}
       <button
         onClick={handleToggle}
         className="text-sm font-medium text-blue-600 hover:underline flex items-center gap-1"
@@ -46,6 +52,7 @@ const InvestorActionDropdown = ({
         </svg>
       </button>
 
+      {/* Dropdown menu */}
       {open && (
         <div
           className={`absolute right-0 w-56 rounded-lg border bg-white shadow-lg z-50 ${
@@ -54,6 +61,7 @@ const InvestorActionDropdown = ({
               : "top-full mt-2"
           }`}
         >
+          {/* Verify action */}
           <button
             onClick={() => {
               onVerify();
@@ -64,6 +72,7 @@ const InvestorActionDropdown = ({
             ✔ Mark as Verified
           </button>
 
+          {/* Request additional info action */}
           <button
             onClick={() => {
               onViewDocs();

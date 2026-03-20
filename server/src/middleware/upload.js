@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   const allowed = /\.(pdf|doc|docx|jpg|jpeg|png|gif|webp)$/i;
-
   if (allowed.test(file.originalname) || !file.originalname) {
     cb(null, true);
   } else {
@@ -27,7 +26,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 module.exports = { upload };

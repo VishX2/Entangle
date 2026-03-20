@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Sidebar from "../components/Sidebar";
-
-//Redux async function for admin layout
+import Sidebar from "../components/organisms/Sidebar";
 import { fetchReports, updateReport } from "../store/adminApi";
-//Redux selectors for read state
 import { selectReports, selectAdminLoading } from "../store/adminSlice";
 
 //Maps backend status values to UI display values

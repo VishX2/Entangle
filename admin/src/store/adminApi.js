@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../api/client';
 
+// === AUTH ===
 // Authenticate admin user
 export const loginAdmin = createAsyncThunk('auth/login', async (body, { rejectWithValue }) => {
   try {
@@ -22,6 +23,7 @@ export const registerUser = createAsyncThunk('auth/register', async (body, { rej
   }
 });
 
+// === USER & ROLE MANAGEMENT ===
 // Fetch all user roles
 export const fetchRoles = createAsyncThunk('admin/roles', async (_, { rejectWithValue }) => {
   try {
@@ -42,6 +44,7 @@ export const fetchUsers = createAsyncThunk('admin/users', async (_, { rejectWith
   }
 });
 
+// Update a specific user by ID
 export const updateUser = createAsyncThunk('admin/updateUser', async ({ id, ...payload }, { rejectWithValue }) => {
   try {
     const { data } = await api.patch(`/users/${id}`, payload);
@@ -51,6 +54,29 @@ export const updateUser = createAsyncThunk('admin/updateUser', async ({ id, ...p
   }
 });
 
+// === CURRENT USER ===
+// Fetch currently logged-in user
+export const fetchMe = createAsyncThunk('admin/me', async (_, { rejectWithValue }) => {
+  try {
+    const { data } = await api.get('/users/me');
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.error || err.message);
+  }
+});
+
+// Update current user profile
+export const updateMe = createAsyncThunk('admin/updateMe', async (payload, { rejectWithValue }) => {
+  try {
+    const { data } = await api.patch('/users/me', payload);
+    return data;
+  } catch (err) {
+    return rejectWithValue(err.response?.data?.error || err.message);
+  }
+});
+
+// === CONNECTION REQUESTS ===
+// Fetch all connection requests
 export const fetchConnectionRequests = createAsyncThunk('admin/connectionRequests', async (params = {}, { rejectWithValue }) => {
   try {
     const { data } = await api.get('/connection-requests', { params });
@@ -60,6 +86,7 @@ export const fetchConnectionRequests = createAsyncThunk('admin/connectionRequest
   }
 });
 
+// Update status of a connection request (approve/reject)
 export const updateConnectionRequest = createAsyncThunk('admin/updateConnectionRequest', async ({ id, status }, { rejectWithValue }) => {
   try {
     const { data } = await api.patch(`/connection-requests/${id}`, { status });
@@ -69,6 +96,8 @@ export const updateConnectionRequest = createAsyncThunk('admin/updateConnectionR
   }
 });
 
+// === COMPANY MANAGEMENT ===
+// Fetch all companies
 export const fetchCompanies = createAsyncThunk('admin/companies', async (params = {}, { rejectWithValue }) => {
   try {
     const { data } = await api.get('/companies', { params });
@@ -88,6 +117,7 @@ export const fetchCompanyById = createAsyncThunk('admin/companyById', async (id,
   }
 });
 
+// === REVIEWS ===
 // Fetch all reviews submitted in the system
 export const fetchReviews = createAsyncThunk('admin/reviews', async (_, { rejectWithValue }) => {
   try {
@@ -108,6 +138,7 @@ export const fetchDashboardStats = createAsyncThunk('admin/dashboard', async (_,
   }
 });
 
+// === REPORTS ===
 // Fetch reports submitted by users
 export const fetchReports = createAsyncThunk('admin/reports', async (_, { rejectWithValue }) => {
   try {
@@ -149,6 +180,8 @@ export const updateReport = createAsyncThunk('admin/updateReport', async ({ id, 
 });
 
 // ----- AI Matchmaking -----
+
+// Get recommended startups for an investor
 export const fetchInvestorsForStartup = createAsyncThunk(
   'admin/investorsForStartup',
   async ({ startupId, limit }, { rejectWithValue }) => {

@@ -12,7 +12,6 @@ import {
   CheckCheck,
 } from "lucide-react";
 import { fetchConversations, fetchMessages, sendMessage as sendMessageApi } from "../../store/userApi";
-import { ensureHttpsImageUrl } from "../../utils/imageUrl";
 
 export default function InvestorMessages() {
   const dispatch = useDispatch();
@@ -37,7 +36,7 @@ export default function InvestorMessages() {
   const conversations = conversationsList.map((c) => ({
     id: c.id,
     name: c.other_user?.name || c.other_user?.email || "Unknown",
-    avatar: ensureHttpsImageUrl(c.other_user?.profile_picture) || null,
+    avatar: c.other_user?.profile_picture || null,
     lastMessage: c.last_message,
   }));
 
@@ -118,7 +117,7 @@ export default function InvestorMessages() {
                   : "hover:bg-[#465F7F]/70"
               }`}
             >
-              <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden shrink-0">
                 {c.avatar ? (
                   <img src={c.avatar} alt={c.name} className="w-10 h-10 rounded-full object-cover" />
                 ) : (
@@ -144,13 +143,9 @@ export default function InvestorMessages() {
           <>
         <div className="h-16 bg-white flex items-center justify-between px-6 border-b">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden shrink-0">
               {activeChat.avatar ? (
-                <img
-                  src={activeChat.avatar}
-                  alt={activeChat.name}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+                <img src={activeChat.avatar} alt={activeChat.name} className="w-10 h-10 rounded-full object-cover" />
               ) : (
                 <User size={20} className="text-[#465F7F]" />
               )}

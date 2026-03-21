@@ -1,19 +1,20 @@
-# Amplify build for client app (Entangle)
-# If Amplify app root is "client": remove the "cd client" lines and use baseDirectory: dist
+# Monorepo format required when Amplify app uses "My app is a monorepo" + app root `client`.
+# appRoot must match AMPLIFY_MONOREPO_APP_ROOT in Amplify → Environment variables.
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd client
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: client/dist
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - client/node_modules/**/*
+applications:
+  - appRoot: client
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*

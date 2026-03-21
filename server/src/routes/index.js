@@ -68,6 +68,7 @@ router.post('/matchmaking/search', optionalAuth, matchmaking.searchByPrompt);
 router.get('/matchmaking/search', optionalAuth, matchmaking.searchByPrompt);
 
 router.get('/imagekit/auth', auth, imagekit.getAuth);
+router.get('/imagekit/auth-public', imagekit.getAuth);
 
 router.post('/documents/upload', auth, upload.single('file'), documents.upload);
 router.post('/documents/upload-public', upload.single('file'), documents.uploadPublic);

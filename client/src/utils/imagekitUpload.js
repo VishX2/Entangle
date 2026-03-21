@@ -7,8 +7,8 @@ function buildFileName(file) {
   return `${Date.now()}-${safeName}`;
 }
 
-async function uploadViaImageKit(file) {
-  const { data: auth } = await api.get("/imagekit/auth");
+async function uploadViaImageKit(file, authEndpoint = "/imagekit/auth") {
+  const { data: auth } = await api.get(authEndpoint);
 
   const formData = new FormData();
   formData.append("file", file);
@@ -53,14 +53,19 @@ export async function uploadProfilePicture(file) {
     return await uploadViaImageKit(file);
   } catch (error) {
     const status = error?.response?.status;
+    if (status === 401) {
+      try {
+        return await uploadViaImageKit(file, "/imagekit/auth-public");
+      } catch (e) {
+        return uploadViaServer(file);
+      }
+    }
     if (status === 503 || status === 404) {
       return uploadViaServer(file);
     }
-
     if (error?.message === "Network Error") {
       return uploadViaServer(file);
     }
-
     throw error;
   }
 }

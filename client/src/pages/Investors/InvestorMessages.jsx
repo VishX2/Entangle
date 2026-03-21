@@ -12,6 +12,7 @@ import {
   CheckCheck,
 } from "lucide-react";
 import { fetchConversations, fetchMessages, sendMessage as sendMessageApi } from "../../store/userApi";
+import { ensureHttpsImageUrl } from "../../utils/imageUrl";
 
 export default function InvestorMessages() {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ export default function InvestorMessages() {
   const conversations = conversationsList.map((c) => ({
     id: c.id,
     name: c.other_user?.name || c.other_user?.email || "Unknown",
-    avatar: c.other_user?.profile_picture || null,
+    avatar: ensureHttpsImageUrl(c.other_user?.profile_picture) || null,
     lastMessage: c.last_message,
   }));
 

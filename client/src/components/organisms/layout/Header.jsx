@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User } from 'lucide-react';
 import { selectCurrentUser, logout } from '../../../store/authSlice';
+import { ensureHttpsImageUrl } from '../../../utils/imageUrl';
 import NotificationBell from '../../NotificationBell';
 
 const getProfilePath = (userType) => {
@@ -16,7 +17,7 @@ const Header = () => {
   const user = useSelector(selectCurrentUser);
   const displayName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : null;
   const profilePath = getProfilePath(user?.user_type);
-  const avatarUrl = user?.profile_picture;
+  const avatarUrl = ensureHttpsImageUrl(user?.profile_picture);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -26,8 +27,6 @@ const Header = () => {
   const handleProfileClick = () => {
     if (profilePath) navigate(profilePath);
   };
-
-console.log("avatarUrl",user.profile_picture);
 
   return (
     <header className="h-16 bg-white flex items-center justify-between px-8 shadow-sm">

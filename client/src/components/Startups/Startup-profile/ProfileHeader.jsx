@@ -6,6 +6,7 @@ import coverImg from "../../../assets/startup-profile/cover.jpg";
 import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../../store/userApi";
 import { selectCurrentUser } from "../../../store/authSlice";
 import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../../store/userSlice";
+import { ensureHttpsImageUrl } from "../../../utils/imageUrl";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function ProfileHeader() {
         {/* PROFILE IMAGE */}
         <div className="-mt-24 relative inline-block">
           <img
-            src={user?.profile_picture || profileImg}
+            src={ensureHttpsImageUrl(user?.profile_picture) || profileImg}
             alt="Investor profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />

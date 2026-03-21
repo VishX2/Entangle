@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { fetchProfile, updateProfile } from '../../../store/userApi';
 import { selectProfile, selectUserLoading } from '../../../store/userSlice';
 import { uploadProfilePicture } from '../../../utils/imagekitUpload';
+import { ensureHttpsImageUrl } from '../../../utils/imageUrl';
 
 const DEFAULT_AVATAR =
   'data:image/svg+xml,' +
@@ -36,7 +37,7 @@ export default function EditProfileForm({ backTo, backLabel = 'Back to profile' 
     }
   }, [profile]);
 
-  const profilePicUrl = profile?.profile_picture || DEFAULT_AVATAR;
+  const profilePicUrl = ensureHttpsImageUrl(profile?.profile_picture) || DEFAULT_AVATAR;
 
   const handleProfilePicChange = async (e) => {
     const file = e.target.files?.[0];

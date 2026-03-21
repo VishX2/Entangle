@@ -52,6 +52,7 @@ export default function App() {
         <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
         <Route path="/connection-requests" element={<ProtectedRoute><ConnectionRequests /></ProtectedRoute>} />
         <Route path="/startup-verification" element={<ProtectedRoute><StartupVerification /></ProtectedRoute>} />
+        <Route path="/investor-verification" element={<Navigate to="/startup-verification" replace />} />
         <Route path="/content-moderation" element={<ProtectedRoute><ContentModeration /></ProtectedRoute>} />
         <Route path="/content-moderation/company/:id" element={<ProtectedRoute><CompanyDetail /></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><ReportsAndComplaints /></ProtectedRoute>} />

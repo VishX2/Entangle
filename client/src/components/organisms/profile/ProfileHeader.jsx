@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile } from '../../../store/userApi';
 import { selectProfile, selectUserLoading } from '../../../store/userSlice';
 import { selectCurrentUser } from '../../../store/authSlice';
+import { getAvatarUrl } from '../../../utils/avatarUrl';
 
 const EDIT_PATHS = {
   investor: '/investor/edit-profile',
@@ -71,7 +72,7 @@ export default function ProfileHeader({ userType = 'entrepreneur', company = nul
       <div className="relative px-8 pb-8">
         <div className="-mt-24 relative inline-block">
           <img
-            src={user?.profile_picture || DEFAULT_AVATAR}
+            src={getAvatarUrl(user?.profile_picture)}
             alt="Profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />

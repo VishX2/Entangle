@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../store/userApi";
 import { selectCurrentUser } from "../../store/authSlice";
 import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../store/userSlice";
-import defaultProfileImg from "../../assets/investor-profile/investor1.jpg";
+import { getAvatarUrl } from "../../utils/avatarUrl";
 import defaultCoverImg from "../../assets/investor-profile/cover.jpg";
 
 
@@ -30,7 +30,7 @@ export default function EntrepreneurProfile() {
     return mine.find((c) => c.company_type === "entrepreneur") || mine[0] || null;
   }, [companies, user?.id]);
   const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Founder";
-  const profileImage = user?.profile_picture || defaultProfileImg;
+  const profileImage = getAvatarUrl(user?.profile_picture);
   const description = myCompany?.description || "Building and scaling an impactful venture.";
   const location = myCompany?.headquarters || "—";
   const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : "—";

@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import profileImg from "../../../assets/startup-profile/startup1.jpg";
 import coverImg from "../../../assets/startup-profile/cover.jpg";
 import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../../store/userApi";
 import { selectCurrentUser } from "../../../store/authSlice";
 import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../../store/userSlice";
+import { getAvatarUrl } from "../../../utils/avatarUrl";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export default function ProfileHeader() {
         {/* PROFILE IMAGE */}
         <div className="-mt-24 relative inline-block">
           <img
-            src={user?.profile_picture || profileImg}
+            src={getAvatarUrl(user?.profile_picture)}
             alt="Investor profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />

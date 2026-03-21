@@ -33,7 +33,6 @@ import InvestorProfileGate from "./pages/Investors/InvestorProfileGate";
 
 import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
-import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
 
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 import StartupDiscovery from "./pages/StartupDiscovery";

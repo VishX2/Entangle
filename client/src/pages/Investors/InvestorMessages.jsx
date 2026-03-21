@@ -12,6 +12,7 @@ import {
   CheckCheck,
 } from "lucide-react";
 import { fetchConversations, fetchMessages, sendMessage as sendMessageApi } from "../../store/userApi";
+import { getAvatarUrl } from "../../utils/avatarUrl";
 
 export default function InvestorMessages() {
   const dispatch = useDispatch();
@@ -33,11 +34,11 @@ export default function InvestorMessages() {
     }
   }, [dispatch, activeChat?.id]);
 
-  const conversations = conversationsList.map((c) => ({
-    id: c.id,
-    name: c.other_user?.name || c.other_user?.email || "Unknown",
-    avatar: c.other_user?.profile_picture || null,
-    lastMessage: c.last_message,
+  const conversations = (conversationsList || []).map((c, i) => ({
+    id: c?.id ?? i,
+    name: c?.other_user?.name || c?.other_user?.email || "Unknown",
+    avatar: getAvatarUrl(c?.other_user?.profile_picture),
+    lastMessage: c?.last_message,
   }));
 
   const sendMessage = async () => {
@@ -56,15 +57,16 @@ export default function InvestorMessages() {
   }));
 
   useEffect(() => {
-    if (conversations.length === 0) return;
+    const list = conversationsList || [];
+    if (list.length === 0) return;
+    const buildChat = (c) => ({ id: c.id, name: c.other_user?.name || c.other_user?.email || "Unknown", avatar: getAvatarUrl(c.other_user?.profile_picture), lastMessage: c.last_message });
     if (openConversationId) {
-      const conv = conversations.find((c) => c.id === openConversationId);
-      if (conv) setActiveChat(conv);
-      else setActiveChat(conversations[0]);
-    } else if (!activeChat) {
-      setActiveChat(conversations[0]);
+      const conv = list.find((c) => c?.id === openConversationId);
+      setActiveChat(buildChat(conv || list[0]));
+    } else {
+      setActiveChat((prev) => prev || buildChat(list[0]));
     }
-  }, [conversations, activeChat, openConversationId]);
+  }, [conversationsList, openConversationId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -117,12 +119,8 @@ export default function InvestorMessages() {
                   : "hover:bg-[#465F7F]/70"
               }`}
             >
-              <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden shrink-0">
-                {c.avatar ? (
-                  <img src={c.avatar} alt={c.name} className="w-10 h-10 rounded-full object-cover" />
-                ) : (
-                  <User size={20} className="text-[#465F7F]" />
-                )}
+              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                <img src={c.avatar} alt={c.name} className="w-10 h-10 rounded-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium truncate">{c.name}</div>
@@ -143,12 +141,8 @@ export default function InvestorMessages() {
           <>
         <div className="h-16 bg-white flex items-center justify-between px-6 border-b">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center overflow-hidden shrink-0">
-              {activeChat.avatar ? (
-                <img src={activeChat.avatar} alt={activeChat.name} className="w-10 h-10 rounded-full object-cover" />
-              ) : (
-                <User size={20} className="text-[#465F7F]" />
-              )}
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+              <img src={activeChat.avatar} alt={activeChat.name} className="w-10 h-10 rounded-full object-cover" />
             </div>
             <div>
               <div className="font-semibold text-sm">{activeChat.name}</div>

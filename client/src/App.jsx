@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
@@ -48,6 +48,7 @@ function App() {
 
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />
           <Route path="/login" element={<EntangleLogin />} />
           <Route path="/select-type" element={<UserTypeSelectionPage />} />
           <Route path="/register/investor" element={<InvestorRegistrationPage />} />

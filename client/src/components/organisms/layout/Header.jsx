@@ -27,6 +27,8 @@ const Header = () => {
     if (profilePath) navigate(profilePath);
   };
 
+console.log("avatarUrl",user.profile_picture);
+
   return (
     <header className="h-16 bg-white flex items-center justify-between px-8 shadow-sm">
       <div className="flex items-center gap-2">

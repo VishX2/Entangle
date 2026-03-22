@@ -42,3 +42,5 @@ backend/.env
 # EC2 deploy SSH keys (never commit)
 entangle-deploy
 entangle-deploy.pub
+entangle-github-deploy
+entangle-github-deploy.pub

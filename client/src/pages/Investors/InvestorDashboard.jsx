@@ -14,6 +14,7 @@ import {
   selectConversations,
 } from "../../store/userSlice";
 
+import { DashboardCard, DashboardPageLayout } from "../../components/dashboard/DashboardLayout";
 import { HeroSection } from "../../components/Investor-dashboard/HeroSection";
 import FundingNews from "../../components/Investor-dashboard/FundingNews";
 import MASection from "../../components/Investor-dashboard/MASection";
@@ -65,8 +66,6 @@ export default function InvestorDashboard() {
       .slice(0, 3);
   }, [companies]);
 
-  // Light “Recent M&A-ish” signal from newest conversations.
-  // (Backend doesn’t provide direct M&A deals here; we keep UI working with available data.)
   const dealsSignal = useMemo(() => {
     return (conversations || []).slice(0, 3).map((c, idx) => ({
       id: c?.id ?? idx,
@@ -76,29 +75,35 @@ export default function InvestorDashboard() {
   }, [conversations]);
 
   return (
-    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-4">
-      <HeroSection
-        fundingValue={fundingValue}
-        fundingChange="+18%"
-        dealsValue={String(dealsValue)}
-        dealsChange="+6%"
-      />
-
-      <div className="grid grid-cols-12 gap-4 items-stretch">
-        {/* Main content */}
-        <div className="col-span-12 lg:col-span-9 flex flex-col gap-4">
-          <FundingNews startups={startups} />
-          <MASection deals={dealsSignal} />
-          <BusinessNews news={news} />
-        </div>
-
-        {/* Right sidebar */}
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
+    <DashboardPageLayout
+      hero={
+        <HeroSection
+          fundingValue={fundingValue}
+          fundingChange="+18%"
+          dealsValue={String(dealsValue)}
+          dealsChange="+6%"
+        />
+      }
+      mainColumn={
+        <>
+          <DashboardCard>
+            <FundingNews startups={startups} />
+          </DashboardCard>
+          <DashboardCard>
+            <MASection deals={dealsSignal} />
+          </DashboardCard>
+          <DashboardCard>
+            <BusinessNews news={news} />
+          </DashboardCard>
+        </>
+      }
+      sidebar={
+        <>
           <MarketSnapshot fundingValue={fundingValue} dealsValue={String(dealsValue)} />
           <TrendingIndustries />
           <RecommendedStartups startups={startups} />
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 }

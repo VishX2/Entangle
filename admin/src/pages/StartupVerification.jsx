@@ -83,7 +83,7 @@ export default function StartupVerification() {
             <div className="p-8 text-center text-slate-500">Loading...</div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b border-slate-200">
+              <thead className="bg-surface-alt border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4 text-left">Startup Name</th>
                   <th className="px-6 py-4 text-left">Type</th>

@@ -39,7 +39,7 @@ const Header = () => {
           <button
             type="button"
             onClick={handleProfileClick}
-            className="flex items-center gap-2 rounded-lg hover:bg-gray-100 transition outline-none focus:ring-2 focus:ring-[#465775] focus:ring-offset-1"
+            className="flex items-center gap-2 rounded-lg hover:bg-surface-alt transition outline-none focus:ring-2 focus:ring-[#465775] focus:ring-offset-1"
             aria-label="Go to profile"
           >
             <span className="flex shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-200 ring-2 ring-gray-100">
@@ -51,7 +51,7 @@ const Header = () => {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 transition"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-surface-alt hover:text-gray-800 transition"
           aria-label="Log out"
         >
           <LogOut size={18} />

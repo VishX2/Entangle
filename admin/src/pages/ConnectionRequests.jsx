@@ -10,6 +10,8 @@ const STATUS_STYLE = {
   pending: "bg-amber-100 text-amber-800",
   accepted: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
+  awaiting_recipient: "bg-sky-100 text-sky-800",
+  recipient_declined: "bg-orange-100 text-orange-800",
 };
 
 // Get connection requests and loading state from Redux store
@@ -24,12 +26,12 @@ export default function ConnectionRequests() {
     dispatch(fetchConnectionRequests(filter ? { status: filter } : {}));
   }, [dispatch, filter]);
 
-  // Approve connection request
+  // Admin approves → request goes to company owner to accept or decline
   const handleApprove = (req) => {
-    dispatch(updateConnectionRequest({ id: req.id, status: "accepted" }))
+    dispatch(updateConnectionRequest({ id: req.id, status: "awaiting_recipient" }))
       .then((result) => {
         if (updateConnectionRequest.fulfilled.match(result)) {
-          toast.success("Connection approved");
+          toast.success("Sent to company — owner must accept");
           dispatch(fetchConnectionRequests(filter ? { status: filter } : {}));
         } else {
           toast.error(result.payload || "Failed to approve");
@@ -54,6 +56,7 @@ export default function ConnectionRequests() {
   const pendingCount = requests.filter((r) => (r.status || "").toLowerCase() === "pending").length;
   const acceptedCount = requests.filter((r) => (r.status || "").toLowerCase() === "accepted").length;
   const rejectedCount = requests.filter((r) => (r.status || "").toLowerCase() === "rejected").length;
+  const awaitingRecipientCount = requests.filter((r) => (r.status || "").toLowerCase() === "awaiting_recipient").length;
 
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
@@ -66,26 +69,23 @@ export default function ConnectionRequests() {
         </p>
 
         {/* Summary cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          {/* Pending count */}  
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
-            <p className="text-slate-500 text-sm">Pending</p>
+            <p className="text-slate-500 text-sm">Pending (admin)</p>
             <p className="text-2xl font-bold text-amber-600">{pendingCount}</p>
           </div>
-
-            {/* Accepted count */}
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
-            <p className="text-slate-500 text-sm">Accepted</p>
+            <p className="text-slate-500 text-sm">Awaiting company</p>
+            <p className="text-2xl font-bold text-sky-600">{awaitingRecipientCount}</p>
+          </div>
+          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+            <p className="text-slate-500 text-sm">Connected</p>
             <p className="text-2xl font-bold text-green-600">{acceptedCount}</p>
           </div>
-
-            {/* Rejected count */}
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
             <p className="text-slate-500 text-sm">Rejected</p>
             <p className="text-2xl font-bold text-red-600">{rejectedCount}</p>
           </div>
-
-              {/* Total count */}
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
             <p className="text-slate-500 text-sm">Total</p>
             <p className="text-2xl font-bold">{requests.length}</p>
@@ -111,12 +111,20 @@ export default function ConnectionRequests() {
             Pending
           </button>
           <button
+            onClick={() => setFilter("awaiting_recipient")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              filter === "awaiting_recipient" ? "bg-sky-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+            }`}
+          >
+            Awaiting company
+          </button>
+          <button
             onClick={() => setFilter("accepted")}
             className={`px-4 py-2 rounded-lg text-sm font-medium ${
               filter === "accepted" ? "bg-green-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"
             }`}
           >
-            Accepted
+            Connected
           </button>
           <button
             onClick={() => setFilter("rejected")}
@@ -134,7 +142,7 @@ export default function ConnectionRequests() {
             <div className="p-8 text-center text-slate-500">Loading...</div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b border-slate-200">
+              <thead className="bg-surface-alt border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4 text-left">From (User)</th>
                   <th className="px-6 py-4 text-left">To (Company)</th>
@@ -148,6 +156,7 @@ export default function ConnectionRequests() {
                 {requests.map((r) => {
                   const status = (r.status || "pending").toLowerCase();
                   const isPending = status === "pending";
+                  const awaitingCompany = status === "awaiting_recipient";
                   return (
                     <tr
                       key={r.id}
@@ -166,7 +175,7 @@ export default function ConnectionRequests() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${STATUS_STYLE[status] || "bg-slate-100 text-slate-600"}`}>
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                          {status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-slate-500">
@@ -188,6 +197,9 @@ export default function ConnectionRequests() {
                               Reject
                             </button>
                           </>
+                        )}
+                        {awaitingCompany && (
+                          <span className="text-xs text-slate-500">Waiting for company owner</span>
                         )}
                       </td>
                     </tr>

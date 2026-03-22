@@ -435,8 +435,8 @@ h1, h2, h3, h4, h5, h6 {
     animation: scroll 2s ease-in-out infinite;
 }
 
-/* Section Styles - Yehansa Sandakini */
-section {
+/* Section Styles - Yehansa Sandakini (scoped to landing only — global section {} leaked into app routes) */
+.entangle-landing section {
     padding: 100px 0;
 }
 

@@ -14,6 +14,7 @@ import {
   selectConversations,
 } from "../../store/userSlice";
 
+import { DashboardCard, DashboardPageLayout } from "../../components/dashboard/DashboardLayout";
 import { HeroSection } from "../../components/Startups/Startup-dashboard/HeroSection";
 import FundingNews from "../../components/Startups/Startup-dashboard/FundingNews";
 import MASection from "../../components/Startups/Startup-dashboard/MASection";
@@ -74,29 +75,35 @@ export default function StartupDashboard() {
   }, [conversations]);
 
   return (
-    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-4">
-      <HeroSection
-        fundingValue={fundingValue}
-        fundingChange="+18%"
-        dealsValue={String(dealsValue)}
-        dealsChange="+6%"
-      />
-
-      <div className="grid grid-cols-12 gap-4 items-stretch">
-        {/* Main content */}
-        <div className="col-span-12 lg:col-span-9 flex flex-col gap-4">
-          <FundingNews investors={investors} />
-          <MASection deals={dealsSignal} />
-          <BusinessNews news={news} />
-        </div>
-
-        {/* Right sidebar */}
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
+    <DashboardPageLayout
+      hero={
+        <HeroSection
+          fundingValue={fundingValue}
+          fundingChange="+18%"
+          dealsValue={String(dealsValue)}
+          dealsChange="+6%"
+        />
+      }
+      mainColumn={
+        <>
+          <DashboardCard>
+            <FundingNews investors={investors} />
+          </DashboardCard>
+          <DashboardCard>
+            <MASection deals={dealsSignal} />
+          </DashboardCard>
+          <DashboardCard>
+            <BusinessNews news={news} />
+          </DashboardCard>
+        </>
+      }
+      sidebar={
+        <>
           <MarketSnapshot fundingValue={fundingValue} dealsValue={String(dealsValue)} />
           <TrendingIndustries />
           <RecommendedStartups investors={investors} />
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 }

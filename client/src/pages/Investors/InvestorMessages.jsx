@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import {
   Search,
   Paperclip,
@@ -17,7 +17,12 @@ import { getAvatarUrl } from "../../utils/avatarUrl";
 export default function InvestorMessages() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const openConversationId = location.state?.openConversationId;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const conversationParam = searchParams.get("conversation");
+  const parsedConv = conversationParam ? parseInt(conversationParam, 10) : NaN;
+  const openConversationId = Number.isFinite(parsedConv)
+    ? parsedConv
+    : location.state?.openConversationId ?? null;
   const conversationsList = useSelector((s) => s.user?.conversations) || [];
   const messagesList = useSelector((s) => s.user?.messages) || [];
   const [activeChat, setActiveChat] = useState(null);
@@ -59,9 +64,14 @@ export default function InvestorMessages() {
   useEffect(() => {
     const list = conversationsList || [];
     if (list.length === 0) return;
-    const buildChat = (c) => ({ id: c.id, name: c.other_user?.name || c.other_user?.email || "Unknown", avatar: getAvatarUrl(c.other_user?.profile_picture), lastMessage: c.last_message });
-    if (openConversationId) {
-      const conv = list.find((c) => c?.id === openConversationId);
+    const buildChat = (c) => ({
+      id: c.id,
+      name: c.other_user?.name || c.other_user?.email || "Unknown",
+      avatar: getAvatarUrl(c.other_user?.profile_picture),
+      lastMessage: c.last_message,
+    });
+    if (openConversationId != null) {
+      const conv = list.find((c) => Number(c?.id) === Number(openConversationId));
       setActiveChat(buildChat(conv || list[0]));
     } else {
       setActiveChat((prev) => prev || buildChat(list[0]));
@@ -111,7 +121,10 @@ export default function InvestorMessages() {
           {conversations.map((c) => (
             <div
               key={c.id}
-              onClick={() => setActiveChat(c)}
+              onClick={() => {
+                setActiveChat(c);
+                setSearchParams({ conversation: String(c.id) });
+              }}
               className={`flex items-center gap-3 px-4 py-3 cursor-pointer
               ${
                 activeChat?.id === c.id

@@ -10,6 +10,7 @@ import {
   selectConversations,
 } from "../../store/userSlice";
 import { selectCurrentUser } from "../../store/authSlice";
+import { DashboardCard, DashboardPageLayout } from "../../components/dashboard/DashboardLayout";
 
 export default function EntrepreneurDashboard() {
   const dispatch = useDispatch();
@@ -141,43 +142,47 @@ export default function EntrepreneurDashboard() {
   const displayName = currentUser?.first_name || "Founder";
 
   return (
-    <div className="bg-[#D8D4C5] min-h-screen p-6 space-y-4">
-      <EntrepreneurHero
-        revenue={monthlyRevenue}
-        investors={activeInvestors}
-        influence={trustScore}
-        displayName={displayName}
-      />
-
-      <div className="grid grid-cols-12 gap-4 items-stretch">
-        {/* MAIN CONTENT - matches sidebar height with flex */}
-        <div className="col-span-12 lg:col-span-9 flex flex-col gap-4">
-          <GrowthAndInterest metrics={growthMetrics} interests={investorInterest} />
-          <EntrepreneurNews news={news} />
-        </div>
-
-        {/* SIDEBAR */}
-        <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
+    <DashboardPageLayout
+      hero={
+        <EntrepreneurHero
+          revenue={monthlyRevenue}
+          investors={activeInvestors}
+          influence={trustScore}
+          displayName={displayName}
+        />
+      }
+      mainColumn={
+        <>
+          <DashboardCard>
+            <GrowthAndInterest metrics={growthMetrics} interests={investorInterest} />
+          </DashboardCard>
+          <DashboardCard>
+            <EntrepreneurNews news={news} />
+          </DashboardCard>
+        </>
+      }
+      sidebar={
+        <>
           <ProfileStrength value={profileStrength} />
           <QuickActions actions={quickActions} />
           <RecentActivity activities={recentActivity} />
           <RecommendedInvestors investors={recommendedInvestors} />
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 }
 
 /* ---------------- COMPONENTS ---------------- */
 function EntrepreneurHero({ revenue, investors, influence, displayName }) {
   return (
-    <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 shadow-lg">
+    <div className="rounded-2xl bg-gradient-to-r from-[#2E3A4B] to-[#465F7F] text-white p-6 shadow-md">
       <p className="text-sm opacity-80">ENTREPRENEUR DASHBOARD</p>
       <h1 className="text-3xl font-semibold mt-1">
         Welcome back, {displayName}
       </h1>
 
-      <div className="flex flex-wrap gap-6 mt-6">
+      <div className="flex flex-wrap gap-3 sm:gap-4 mt-5">
         <StatCard title="Monthly Revenue" value={`$${revenue}`} />
         <StatCard title="Active Investors" value={investors} />
         <StatCard title="Influence Score" value={influence} />
@@ -195,14 +200,12 @@ function StatCard({ title, value }) {
   );
 }
 
-/* Combined Growth + Investor Interest - matches FundingNews visual weight */
 function GrowthAndInterest({ metrics, interests }) {
   return (
     <section>
       <h2 className="text-lg font-semibold mb-4">Growth & Traction</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Large featured card - Growth Metrics */}
-        <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:items-start gap-4">
+        <div className="bg-white rounded-2xl overflow-hidden shadow-md">
           <div className="h-40 bg-gradient-to-br from-[#2E3A4B] to-[#465F7F] flex items-center justify-center">
             <div className="grid grid-cols-3 gap-4 w-full px-6">
               {metrics.map((m) => (
@@ -214,17 +217,16 @@ function GrowthAndInterest({ metrics, interests }) {
             </div>
           </div>
           <div className="p-4">
-            <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Your metrics</span>
+            <span className="text-xs bg-surface-alt text-text-muted px-2 py-1 rounded">Your metrics</span>
             <p className="text-sm text-gray-500 mt-2">Track revenue, investor engagement & burn</p>
           </div>
         </div>
 
-        {/* Investor Interest cards - stacked like FundingNews */}
-        <div className="flex flex-col gap-4">
+        <div className="space-y-4">
           {(interests || []).map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-0.5 transition duration-200 flex-1 min-h-[120px]"
+              className="bg-white rounded-2xl overflow-hidden shadow-md min-h-[120px]"
             >
               <div className="h-20 bg-gradient-to-r from-orange-50 to-amber-50 flex items-center gap-4 px-4">
                 <div className="w-12 h-12 rounded-xl bg-[#E66A4B]/20 flex items-center justify-center shrink-0">
@@ -232,16 +234,16 @@ function GrowthAndInterest({ metrics, interests }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-slate-800 truncate">{item.name}</p>
-                  <p className="text-sm text-slate-500">{item.action}</p>
+                  <p className="text-sm text-gray-500">{item.action}</p>
                 </div>
               </div>
-              <div className="p-3 border-t border-slate-100">
+              <div className="p-3 border-t border-gray-200">
                 <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">Investor</span>
               </div>
             </div>
           ))}
           {(!interests || interests.length === 0) && (
-            <div className="bg-white rounded-2xl p-6 shadow-md flex items-center justify-center min-h-[120px] text-slate-400 text-sm">
+            <div className="bg-white rounded-2xl p-6 shadow flex items-center justify-center min-h-[120px] text-gray-400 text-sm">
               No investor activity yet
             </div>
           )}
@@ -252,36 +254,34 @@ function GrowthAndInterest({ metrics, interests }) {
 }
 
 function EntrepreneurNews({ news }) {
+  const items = news?.length ? news : [];
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-4">
-        Startup & Tech News
-      </h2>
+      <h2 className="text-lg font-semibold mb-4">Startup & Tech News</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {(news || []).map((item) => (
-          <div
-            key={item.id || item.url}
-            className="bg-white rounded-2xl overflow-hidden shadow
-                       hover:shadow-xl hover:-translate-y-1
-                       transition duration-200"
-          >
-            {item.urlToImage && (
-              <img
-                src={item.urlToImage}
-                alt={item.title}
-                className="h-48 w-full object-cover"
-              />
-            )}
-
-            <div className="p-4">
-              <h3 className="font-semibold">{item.title}</h3>
-              <p className="text-sm text-gray-500 mt-2">
-                {item.source?.name}
-              </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {items.length === 0 ? (
+          <p className="text-sm text-gray-500 col-span-full">No news articles to show yet.</p>
+        ) : (
+          items.map((item) => (
+            <div
+              key={item.id || item.url}
+              className="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl hover:-translate-y-1 transition"
+            >
+              {item.urlToImage && (
+                <img
+                  src={item.urlToImage}
+                  alt={item.title}
+                  className="h-40 w-full object-cover"
+                />
+              )}
+              <div className="p-4">
+                <h3 className="font-semibold">{item.title}</h3>
+                <p className="text-sm text-gray-500 mt-2">{item.source?.name}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </section>
   );
@@ -289,7 +289,7 @@ function EntrepreneurNews({ news }) {
 
 function ProfileStrength({ value }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
       <h3 className="font-semibold mb-3">Profile Strength</h3>
       <p className="text-3xl font-semibold text-[#E66A4B]">{value}%</p>
     </div>
@@ -298,7 +298,7 @@ function ProfileStrength({ value }) {
 
 function QuickActions({ actions }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
       <h3 className="font-semibold mb-3">Quick Actions</h3>
 
       {actions.map((action) => (
@@ -320,7 +320,7 @@ function QuickActions({ actions }) {
 
 function RecentActivity({ activities }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
       <h3 className="font-semibold mb-3">Recent Activity</h3>
 
       {activities.map((item) => (
@@ -334,7 +334,7 @@ function RecentActivity({ activities }) {
 
 function RecommendedInvestors({ investors }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow hover:shadow-xl hover:-translate-y-1 transition duration-200">
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
       <h3 className="font-semibold mb-3">Recommended Investors</h3>
 
       {investors.map((inv) => (

@@ -82,6 +82,56 @@ export const updateProfile = createAsyncThunk('user/updateProfile', async (body,
   }
 });
 
+export const fetchMyCompany = createAsyncThunk(
+  'user/fetchMyCompany',
+  async (companyType, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get('/companies/me', { params: companyType ? { company_type: companyType } : {} });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
+
+export const updateMyCompany = createAsyncThunk(
+  'user/updateMyCompany',
+  async ({ companyType, body }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch('/companies/me', body, {
+        params: companyType ? { company_type: companyType } : {},
+      });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
+
+export const fetchConnectionRequestsIncoming = createAsyncThunk(
+  'user/fetchConnectionRequestsIncoming',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get('/connection-requests/incoming');
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
+
+export const respondConnectionRequest = createAsyncThunk(
+  'user/respondConnectionRequest',
+  async ({ id, action }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.patch(`/connection-requests/${id}/respond`, { action });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || err.message);
+    }
+  }
+);
+
 export const getImageKitAuth = createAsyncThunk('user/imageKitAuth', async (_, { rejectWithValue }) => {
   try {
     const { data } = await api.get('/imagekit/auth');

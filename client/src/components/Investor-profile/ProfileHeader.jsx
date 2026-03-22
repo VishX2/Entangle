@@ -95,19 +95,6 @@ export default function ProfileHeader() {
               {description}
             </p>
 
-            {myCompany?.website_url?.trim() && (
-              <p className="mt-2 text-sm">
-                <a
-                  href={normalizeUrl(myCompany.website_url.trim())}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline break-all"
-                >
-                  {myCompany.website_url.trim()}
-                </a>
-              </p>
-            )}
-
             {/* SOCIAL ICONS */}
             <div className="flex gap-4 mt-6">
               <SocialIcon type="linkedin" href={getSocialUrl('linkedin', myCompany?.website_url)} />
@@ -176,11 +163,6 @@ function ActionButton({ children, primary, accent, onClick }) {
       {children}
     </button>
   );
-}
-
-function normalizeUrl(url) {
-  if (!url) return null;
-  return url.startsWith('http') ? url : `https://${url}`;
 }
 
 function getSocialUrl(type, websiteUrl) {

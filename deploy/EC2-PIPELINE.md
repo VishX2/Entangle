@@ -6,7 +6,7 @@ Your Entangle API runs on EC2 as **root** under **`/root/Entangle`**. Workflow *
 
 - **EC2_HOST** — public IP or DNS of the instance  
 - **EC2_USER** — **`root`**  
-- **EC2_SSH_KEY** — full private key PEM (matches a key in `/root/.ssh/authorized_keys`)  
+- **EC2_SSH_KEY** — **private** key only (the file you use with `ssh -i`, e.g. `entangle-deploy`). Must include the full `-----BEGIN … PRIVATE KEY-----` … `-----END …` block with **real line breaks**. Do **not** paste `entangle-deploy.pub` (that line starts with `ssh-ed25519` or `ssh-rsa` — wrong file). If Actions logs `ssh.ParsePrivateKey: ssh: no key found`, the secret is empty, truncated, or badly pasted — open the private key in an editor, copy all lines, paste into a **new** GitHub secret (replace the old one). Optional **EC2_SSH_PASSPHRASE** if the key is encrypted (the workflow passes it to SCP/SSH).  
 - **EC2_DEPLOY_PATH** — leave **unset** (uses `$HOME/Entangle` → `/root/Entangle`)  
 - **VITE_API_URL** — optional, public API URL for client/admin builds  
 

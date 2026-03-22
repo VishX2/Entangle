@@ -44,3 +44,6 @@ entangle-deploy
 entangle-deploy.pub
 entangle-github-deploy
 entangle-github-deploy.pub
+
+# CI: ephemeral EC2 key file (never commit)
+.deploy_ec2_key.pem

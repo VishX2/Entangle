@@ -21,6 +21,7 @@ const notifications = require('../controllers/notificationsController');
 const profileGuidance = require('../controllers/profileGuidanceController');
 const contentScan = require('../controllers/contentScanController');
 const imagekit = require('../controllers/imagekitController');
+const news = require('../controllers/newsController');
 const { upload } = require('../middleware/upload');
 
 const router = express.Router();
@@ -69,6 +70,8 @@ router.get('/matchmaking/search', optionalAuth, matchmaking.searchByPrompt);
 
 router.get('/imagekit/auth', auth, imagekit.getAuth);
 router.get('/imagekit/auth-public', imagekit.getAuth);
+
+router.get('/news/headlines', auth, news.headlines);
 
 router.post('/documents/upload', auth, upload.single('file'), documents.upload);
 router.post('/documents/upload-public', upload.single('file'), documents.uploadPublic);

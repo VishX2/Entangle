@@ -7,6 +7,7 @@ const config = {
   databaseUrl: process.env.DATABASE_URL,
   jwtSecret: process.env.JWT_SECRET,
   openaiApiKey: process.env.OPENAI_API_KEY || '',
+  newsApiKey: process.env.NEWS_API_KEY || '',
   sendgridApiKey: process.env.SENDGRID_API_KEY || '',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
   corsOrigins: process.env.CORS_ORIGINS

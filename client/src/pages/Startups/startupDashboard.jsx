@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+
+import api from "../../api/client";
 
 import {
   fetchCompanies,
@@ -40,10 +41,8 @@ export default function StartupDashboard() {
 
   const fetchNews = async () => {
     try {
-      const res = await axios.get(
-        "https://newsapi.org/v2/top-headlines?category=business&language=en&pageSize=6&apiKey=39a049a8c44c49518239d23453c96d6b"
-      );
-      setNews(res.data.articles);
+      const res = await api.get("/news/headlines");
+      setNews(res.data?.articles || []);
     } catch (err) {
       console.error("News fetch error:", err);
     }

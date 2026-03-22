@@ -20,7 +20,7 @@ Uploads `deploy.tar.gz` → extracts to **`/root/Entangle`** → `npm ci` in **`
 sudo su -
 ```
 
-Run **`deploy/ec2-setup-amazon-linux.sh`** (creates **`/root/Entangle/server`**, installs Node 20 + PM2). Complete **`pm2 startup`**, then **`pm2 save`**.
+Run **`deploy/ec2-setup-amazon-linux.sh`** (creates **`/root/Entangle/server`**, installs Node 24 + PM2). Complete **`pm2 startup`**, then **`pm2 save`**.
 
 Add **`/root/Entangle/server/.env`** (`DATABASE_URL`, `JWT_SECRET`, `PORT`, `CORS_ORIGINS`, `FRONTEND_URL`, …).
 

@@ -11,9 +11,9 @@ set -euo pipefail
 
 echo "==> Running as: $(whoami)  (HOME=$HOME → Entangle will use ${HOME}/Entangle)"
 
-echo "==> Node.js 20 (NodeSource) + npm"
-if ! command -v node >/dev/null 2>&1 || [[ "$(node -v 2>/dev/null || true)" != v20* ]]; then
-  curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+echo "==> Node.js 24 (NodeSource) + npm"
+if ! command -v node >/dev/null 2>&1 || [[ "$(node -v 2>/dev/null || true)" != v24* ]]; then
+  curl -fsSL https://rpm.nodesource.com/setup_24.x | sudo bash -
   sudo dnf install -y nodejs
 else
   echo "    Node already present: $(node -v)"

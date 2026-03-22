@@ -21,15 +21,12 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Quiets GitHub’s Node 20 runner deprecation warning for checkout/setup-node (see GitHub changelog 2025-09-19).
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install dependencies & build frontends
         env:
@@ -79,7 +76,7 @@ jobs:
             # Root: /root/Entangle | ec2-user: /home/ec2-user/Entangle | or EC2_DEPLOY_PATH
             BASE="${DEPLOY_PATH:-$HOME/Entangle}"
             echo "Deploy path: $BASE user=$(whoami) node=$(command -v node || echo missing) npm=$(command -v npm || echo missing) pm2=$(command -v pm2 || echo missing)"
-            command -v node >/dev/null || { echo "ERROR: node not found on server. Install Node 20."; exit 1; }
+            command -v node >/dev/null || { echo "ERROR: node not found on server. Install Node 24."; exit 1; }
             command -v npm >/dev/null || { echo "ERROR: npm not found on server."; exit 1; }
             command -v pm2 >/dev/null || { echo "ERROR: pm2 not found. On EC2 run: npm install -g pm2"; exit 1; }
             mkdir -p "$BASE"

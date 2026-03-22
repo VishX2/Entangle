@@ -63,7 +63,8 @@ jobs:
             exit 1
           fi
           printf '%s\n' "$EC2_SSH_KEY" | tr -d '\r' > "${GITHUB_WORKSPACE}/.deploy_ec2_key.pem"
-          chmod 600 "${GITHUB_WORKSPACE}/.deploy_ec2_key.pem"
+          # drone-scp Docker user must read the bind-mounted file; 600 is often "permission denied" for that UID.
+          chmod 644 "${GITHUB_WORKSPACE}/.deploy_ec2_key.pem"
 
       - name: Upload bundle to EC2
         uses: appleboy/scp-action@v0.1.7

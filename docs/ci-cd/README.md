@@ -19,3 +19,5 @@ Push-triggered deploy was removed so missing EC2 secrets do not mark every commi
 - `.github/workflows/deploy-ec2.yml`
 - `deploy/ecosystem.config.cjs` — PM2 (`entangle`)
 - `deploy/nginx-entangle.conf.example` — optional reverse proxy
+- **[deploy/EC2-PIPELINE.md](../deploy/EC2-PIPELINE.md)** — connect GitHub Actions to your EC2 (step-by-step)
+- `deploy/ec2-setup-amazon-linux.sh` — one-time EC2 bootstrap (Amazon Linux 2023)

@@ -29,6 +29,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
+          export VITE_API_URL="${VITE_API_URL:-http://localhost:8000}"
           (cd server && npm ci)
           (cd client && npm ci && npm run build)
           (cd admin && npm ci && npm run build)

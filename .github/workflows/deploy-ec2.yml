@@ -72,6 +72,17 @@ jobs:
             echo "::error::Set EC2_SSH_KEY (multiline private key) or EC2_SSH_KEY_B64 (single-line base64 of the key file). See deploy/EC2-PIPELINE.md."
             exit 1
           fi
+          # Trim BOM / leading blank lines (GitHub UI paste often adds a leading newline).
+          python3 << 'PY'
+          import os
+          from pathlib import Path
+          p = Path(os.environ["GITHUB_WORKSPACE"]) / ".deploy_ec2_key.pem"
+          data = p.read_bytes()
+          if data.startswith(b"\xef\xbb\xbf"):
+              data = data[3:]
+          text = data.decode("utf-8", errors="replace").strip() + "\n"
+          p.write_text(text, newline="\n")
+          PY
           # drone-scp Docker user must read the bind-mounted file; 600 is often "permission denied" for that UID.
           chmod 644 "$OUT"
 
@@ -85,12 +96,12 @@ jobs:
             echo "::error::Key file is only $BYTES bytes — GitHub secret is likely truncated or wrong."
             exit 1
           fi
-          if ! head -1 "$KEY" | grep -q 'BEGIN.*PRIVATE KEY'; then
-            echo "::error::First line must look like -----BEGIN … PRIVATE KEY-----. You may have pasted the .pub line or a broken secret."
+          if ! grep -q '^-----BEGIN .*PRIVATE KEY-----' "$KEY"; then
+            echo "::error::Missing -----BEGIN … PRIVATE KEY----- line. You may have pasted the .pub line, only base64 body, or EC2_SSH_KEY_B64 is wrong. If both EC2_SSH_KEY and EC2_SSH_KEY_B64 are set, B64 is used — remove a bad B64 secret."
             exit 1
           fi
-          if ! tail -1 "$KEY" | grep -q 'END.*PRIVATE KEY'; then
-            echo "::error::Last line must be -----END … PRIVATE KEY-----. Secret may be truncated."
+          if ! grep -q '^-----END .*PRIVATE KEY-----' "$KEY"; then
+            echo "::error::Missing -----END … PRIVATE KEY----- line — secret may be truncated."
             exit 1
           fi
           echo "Key file shape OK ($BYTES bytes)."

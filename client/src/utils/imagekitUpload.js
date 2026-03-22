@@ -7,9 +7,8 @@ function buildFileName(file) {
   return `${Date.now()}-${safeName}`;
 }
 
-async function uploadViaImageKit(file) {
-  const { data: auth } = await api.get("/imagekit/auth");
-
+async function uploadToImageKit(file, authEndpoint) {
+  const { data: auth } = await api.get(authEndpoint);
   const formData = new FormData();
   formData.append("file", file);
   formData.append("fileName", buildFileName(file));
@@ -20,47 +19,17 @@ async function uploadViaImageKit(file) {
   formData.append("useUniqueFileName", "true");
   formData.append("folder", "/entangle/profile-pictures");
 
-  const response = await fetch(IMAGEKIT_UPLOAD_URL, {
-    method: "POST",
-    body: formData,
-  });
-
+  const response = await fetch(IMAGEKIT_UPLOAD_URL, { method: "POST", body: formData });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok || !payload?.url) {
-    throw new Error(payload?.message || "Image upload failed");
-  }
-
+  if (!response.ok || !payload?.url) throw new Error(payload?.message || "Image upload failed");
   return payload.url;
 }
 
-async function uploadViaServer(file) {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const { data } = await api.post("/documents/upload-public", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-
-  if (!data?.file_url) {
-    throw new Error("Profile upload fallback failed");
-  }
-
-  return data.file_url;
-}
-
+/**
+ * Use auth-public so registration (and stale localStorage tokens) never hits
+ * GET /imagekit/auth → 401 → "Session expired" toast before register completes.
+ * Server exposes the same signature on both routes; only /auth requires JWT.
+ */
 export async function uploadProfilePicture(file) {
-  try {
-    return await uploadViaImageKit(file);
-  } catch (error) {
-    const status = error?.response?.status;
-    if (status === 503 || status === 404) {
-      return uploadViaServer(file);
-    }
-
-    if (error?.message === "Network Error") {
-      return uploadViaServer(file);
-    }
-
-    throw error;
-  }
+  return uploadToImageKit(file, "/imagekit/auth-public");
 }

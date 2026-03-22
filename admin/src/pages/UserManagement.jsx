@@ -93,7 +93,7 @@ export default function UserManagement() {
 
             // Users table
             <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b border-slate-200">
+              <thead className="bg-surface-alt border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4 text-left">User</th>
                   <th className="px-6 py-4 text-left">Email</th>

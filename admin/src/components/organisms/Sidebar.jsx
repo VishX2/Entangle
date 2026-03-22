@@ -44,7 +44,7 @@ export default function Sidebar() {
         <NavItem to="/profile" icon={User} label="Profile" />
         <NavItem to="/users" icon={Users} label="User Management" />
         <NavItem to="/connection-requests" icon={Link2} label="Connection Requests" />
-        <NavItem to="/investor-verification" icon={ShieldCheck} label="Investor Verification" />
+        <NavItem to="/startup-verification" icon={ShieldCheck} label="Startup Verification" />
         <NavItem to="/content-moderation" icon={MessageSquare} label="Content Moderation" />
         <NavItem to="/reports" icon={AlertTriangle} label="Reports & Complaints" />
         <NavItem to="/ai-matchmaking" icon={Sparkles} label="AI Matchmaking" />

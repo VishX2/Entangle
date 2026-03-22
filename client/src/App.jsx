@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
@@ -33,7 +33,6 @@ import InvestorProfileGate from "./pages/Investors/InvestorProfileGate";
 
 import Dashboard from "./pages/Entrepreneurs/entrepreneurDashboard";
 import EntrepreneurConnections from "./pages/Entrepreneurs/EntrepreneurConnectionRequestsPage";
-import EntrepreneurMessages from "./pages/Entrepreneurs/EntrepreneurMessagingPage";
 
 import FeedbackAndRisk from './pages/FeedbackAndRisk';
 import StartupDiscovery from "./pages/StartupDiscovery";
@@ -49,6 +48,7 @@ function App() {
 
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />
           <Route path="/login" element={<EntangleLogin />} />
           <Route path="/select-type" element={<UserTypeSelectionPage />} />
           <Route path="/register/investor" element={<InvestorRegistrationPage />} />

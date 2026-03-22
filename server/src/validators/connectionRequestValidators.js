@@ -6,7 +6,15 @@ const createConnectionRequestSchema = z.object({
 });
 
 const updateConnectionRequestSchema = z.object({
-  status: z.enum(['pending', 'accepted', 'rejected']),
+  status: z.enum(['pending', 'rejected', 'awaiting_recipient']),
 });
 
-module.exports = { createConnectionRequestSchema, updateConnectionRequestSchema };
+const respondConnectionRequestSchema = z.object({
+  action: z.enum(['accept', 'decline']),
+});
+
+module.exports = {
+  createConnectionRequestSchema,
+  updateConnectionRequestSchema,
+  respondConnectionRequestSchema,
+};

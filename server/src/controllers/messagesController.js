@@ -1,5 +1,6 @@
 const { prisma } = require('../lib/prisma');
 const { create: createNotification } = require('../services/notificationService');
+const { messagesPathForUser } = require('../lib/appPaths');
 
 async function listConversations(req, res, next) {
   try {
@@ -166,11 +167,12 @@ async function sendMessage(req, res, next) {
     const sender = await prisma.user.findUnique({ where: { id: userId }, select: { first_name: true, last_name: true } });
     const senderName = sender ? `${sender.first_name || ''} ${sender.last_name || ''}`.trim() || 'Someone' : 'Someone';
     for (const p of otherParticipants) {
+      const base = await messagesPathForUser(p.user_id);
       await createNotification(p.user_id, {
         type: 'new_message',
         title: `New message from ${senderName}`,
         body: String(content).trim().slice(0, 100),
-        link: `/messages?conversation=${convId}`,
+        link: `${base}?conversation=${convId}`,
       });
     }
     res.status(201).json({

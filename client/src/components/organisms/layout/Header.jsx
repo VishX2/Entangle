@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User } from 'lucide-react';
 import { selectCurrentUser, logout } from '../../../store/authSlice';
+import { getAvatarUrl } from '../../../utils/avatarUrl';
 import NotificationBell from '../../NotificationBell';
 
 const getProfilePath = (userType) => {
@@ -16,7 +17,7 @@ const Header = () => {
   const user = useSelector(selectCurrentUser);
   const displayName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : null;
   const profilePath = getProfilePath(user?.user_type);
-  const avatarUrl = user?.profile_picture;
+  const avatarUrl = getAvatarUrl(user?.profile_picture);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -38,17 +39,11 @@ const Header = () => {
           <button
             type="button"
             onClick={handleProfileClick}
-            className="flex items-center gap-2 rounded-lg hover:bg-gray-100 transition outline-none focus:ring-2 focus:ring-[#465775] focus:ring-offset-1"
+            className="flex items-center gap-2 rounded-lg hover:bg-surface-alt transition outline-none focus:ring-2 focus:ring-[#465775] focus:ring-offset-1"
             aria-label="Go to profile"
           >
             <span className="flex shrink-0 w-9 h-9 rounded-full overflow-hidden bg-gray-200 ring-2 ring-gray-100">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <span className="w-full h-full flex items-center justify-center text-gray-500">
-                  <User size={20} />
-                </span>
-              )}
+              <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
             </span>
             <span className="text-sm text-gray-600 hidden sm:inline">Hi, {user.first_name}</span>
           </button>
@@ -56,7 +51,7 @@ const Header = () => {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 transition"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-surface-alt hover:text-gray-800 transition"
           aria-label="Log out"
         >
           <LogOut size={18} />

@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 # One-time EC2 prep for Entangle + GitHub Actions deploy (Amazon Linux 2023).
-# Run as the SAME Linux user GitHub will SSH as (recommended: ec2-user).
+# Run as the SAME user GitHub Actions will SSH as.
+#
+# Entangle on EC2 as root (your setup):   sudo su -   then run this script → /root/Entangle
+# As ec2-user:                            run as ec2-user → /home/ec2-user/Entangle
 #
 #   chmod +x ec2-setup-amazon-linux.sh && ./ec2-setup-amazon-linux.sh
 #
 set -euo pipefail
+
+echo "==> Running as: $(whoami)  (HOME=$HOME → Entangle will use ${HOME}/Entangle)"
 
 echo "==> Node.js 20 (NodeSource) + npm"
 if ! command -v node >/dev/null 2>&1 || [[ "$(node -v 2>/dev/null || true)" != v20* ]]; then
@@ -21,19 +26,17 @@ else
   echo "    pm2 already installed"
 fi
 
-echo "==> Deploy directory (GitHub default: \$HOME/Entangle)"
+echo "==> Deploy directory (pipeline default: \$HOME/Entangle → ${HOME}/Entangle for this user)"
 mkdir -p "${HOME}/Entangle/server"
 touch "${HOME}/Entangle/server/.env.example"
-echo "    Created ${HOME}/Entangle/server — add .env (copy from .env.example on your laptop, never commit)"
+echo "    Create ${HOME}/Entangle/server/.env with DATABASE_URL, JWT_SECRET, PORT, CORS_ORIGINS, FRONTEND_URL"
 
 echo "==> PM2 startup on reboot"
-echo "    Run the command printed below (it will start with sudo), then: pm2 save"
+echo "    Run the sudo command printed below, then: pm2 save"
 pm2 startup || true
 
 echo ""
-echo "Next steps:"
-echo "  1. nano ${HOME}/Entangle/server/.env   # DATABASE_URL, JWT_SECRET, PORT, CORS_ORIGINS, FRONTEND_URL, ..."
-echo "  2. Add deploy SSH public key to: ${HOME}/.ssh/authorized_keys"
-echo "  3. Security group: TCP 22 allowed for GitHub Actions (or your IP for testing)"
-echo "  4. GitHub repo → Settings → Secrets: EC2_HOST, EC2_USER, EC2_SSH_KEY (+ optional VITE_API_URL, EC2_DEPLOY_PATH)"
-echo "  5. Actions → Deploy EC2 → Run workflow"
+echo "GitHub Actions secrets for root on this box:"
+echo "  EC2_USER=root"
+echo "  EC2_DEPLOY_PATH=   (leave empty — uses /root/Entangle)"
+echo "  Add deploy public key to: ${HOME}/.ssh/authorized_keys"

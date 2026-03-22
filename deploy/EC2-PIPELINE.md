@@ -1,92 +1,53 @@
-# Run the GitHub → EC2 pipeline on your instance
+# GitHub Actions to EC2 — Entangle server as root
 
-I cannot log into your AWS account or EC2 from here. Follow these steps once; after that, **Deploy EC2** in GitHub Actions updates the app.
+Your Entangle API runs on EC2 as **root** under **`/root/Entangle`**. Workflow **Deploy EC2** targets that path when you set the secrets below.
 
-## 1. On EC2 (SSH as `ec2-user`)
+## GitHub secrets (root server)
 
-Copy this repo’s `deploy/ec2-setup-amazon-linux.sh` to the server, or paste its contents, then:
+- **EC2_HOST** — public IP or DNS of the instance  
+- **EC2_USER** — **`root`**  
+- **EC2_SSH_KEY** — full private key PEM (matches a key in `/root/.ssh/authorized_keys`)  
+- **EC2_DEPLOY_PATH** — leave **unset** (uses `$HOME/Entangle` → `/root/Entangle`)  
+- **VITE_API_URL** — optional, public API URL for client/admin builds  
 
-```bash
-chmod +x ec2-setup-amazon-linux.sh
-./ec2-setup-amazon-linux.sh
-```
+## What the pipeline does
 
-Complete **`pm2 startup`** using the `sudo` command it prints, then:
+Uploads `deploy.tar.gz` → extracts to **`/root/Entangle`** → `npm ci` in **`/root/Entangle/server`** → `prisma generate` → **`pm2 startOrReload`** for app name **`entangle`**.
 
-```bash
-pm2 save
-```
-
-Create **`~/Entangle/server/.env`** with at least:
-
-- `DATABASE_URL`
-- `JWT_SECRET`
-- `PORT` (e.g. `8000`)
-- `CORS_ORIGINS` (your admin + client URLs, comma-separated)
-- `FRONTEND_URL`
-
-## 2. Deploy SSH key
-
-On your PC you should have **`entangle-deploy`** (private) and **`entangle-deploy.pub`** (public).
-
-Append the **one line** from `.pub` to:
-
-`~/.ssh/authorized_keys` on EC2 for **`ec2-user`**
+## One-time on EC2 (as root)
 
 ```bash
-mkdir -p ~/.ssh && chmod 700 ~/.ssh
-nano ~/.ssh/authorized_keys   # paste public key line
-chmod 600 ~/.ssh/authorized_keys
+sudo su -
 ```
 
-Test from your PC:
+Run **`deploy/ec2-setup-amazon-linux.sh`** (creates **`/root/Entangle/server`**, installs Node 20 + PM2). Complete **`pm2 startup`**, then **`pm2 save`**.
+
+Add **`/root/Entangle/server/.env`** (`DATABASE_URL`, `JWT_SECRET`, `PORT`, `CORS_ORIGINS`, `FRONTEND_URL`, …).
+
+Put the deploy **public** key in **`/root/.ssh/authorized_keys`**. Ensure **`sshd`** allows root key login (`PermitRootLogin prohibit-password` or `yes`), then **`systemctl reload sshd`**.
+
+## Test SSH from your PC
+
+```text
+ssh -i path/to/entangle-deploy root@YOUR_PUBLIC_IP
+```
+
+## Run deploy
+
+GitHub → **Actions** → **Deploy EC2** → **Run workflow**.
+
+On server: **`pm2 status`**, **`pm2 logs entangle`**.
+
+## Nginx
+
+Point `root` at **`/root/Entangle/client-dist`** and **`/root/Entangle/admin-dist`** (see **`nginx-entangle.conf.example`**).
+
+## Prisma schema changes
 
 ```bash
-ssh -i path/to/entangle-deploy ec2-user@YOUR_PUBLIC_IP
+cd /root/Entangle/server && npx prisma db push
 ```
 
-## 3. Security group
+## ec2-user instead
 
-Allow **TCP 22** from your IP and/or from ranges GitHub Actions uses (or temporarily `0.0.0.0/0` while testing—tighten later).
-
-## 4. GitHub repository secrets
-
-**Settings → Secrets and variables → Actions**
-
-| Secret | Example |
-|--------|---------|
-| `EC2_HOST` | Public IPv4 of the instance |
-| `EC2_USER` | `ec2-user` |
-| `EC2_SSH_KEY` | Full private key file (`entangle-deploy`), including BEGIN/END lines |
-
-Optional:
-
-| Secret | Use |
-|--------|-----|
-| `VITE_API_URL` | Public API URL for built SPAs (e.g. `https://api.yourdomain.com`) |
-| `EC2_DEPLOY_PATH` | Only if not using `~/Entangle` (e.g. `/home/ec2-user/Entangle`) |
-
-## 5. Run the pipeline
-
-**Actions → Deploy EC2 → Run workflow** (branch `master`).
-
-On EC2 after a good run:
-
-```bash
-pm2 status
-pm2 logs entangle
-```
-
-## 6. Static sites (client + admin)
-
-The workflow drops **`client-dist`** and **`admin-dist`** under `~/Entangle/`. Point **nginx** (or ALB) at those folders and proxy **`/api`** to `http://127.0.0.1:YOUR_PORT`. See `nginx-entangle.conf.example`.
-
-## 7. Schema changes
-
-Deploy only runs **`prisma generate`**. When you change the Prisma schema, SSH in and run:
-
-```bash
-cd ~/Entangle/server && npx prisma db push
-```
-
-(Or migrations when you adopt them.)
+Use **EC2_USER=ec2-user** and leave **EC2_DEPLOY_PATH** unset → **`/home/ec2-user/Entangle`**.

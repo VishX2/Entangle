@@ -1,9 +1,12 @@
-# Deploy to Amazon Linux EC2: build on GitHub, upload tarball, npm ci + prisma generate + PM2 reload.
+# Deploy Entangle API to EC2: build on GitHub → SCP tarball → extract → npm ci → prisma generate → PM2 entangle.
 #
-# Required GitHub secrets: EC2_HOST, EC2_USER, EC2_SSH_KEY
-# Optional: VITE_API_URL (SPA API base), EC2_DEPLOY_PATH (default: $HOME/Entangle for SSH user)
+# Secrets: EC2_HOST, EC2_USER, EC2_SSH_KEY
+# Optional: VITE_API_URL, EC2_DEPLOY_PATH
 #
-# Server must already have server/.env (not in git). Tarball excludes .env, uploads, node_modules.
+# Default install path: $HOME/Entangle on the SSH user (root → /root/Entangle, ec2-user → /home/ec2-user/Entangle).
+# Override with secret EC2_DEPLOY_PATH only if you use a different directory.
+#
+# On the instance: server/.env must exist (not in git). Tarball excludes .env, uploads, node_modules.
 #
 name: Deploy EC2
 
@@ -68,7 +71,9 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
+            # Root: /root/Entangle | ec2-user: /home/ec2-user/Entangle | or EC2_DEPLOY_PATH
             BASE="${DEPLOY_PATH:-$HOME/Entangle}"
+            echo "Deploy path: $BASE (user=$(whoami))"
             mkdir -p "$BASE"
             tar -xzf /tmp/deploy.tar.gz -C "$BASE"
             rm -f /tmp/deploy.tar.gz

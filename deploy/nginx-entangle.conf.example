@@ -1,5 +1,6 @@
 # Example nginx for static client + admin + /api proxy to Node (PORT from server .env, often 8000).
-# Replace server_name and paths. TLS: use certbot or ACM on ALB instead of plain HTTP.
+# Replace server_name and paths. Entangle as root: /root/Entangle/... | ec2-user: /home/ec2-user/Entangle/...
+# TLS: use certbot or ACM on ALB instead of plain HTTP.
 
 upstream entangle_api {
     server 127.0.0.1:8000;
@@ -10,7 +11,7 @@ server {
     listen 80;
     server_name app.example.com;
 
-    root /home/ec2-user/Entangle/client-dist;
+    root /root/Entangle/client-dist;
     index index.html;
 
     location / {
@@ -38,7 +39,7 @@ server {
     listen 80;
     server_name admin.example.com;
 
-    root /home/ec2-user/Entangle/admin-dist;
+    root /root/Entangle/admin-dist;
     index index.html;
 
     location / {

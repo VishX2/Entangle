@@ -7,10 +7,9 @@
 #
 name: Deploy EC2
 
+# Manual only — avoids failed runs on every push when EC2 secrets are not configured.
 on:
   workflow_dispatch:
-  push:
-    branches: [main, master]
 
 concurrency:
   group: deploy-ec2-${{ github.ref }}

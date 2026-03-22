@@ -1,0 +1,46 @@
+# Optional: Postgres + seed + supertest. Run from Actions → "CI API tests" → Run workflow.
+# Not triggered on push, so it never turns the repo red by default.
+name: CI API tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: entangle_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d entangle_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/entangle_ci
+      JWT_SECRET: ci-jwt-secret-must-be-at-least-32-characters-long
+      ADMIN_EMAIL: admin@ci.local
+      ADMIN_PASSWORD: Admin123!
+      NODE_ENV: development
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Server — schema, seed, test
+        working-directory: server
+        run: |
+          npm ci
+          npx prisma db push
+          node seeds/seed.js
+          npm test

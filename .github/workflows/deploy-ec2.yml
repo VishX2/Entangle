@@ -1,0 +1,79 @@
+# Deploy to Amazon Linux EC2: build on GitHub, upload tarball, npm ci + prisma generate + PM2 reload.
+#
+# Required GitHub secrets: EC2_HOST, EC2_USER, EC2_SSH_KEY
+# Optional: VITE_API_URL (SPA API base), EC2_DEPLOY_PATH (default: $HOME/Entangle for SSH user)
+#
+# Server must already have server/.env (not in git). Tarball excludes .env, uploads, node_modules.
+#
+name: Deploy EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: deploy-ec2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies & build frontends
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          (cd server && npm ci)
+          (cd client && npm ci && npm run build)
+          (cd admin && npm ci && npm run build)
+
+      - name: Prisma validate
+        working-directory: server
+        run: npx prisma validate
+
+      - name: Create deploy bundle
+        run: |
+          mkdir -p bundle/server
+          rsync -a --exclude node_modules --exclude uploads --exclude .env server/ bundle/server/
+          rsync -a client/dist/ bundle/client-dist/
+          rsync -a admin/dist/ bundle/admin-dist/
+          cp deploy/ecosystem.config.cjs bundle/
+          tar -czf deploy.tar.gz -C bundle .
+
+      - name: Upload bundle to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: deploy.tar.gz
+          target: /tmp/
+
+      - name: Extract, install API, PM2 reload
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DEPLOY_PATH: ${{ secrets.EC2_DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: DEPLOY_PATH
+          script_stop: true
+          script: |
+            set -euo pipefail
+            BASE="${DEPLOY_PATH:-$HOME/Entangle}"
+            mkdir -p "$BASE"
+            tar -xzf /tmp/deploy.tar.gz -C "$BASE"
+            rm -f /tmp/deploy.tar.gz
+            cd "$BASE/server"
+            npm ci --omit=dev
+            npx prisma generate
+            pm2 startOrReload "$BASE/ecosystem.config.cjs" --only entangle
+            pm2 save

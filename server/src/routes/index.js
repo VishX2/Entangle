@@ -1,6 +1,6 @@
 const express = require('express');
 const { auth, optionalAuth, requireAdmin } = require('../middleware/auth');
-const { validate } = require('../middleware/validate');
+const { validate, validateQuery } = require('../middleware/validate');
 const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } = require('../validators/authValidators');
 const { createCompanySchema, updateCompanySchema, updateOwnCompanySchema } = require('../validators/companyValidators');
 const { createReviewSchema, updateReviewSchema } = require('../validators/reviewValidators');
@@ -8,6 +8,7 @@ const { updateReportSchema } = require('../validators/reportValidators');
 const {
   createConnectionRequestSchema,
   updateConnectionRequestSchema,
+  listConnectionRequestsQuerySchema,
   respondConnectionRequestSchema,
 } = require('../validators/connectionRequestValidators');
 const authController = require('../controllers/authController');
@@ -60,7 +61,13 @@ router.post('/reviews/:id/helpful', reviews.helpful);
 router.post('/connection-requests', auth, validate(createConnectionRequestSchema), connectionRequests.create);
 router.get('/connection-requests/sent', auth, connectionRequests.listSent);
 router.get('/connection-requests/incoming', auth, connectionRequests.listIncoming);
-router.get('/connection-requests', auth, requireAdmin, connectionRequests.listAll);
+router.get(
+  '/connection-requests',
+  auth,
+  requireAdmin,
+  validateQuery(listConnectionRequestsQuerySchema),
+  connectionRequests.listAll
+);
 router.patch('/connection-requests/:id/respond', auth, validate(respondConnectionRequestSchema), connectionRequests.respond);
 router.patch('/connection-requests/:id', auth, requireAdmin, validate(updateConnectionRequestSchema), connectionRequests.updateStatus);
 

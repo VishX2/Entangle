@@ -53,28 +53,14 @@ jobs:
           cp deploy/ecosystem.config.cjs bundle/
           tar -czf deploy.tar.gz -C bundle .
 
-      - name: Verify EC2_SSH_KEY (private key parseable)
+      - name: Verify EC2_SSH_KEY is set
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-          EC2_SSH_PASSPHRASE: ${{ secrets.EC2_SSH_PASSPHRASE }}
         run: |
-          set -euo pipefail
           if [ -z "$EC2_SSH_KEY" ]; then
             echo "::error title=EC2_SSH_KEY::Secret is empty. Add the deploy private key in repo Settings → Secrets."
             exit 1
           fi
-          printf '%s\n' "$EC2_SSH_KEY" | tr -d '\r' > /tmp/_entangle_deploy_key
-          chmod 600 /tmp/_entangle_deploy_key
-          if [ -n "${EC2_SSH_PASSPHRASE:-}" ]; then
-            echo "EC2_SSH_PASSPHRASE is set; skipping unencrypted key check."
-          elif ! ssh-keygen -y -f /tmp/_entangle_deploy_key -P "" >/dev/null 2>&1; then
-            echo "::error title=EC2_SSH_KEY::Not a valid unencrypted private key (ssh-keygen could not read it)."
-            echo "Use the **private** key file (e.g. entangle-deploy), not the .pub file."
-            echo "Include the full -----BEGIN ... PRIVATE KEY----- block with real line breaks (not the text \\n)."
-            echo "If the key has a passphrase, add secret EC2_SSH_PASSPHRASE (see deploy/EC2-PIPELINE.md)."
-            exit 1
-          fi
-          rm -f /tmp/_entangle_deploy_key
 
       - name: Upload bundle to EC2
         uses: appleboy/scp-action@v0.1.7

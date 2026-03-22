@@ -15,6 +15,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Prisma postinstall/validate read env("DATABASE_URL"); no DB connection in this job.
+    env:
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci_placeholder
     steps:
       - uses: actions/checkout@v6
 

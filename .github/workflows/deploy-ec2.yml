@@ -21,6 +21,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Schema uses env("DATABASE_URL"); validate/generate do not connect on the runner.
+    env:
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci_placeholder
     steps:
       - uses: actions/checkout@v6
 

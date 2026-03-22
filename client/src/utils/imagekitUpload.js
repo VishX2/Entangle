@@ -25,13 +25,11 @@ async function uploadToImageKit(file, authEndpoint) {
   return payload.url;
 }
 
+/**
+ * Use auth-public so registration (and stale localStorage tokens) never hits
+ * GET /imagekit/auth → 401 → "Session expired" toast before register completes.
+ * Server exposes the same signature on both routes; only /auth requires JWT.
+ */
 export async function uploadProfilePicture(file) {
-  try {
-    return await uploadToImageKit(file, "/imagekit/auth");
-  } catch (e) {
-    if (e?.response?.status === 401) {
-      return uploadToImageKit(file, "/imagekit/auth-public");
-    }
-    throw e;
-  }
+  return uploadToImageKit(file, "/imagekit/auth-public");
 }

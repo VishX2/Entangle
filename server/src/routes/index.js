@@ -75,7 +75,8 @@ router.get('/matchmaking/entrepreneurs-for-investor/:investorId', optionalAuth, 
 router.post('/matchmaking/search', optionalAuth, matchmaking.searchByPrompt);
 router.get('/matchmaking/search', optionalAuth, matchmaking.searchByPrompt);
 
-router.get('/imagekit/auth', auth, imagekit.getAuth);
+/** optionalAuth: stale/expired JWT during registration still returns a signature (old clients call /auth with Bearer). */
+router.get('/imagekit/auth', optionalAuth, imagekit.getAuth);
 router.get('/imagekit/auth-public', imagekit.getAuth);
 
 router.get('/news/headlines', auth, news.headlines);

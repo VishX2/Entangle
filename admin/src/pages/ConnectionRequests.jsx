@@ -57,6 +57,7 @@ export default function ConnectionRequests() {
   const acceptedCount = requests.filter((r) => (r.status || "").toLowerCase() === "accepted").length;
   const rejectedCount = requests.filter((r) => (r.status || "").toLowerCase() === "rejected").length;
   const awaitingRecipientCount = requests.filter((r) => (r.status || "").toLowerCase() === "awaiting_recipient").length;
+  const recipientDeclinedCount = requests.filter((r) => (r.status || "").toLowerCase() === "recipient_declined").length;
 
   return (
     <div className="flex min-h-screen bg-[#f7f3ec]">
@@ -69,7 +70,7 @@ export default function ConnectionRequests() {
         </p>
 
         {/* Summary cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
             <p className="text-slate-500 text-sm">Pending (admin)</p>
             <p className="text-2xl font-bold text-amber-600">{pendingCount}</p>
@@ -83,8 +84,12 @@ export default function ConnectionRequests() {
             <p className="text-2xl font-bold text-green-600">{acceptedCount}</p>
           </div>
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
-            <p className="text-slate-500 text-sm">Rejected</p>
+            <p className="text-slate-500 text-sm">Rejected (admin)</p>
             <p className="text-2xl font-bold text-red-600">{rejectedCount}</p>
+          </div>
+          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
+            <p className="text-slate-500 text-sm">Declined by company</p>
+            <p className="text-2xl font-bold text-orange-600">{recipientDeclinedCount}</p>
           </div>
           <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-200">
             <p className="text-slate-500 text-sm">Total</p>
@@ -132,7 +137,15 @@ export default function ConnectionRequests() {
               filter === "rejected" ? "bg-red-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"
             }`}
           >
-            Rejected
+            Rejected (admin)
+          </button>
+          <button
+            onClick={() => setFilter("recipient_declined")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium ${
+              filter === "recipient_declined" ? "bg-orange-500 text-white" : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+            }`}
+          >
+            Declined by company
           </button>
         </div>
 

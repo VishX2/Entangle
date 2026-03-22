@@ -20,6 +20,12 @@ async function create(req, res, next) {
     if (!company) {
       return res.status(404).json({ error: 'Company not found' });
     }
+    if (!company.is_active) {
+      return res.status(400).json({ error: 'Company is not available' });
+    }
+    if (company.created_by != null && company.created_by === fromUserId) {
+      return res.status(400).json({ error: 'Cannot send a connection request to your own company' });
+    }
 
     const existing = await prisma.connectionRequest.findUnique({
       where: {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -26,6 +26,8 @@ function formatStatus(s) {
   return x.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const CONNECTION_POLL_MS = 45_000;
+
 export default function ConnectionRequestsTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,10 +42,27 @@ export default function ConnectionRequestsTable() {
     ? "/startup"
     : "/entrepreneur";
 
-  useEffect(() => {
+  const refreshLists = useCallback(() => {
     dispatch(fetchConnectionRequestsSent());
     dispatch(fetchConnectionRequestsIncoming());
   }, [dispatch]);
+
+  useEffect(() => {
+    refreshLists();
+  }, [refreshLists]);
+
+  useEffect(() => {
+    const id = window.setInterval(refreshLists, CONNECTION_POLL_MS);
+    return () => window.clearInterval(id);
+  }, [refreshLists]);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refreshLists();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [refreshLists]);
 
   const pendingCount = requests.filter((r) => (r.status || "").toLowerCase() === "pending").length;
   const acceptedCount = requests.filter((r) => (r.status || "").toLowerCase() === "accepted").length;
@@ -73,8 +92,9 @@ export default function ConnectionRequestsTable() {
       <div>
         <h1 className="text-2xl font-semibold text-slate-800">Connection Requests</h1>
         <p className="text-slate-500 mt-1">
-          Incoming requests to approve, and requests you&apos;ve sent. Admin must approve first; then the
-          company owner accepts or declines.
+          <strong>Outgoing</strong> lists requests you sent. <strong>Needs your response</strong> only
+          appears for the <strong>owner of the company that was requested</strong> (after an admin approves).
+          If you were the one who clicked Connect, track status under Outgoing — not here.
         </p>
       </div>
 

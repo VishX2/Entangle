@@ -72,7 +72,8 @@ export default function InvestorMessages() {
     });
     if (openConversationId != null) {
       const conv = list.find((c) => Number(c?.id) === Number(openConversationId));
-      setActiveChat(buildChat(conv || list[0]));
+      if (conv) setActiveChat(buildChat(conv));
+      else setActiveChat(null);
     } else {
       setActiveChat((prev) => prev || buildChat(list[0]));
     }

@@ -134,7 +134,7 @@ export const respondConnectionRequest = createAsyncThunk(
 
 export const getImageKitAuth = createAsyncThunk('user/imageKitAuth', async (_, { rejectWithValue }) => {
   try {
-    const { data } = await api.get('/imagekit/auth');
+    const { data } = await api.get('/imagekit/auth-public');
     return data;
   } catch (err) {
     return rejectWithValue(err.response?.data?.error || err.message);

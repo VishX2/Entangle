@@ -1,73 +1,67 @@
-import { NavLink } from "react-router-dom";
-import {
-  LayoutGrid,
-  ShieldCheck,
-  MessageSquare,
-  AlertTriangle,
-  LogOut,
-} from "lucide-react";
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { logout, selectCurrentUser } from '../../store/authSlice';
+import { NavItem } from '../molecules';
+import { LayoutGrid, ShieldCheck, MessageSquare, AlertTriangle, LogOut, Sparkles, Users, Link2, User } from 'lucide-react';
 
 export default function Sidebar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Get currently logged-in user from Redux store
+  const user = useSelector(selectCurrentUser);
+
+  // Handle user logout
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.success('Signed out successfully');
+    navigate('/login', { replace: true });
+  };
+
   return (
-    <aside className="w-64 bg-[#0f172a] text-slate-200 flex flex-col sticky top-0 h-screen">
-      {/* Logo */}
+    // Sidebar container
+    <aside className="w-64 bg-[#2F3B4B] text-[#9EC0DB] flex flex-col sticky top-0 h-screen">
       <div className="p-6">
-        <div className="text-xl font-bold">Entangle</div>
-        <div className="mt-4 border-t border-slate-700" />
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="Entangle" className="w-9 h-9 object-contain" />
+          <span className="text-xl font-bold text-white">Entangle</span>
+        </div>
+
+        {/* Display logged-in user's name if available */}
+        {user && (
+          <p className="mt-2 text-sm text-[#9EC0DB]/80 truncate">
+            {user.first_name} {user.last_name}
+          </p>
+        )}
+
+        <div className="mt-4 border-t border-[#465B77]" />
       </div>
 
-      {/* Navigation */}
+      {/* Navigation menu */}
       <nav className="flex-1 space-y-2 px-4">
-        <SidebarItem 
-          to="/dashboard" 
-          icon={LayoutGrid} 
-          label="Dashboard" 
-        />
-        <SidebarItem
-          to="/investor-verification"
-          icon={ShieldCheck}
-          label="Investor Verification"
-        />
-        <SidebarItem
-          to="/content-moderation"
-          icon={MessageSquare}
-          label="Content Moderation"
-        />
-        <SidebarItem
-          to="/reports"
-          icon={AlertTriangle}
-          label="Reports & Complaints"
-        />
+        <NavItem to="/dashboard" icon={LayoutGrid} label="Dashboard" />
+        <NavItem to="/profile" icon={User} label="Profile" />
+        <NavItem to="/users" icon={Users} label="User Management" />
+        <NavItem to="/connection-requests" icon={Link2} label="Connection Requests" />
+        <NavItem to="/startup-verification" icon={ShieldCheck} label="Startup Verification" />
+        <NavItem to="/content-moderation" icon={MessageSquare} label="Content Moderation" />
+        <NavItem to="/reports" icon={AlertTriangle} label="Reports & Complaints" />
+        <NavItem to="/ai-matchmaking" icon={Sparkles} label="AI Matchmaking" />
       </nav>
 
-      {/* Footer */}
-      <div className="px-6 my-4 border-t border-slate-700" />
+      {/* Bottom divider */}
+      <div className="px-6 my-4 border-t border-[#465B77]" />
 
-      <div className="p-4 text-sm opacity-70 hover:text-white cursor-pointer flex items-center gap-3">
-        <LogOut className="h-4 w-4" />
+      {/* Logout button */}
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="p-4 text-sm text-[#9EC0DB]/80 hover:text-white cursor-pointer flex items-center gap-3 w-full text-left transition"
+      >
+        <LogOut className="h-4 w-4 shrink-0" />
         Logout
-      </div>
+      </button>
     </aside>
-  );
-}
-
-/* ---------- SIDEBAR ITEM ---------- */
-
-function SidebarItem({ to, icon: Icon, label }) {
-  return (
-    <NavLink
-      to={to}
-      end
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
-          isActive
-            ? "bg-orange-500 text-white"
-            : "text-slate-400 hover:bg-slate-800 hover:text-white"
-        }`
-      }
-    >
-      <Icon className="h-5 w-5" />
-      <span className="text-sm font-medium">{label}</span>
-    </NavLink>
   );
 }

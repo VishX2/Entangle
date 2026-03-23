@@ -4,13 +4,15 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLogin from "./pages/AdminLogin";
 import AdminRegister from "./pages/AdminRegister";
 import Dashboard from "./pages/AdminDashboard";
-import InvestorVerification from "./pages/InvestorVerification";
+import StartupVerification from "./pages/StartupVerification";
 import ContentModeration from "./pages/ContentModeration";
 import CompanyDetail from "./pages/CompanyDetail";
 import ReportsAndComplaints from "./pages/ReportsAndComplaints";
 import UserManagement from "./pages/UserManagement";
 import ConnectionRequests from "./pages/ConnectionRequests";
 import AIMatchmaking from "./pages/AIMatchmaking";
+import AdminProfile from "./pages/AdminProfile";
+import AdminEditProfile from "./pages/AdminEditProfile";
 import { selectToken, selectIsAdmin } from "./store/authSlice";
 
 // Redirect root path depending on authentication state
@@ -45,9 +47,12 @@ export default function App() {
         <Route path="/register" element={<RegisterOrRedirect />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/profile/edit" element={<ProtectedRoute><AdminEditProfile /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
         <Route path="/users" element={<ProtectedRoute><UserManagement /></ProtectedRoute>} />
         <Route path="/connection-requests" element={<ProtectedRoute><ConnectionRequests /></ProtectedRoute>} />
-        <Route path="/investor-verification" element={<ProtectedRoute><InvestorVerification /></ProtectedRoute>} />
+        <Route path="/startup-verification" element={<ProtectedRoute><StartupVerification /></ProtectedRoute>} />
+        <Route path="/investor-verification" element={<Navigate to="/startup-verification" replace />} />
         <Route path="/content-moderation" element={<ProtectedRoute><ContentModeration /></ProtectedRoute>} />
         <Route path="/content-moderation/company/:id" element={<ProtectedRoute><CompanyDetail /></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><ReportsAndComplaints /></ProtectedRoute>} />

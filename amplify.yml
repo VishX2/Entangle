@@ -1,0 +1,20 @@
+# Monorepo format required when Amplify app uses "My app is a monorepo" + app root `client`.
+# appRoot must match AMPLIFY_MONOREPO_APP_ROOT in Amplify → Environment variables.
+version: 1
+applications:
+  - appRoot: client
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*

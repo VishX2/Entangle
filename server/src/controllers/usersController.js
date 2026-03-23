@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { prisma } = require('../lib/prisma');
 
-const selectPublic = { id: true, email: true, first_name: true, last_name: true, profile_picture: true, role_id: true, is_active: true, last_login_at: true, created_at: true, updated_at: true };
+const selectPublic = { id: true, email: true, first_name: true, last_name: true, profile_picture: true, phone: true, nic_id: true, role_id: true, is_active: true, last_login_at: true, created_at: true, updated_at: true };
 
 async function getMe(req, res, next) {
   try {

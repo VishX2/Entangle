@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import profileImg from "../../../assets/startup-profile/startup1.jpg";
 import coverImg from "../../../assets/startup-profile/cover.jpg";
 import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../../store/userApi";
 import { selectCurrentUser } from "../../../store/authSlice";
 import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../../store/userSlice";
+import { getAvatarUrl } from "../../../utils/avatarUrl";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export default function ProfileHeader() {
   }, [companies, user?.id]);
 
   const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Profile";
+  const displayName = (myCompany?.name || "").trim() || fullName;
   const companyType = (myCompany?.company_type || "startup").toUpperCase();
   const location = myCompany?.headquarters || "—";
   const email = user?.email || "—";
@@ -50,7 +51,7 @@ export default function ProfileHeader() {
         {/* PROFILE IMAGE */}
         <div className="-mt-24 relative inline-block">
           <img
-            src={user?.profile_picture || profileImg}
+            src={getAvatarUrl(user?.profile_picture)}
             alt="Investor profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />
@@ -76,13 +77,18 @@ export default function ProfileHeader() {
           <div>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-semibold text-slate-900">
-                {fullName}
+                {displayName}
               </h1>
 
               <span className="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600 font-medium">
                 {companyType}
               </span>
             </div>
+            {myCompany?.name?.trim() && (
+              <p className="mt-1 text-sm text-slate-500">
+                Contact: <span className="text-slate-700 font-medium">{fullName}</span>
+              </p>
+            )}
 
             <div className="mt-2 text-sm text-slate-600 flex flex-wrap gap-4">
               <span>{location}</span>
@@ -94,19 +100,6 @@ export default function ProfileHeader() {
             <p className="mt-4 max-w-2xl text-sm text-slate-700 leading-relaxed">
               {description}
             </p>
-
-            {myCompany?.website_url?.trim() && (
-              <p className="mt-2 text-sm">
-                <a
-                  href={normalizeUrl(myCompany.website_url.trim())}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline break-all"
-                >
-                  {myCompany.website_url.trim()}
-                </a>
-              </p>
-            )}
 
             {/* SOCIAL ICONS */}
             <div className="flex gap-4 mt-6">
@@ -143,11 +136,6 @@ export default function ProfileHeader() {
 }
 
 /* HELPER COMPONENTS */
-
-function normalizeUrl(url) {
-  if (!url) return null;
-  return url.startsWith('http') ? url : `https://${url}`;
-}
 
 function getSocialUrl(type, websiteUrl) {
   if (!websiteUrl || typeof websiteUrl !== 'string') return null;

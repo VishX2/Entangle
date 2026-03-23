@@ -2,19 +2,19 @@ const { prisma } = require('../lib/prisma');
 
 async function stats(req, res, next) {
   try {
-    const [companies, users, reviews, reports, verifiedCount, pendingReviews] = await Promise.all([
+    const [companies, users, reviews, reports, verifiedCount, pendingReviews, pendingConnections] = await Promise.all([
       prisma.company.findMany({ select: { id: true, name: true, company_type: true, is_verified: true, verification_tier: true, created_at: true } }),
       prisma.user.count(),
       prisma.review.findMany({ select: { id: true, is_approved: true, created_at: true, company: { select: { name: true } } } }),
       prisma.report.count(),
       prisma.company.count({ where: { is_verified: true } }),
       prisma.review.count({ where: { is_approved: false } }),
+      prisma.connectionRequest.count({ where: { status: 'pending' } }),
     ]);
 
     const startups = companies.filter((c) => c.company_type === 'startup').length;
     const investors = companies.filter((c) => c.company_type === 'investor').length;
 
-    // Line chart: companies by month, grouped by verification_tier (gold, silver, bronze)
     const now = new Date();
     const months = [];
     for (let i = 5; i >= 0; i--) {
@@ -41,7 +41,6 @@ async function stats(req, res, next) {
     }
     const lineData = months.map(({ _date, ...rest }) => rest);
 
-    // Bar chart: verifications, reports, moderation, investors
     const barData = [
       { name: 'Verifications', value: verifiedCount, fill: '#f97316' },
       { name: 'Reports', value: reports, fill: '#334155' },
@@ -80,6 +79,7 @@ async function stats(req, res, next) {
         investorsCount: investors,
         usersCount: users,
         reportsCount: reports,
+        pendingConnectionsCount: pendingConnections,
       },
       lineData,
       barData,

@@ -10,18 +10,25 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
+// Trust proxy when behind Amplify/nginx - use X-Forwarded-* headers
+app.set('trust proxy', 1);
+
 app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
+const normalizedOrigins = (config.corsOrigins || []).map((o) => o.replace(/\/$/, ''));
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || config.corsOrigins.includes(origin)) return cb(null, true);
+    if (!origin) return cb(null, true);
+    const normalized = origin.replace(/\/$/, '');
+    if (normalizedOrigins.includes(normalized)) return cb(null, true);
     cb(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  optionsSuccessStatus: 204,
 }));
 
 const authLimiter = rateLimit({
@@ -30,6 +37,7 @@ const authLimiter = rateLimit({
   message: { error: 'Too many attempts. Try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.method === 'OPTIONS',
 });
 app.use(express.json({ limit: '1mb' }));
 

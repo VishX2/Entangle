@@ -10,10 +10,10 @@ export default function EditProfilePage({ userType = 'entrepreneur' }) {
   const config = BACK_CONFIG[userType] || BACK_CONFIG.entrepreneur;
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-6">
+    <div className="min-h-screen bg-surface px-4 py-6">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-xl font-semibold text-slate-800 mb-4">Edit profile</h1>
-        <EditProfileForm backTo={config.backTo} backLabel={config.backLabel} />
+        <EditProfileForm backTo={config.backTo} backLabel={config.backLabel} userType={userType} />
       </div>
     </div>
   );

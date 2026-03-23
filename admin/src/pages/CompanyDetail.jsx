@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/organisms/Sidebar";
 import { ArrowLeft, Building2, Check, X } from "lucide-react";
 import { fetchCompanyById, updateCompany } from "../store/adminApi";
 import {

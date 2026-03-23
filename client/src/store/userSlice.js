@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchProfile, fetchCompanies, fetchInvestors, fetchCompanySummary, fetchCompanyById, fetchReviewsByCompany, createReview, markReviewHelpful, updateProfile, fetchInvestorsForStartup, fetchStartupsForInvestor, fetchInvestorsForEntrepreneur, fetchEntrepreneursForInvestor, fetchSearchByPrompt, fetchConversations, fetchMessages, fetchProfileGuidance, fetchNotifications, markNotificationRead, markAllNotificationsRead, fetchConnectionRequestsSent } from './userApi';
+import { fetchProfile, fetchCompanies, fetchInvestors, fetchCompanySummary, fetchCompanyById, fetchReviewsByCompany, createReview, markReviewHelpful, updateProfile, fetchMyCompany, updateMyCompany, fetchInvestorsForStartup, fetchStartupsForInvestor, fetchInvestorsForEntrepreneur, fetchEntrepreneursForInvestor, fetchSearchByPrompt, fetchConversations, fetchMessages, fetchProfileGuidance, fetchNotifications, markNotificationRead, markAllNotificationsRead, fetchConnectionRequestsSent, fetchConnectionRequestsIncoming } from './userApi';
 
 const userSlice = createSlice({
   name: 'user',
@@ -15,6 +15,8 @@ const userSlice = createSlice({
     matchmakingLoading: false,
     loading: false,
     error: null,
+    myCompany: null,
+    connectionRequestsIncoming: [],
   },
   reducers: {
     clearUserError: (state) => {
@@ -160,6 +162,18 @@ const userSlice = createSlice({
       })
       .addCase(fetchConnectionRequestsSent.fulfilled, (state, { payload }) => {
         state.connectionRequestsSent = payload;
+      })
+      .addCase(fetchMyCompany.fulfilled, (state, { payload }) => {
+        state.myCompany = payload;
+      })
+      .addCase(fetchMyCompany.rejected, (state) => {
+        state.myCompany = null;
+      })
+      .addCase(updateMyCompany.fulfilled, (state, { payload }) => {
+        state.myCompany = payload;
+      })
+      .addCase(fetchConnectionRequestsIncoming.fulfilled, (state, { payload }) => {
+        state.connectionRequestsIncoming = payload;
       });
   },
 });
@@ -185,3 +199,5 @@ export const selectMatchmakingLoading = (state) => state.user.matchmakingLoading
 export const selectConversations = (state) => state.user.conversations;
 export const selectMessages = (state) => state.user.messages;
 export const selectConnectionRequestsSent = (state) => state.user.connectionRequestsSent;
+export const selectMyCompany = (state) => state.user.myCompany;
+export const selectConnectionRequestsIncoming = (state) => state.user.connectionRequestsIncoming;

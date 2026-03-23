@@ -1,21 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Bell } from "lucide-react";
 import { fetchNotifications, markNotificationRead, markAllNotificationsRead } from "../store/userApi";
 import { selectToken } from "../store/authSlice";
 
+/** Poll interval so admin-approved connections (etc.) show up without full page refresh */
+const NOTIFICATION_POLL_MS = 45_000;
+
 export default function NotificationBell() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const isLoggedIn = useSelector(selectToken);
   const notifications = useSelector((s) => s.user?.notifications) ?? [];
 
+  const refresh = useCallback(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
+
   useEffect(() => {
-    if (isLoggedIn) dispatch(fetchNotifications());
-  }, [dispatch, isLoggedIn]);
+    if (!isLoggedIn) return;
+    refresh();
+  }, [isLoggedIn, location.pathname, refresh]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const id = window.setInterval(refresh, NOTIFICATION_POLL_MS);
+    return () => window.clearInterval(id);
+  }, [isLoggedIn, refresh]);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [isLoggedIn, refresh]);
 
   useEffect(() => {
     const handler = (e) => {

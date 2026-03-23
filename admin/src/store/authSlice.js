@@ -46,12 +46,20 @@ const authSlice = createSlice({
     clearRegisterError: (state) => {
       state.registerError = null;
     },
+    setUser: (state, { payload }) => {
+      if (payload && state.user) {
+        state.user = { ...state.user, ...payload };
+        try {
+          localStorage.setItem(config.userKey, JSON.stringify(state.user));
+        } catch (_) {}
+      }
+    },
   },
 
   // Handle async API calls (login & registration)
   extraReducers: (builder) => {
     builder
-    
+
       // ===Admin Login===
       .addCase(loginAdmin.pending, (state) => {
         state.isLoading = true;
@@ -87,7 +95,7 @@ const authSlice = createSlice({
 });
 
 // Export reducer actions
-export const { setCredentials, logout, setLoading, setError, clearError, clearRegisterError } = authSlice.actions;
+export const { setCredentials, logout, setUser, setLoading, setError, clearError, clearRegisterError } = authSlice.actions;
 export default authSlice.reducer;
 
 // Selectors to access authentication state

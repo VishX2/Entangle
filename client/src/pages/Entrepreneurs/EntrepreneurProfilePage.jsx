@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../store/userApi";
 import { selectCurrentUser } from "../../store/authSlice";
 import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../store/userSlice";
-import defaultProfileImg from "../../assets/investor-profile/investor1.jpg";
+import { getAvatarUrl } from "../../utils/avatarUrl";
 import defaultCoverImg from "../../assets/investor-profile/cover.jpg";
+import InvestmentHistory from "../../components/Investor-profile/InvestmentHistory";
 
 
 export default function EntrepreneurProfile() {
@@ -30,14 +31,14 @@ export default function EntrepreneurProfile() {
     return mine.find((c) => c.company_type === "entrepreneur") || mine[0] || null;
   }, [companies, user?.id]);
   const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Founder";
-  const profileImage = user?.profile_picture || defaultProfileImg;
+  const profileImage = getAvatarUrl(user?.profile_picture);
   const description = myCompany?.description || "Building and scaling an impactful venture.";
   const location = myCompany?.headquarters || "—";
   const joinedYear = user?.created_at ? new Date(user.created_at).getFullYear() : "—";
   const acceptedConnections = sentRequests.filter((r) => r.status === "accepted").length;
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] px-8 py-8">
+    <div className="min-h-screen bg-surface px-8 py-8">
       <div className="max-w-[1400px] mx-auto space-y-8">
 
         {/*  HEADER  */}
@@ -87,18 +88,6 @@ export default function EntrepreneurProfile() {
                 <p className="mt-4 text-sm text-slate-600 max-w-2xl">
                   {description}
                 </p>
-                {myCompany?.website_url?.trim() && (
-                  <p className="mt-2 text-sm">
-                    <a
-                      href={normalizeUrl(myCompany.website_url.trim())}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline break-all"
-                    >
-                      {myCompany.website_url.trim()}
-                    </a>
-                  </p>
-                )}
                 {/*  SOCIAL MEDIA  */}
                 <div className="flex gap-3 mt-5">
                   <SocialIcon type="linkedin" href={getSocialUrl('linkedin', myCompany?.website_url)} />
@@ -189,20 +178,7 @@ export default function EntrepreneurProfile() {
       </div>
     </div>
 
-    {/* Investment History */}
-        <Card title="Investment History">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <StatBox value="47" label="Total Investments" />
-                <StatBox value="23" label="Active" />
-                <StatBox value="18" label="Exited" />
-                <StatBox value="$125K" label="Avg. Investment" />
-              </div>
-
-          <h3 className="text-sm font-medium mb-4">Success Stories</h3>
-
-              <Success />
-              <Success />
-            </Card>
+            <InvestmentHistory companyType="entrepreneur" />
             {/*  BACKGROUND & EXPERIENCE  */}
         <Card
            title={
@@ -645,15 +621,6 @@ function Stat({ value, label }) {
   );
 }
 
-function StatBox({ value, label }) {
-  return (
-    <div className="bg-slate-100 rounded-xl p-6 text-center hover:shadow-md transition">
-      <div className="text-xl font-semibold">{value}</div>
-      <div className="text-xs text-slate-500">{label}</div>
-    </div>
-  );
-}
-
 function ProgressBar({ percent }) {
   return (
     <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
@@ -669,22 +636,6 @@ function Verify({ text }) {
   return (
     <div className="bg-slate-100 rounded-xl p-4 text-sm hover:bg-orange-50 transition">
       {text}
-    </div>
-  );
-}
-
-function Success() {
-  return (
-    <div className="bg-orange-50 rounded-xl p-5 flex justify-between items-center mb-4 hover:shadow transition">
-      <div>
-        <p className="text-sm font-medium">TechFlow AI</p>
-        <p className="text-xs text-slate-500">
-          Led seed round, valued at $50M
-        </p>
-      </div>
-      <span className="bg-blue-100 text-blue-600 px-3 py-1 text-xs rounded-full">
-        +340%
-      </span>
     </div>
   );
 }
@@ -930,11 +881,6 @@ function CheckCircleIcon() {
     </svg>
   );
 }
-function normalizeUrl(url) {
-  if (!url) return null;
-  return url.startsWith('http') ? url : `https://${url}`;
-}
-
 function getSocialUrl(type, websiteUrl) {
   if (!websiteUrl || typeof websiteUrl !== 'string') return null;
   const url = websiteUrl.trim();

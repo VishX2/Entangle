@@ -1,6 +1,5 @@
 import ProfileHeader from "../../components/Investor-profile/ProfileHeader";
 import VerificationCard from "../../components/Investor-profile/VerificationCard";
-import InvestmentPreferences from "../../components/Investor-profile/InvestmentPreferences";
 import BackgroundExperience from "../../components/Investor-profile/BackgroundExperience";
 import InvestmentHistory from "../../components/Investor-profile/InvestmentHistory";
 import RatingsFeedback from "../../components/Investor-profile/RatingsFeedback";
@@ -12,7 +11,7 @@ import PrivacySettings from "../../components/Investor-profile/PrivacySettings";
 
 export default function InvestorProfile() {
   return (
-    <div className="min-h-screen bg-slate-100 px-6 py-6">
+    <div className="min-h-screen bg-surface px-6 py-6">
       
       {/* CENTERED CONTAINER */}
       <div className="max-w-7xl mx-auto">
@@ -26,7 +25,6 @@ export default function InvestorProfile() {
           {/* LEFT COLUMN */}
           <div className="xl:col-span-2 space-y-6">
             <VerificationCard />
-            <InvestmentPreferences />
             <BackgroundExperience />
             <InvestmentHistory />
             <RatingsFeedback />

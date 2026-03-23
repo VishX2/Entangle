@@ -13,7 +13,7 @@ export function HeroSection({
     user?.first_name || user?.firstName || user?.name || "Founder";
 
   return (
-    <div className="rounded-2xl bg-linear-to-r from-[#2E3A4B] to-[#465F7F] text-white p-8 hover:shadow-2xl transition duration-300">
+    <div className="rounded-2xl bg-linear-to-r from-[#2E3A4B] to-[#465F7F] text-white p-6 shadow-sm hover:shadow-xl transition duration-300">
       <p className="text-sm opacity-80">GOOD MORNING</p>
       <h1 className="text-3xl font-semibold mt-1">
         Welcome back, {firstName}
@@ -22,7 +22,7 @@ export function HeroSection({
         Your growth metrics, milestones, and next moves — right here.
       </p>
 
-      <div className="flex gap-4 mt-6">
+      <div className="flex flex-wrap gap-3 sm:gap-4 mt-5">
         <StatCard
           title="Funding This Week"
           value={fundingValue}

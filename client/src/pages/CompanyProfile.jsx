@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowLeft, Star, ThumbsUp } from "lucide-react";
+import { getAvatarUrl } from "../utils/avatarUrl";
 import ConnectButton from "../components/ConnectButton";
 import MessageButton from "../components/MessageButton";
 import { fetchCompanyById, fetchReviewsByCompany, createReview, markReviewHelpful } from "../store/userApi";
@@ -93,6 +94,11 @@ export default function CompanyProfile() {
             <div className="flex justify-between items-start flex-wrap gap-4">
               <div>
                 <div className="flex items-center gap-3 flex-wrap">
+                  {company.logo_url && (
+                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                      <img src={getAvatarUrl(company.logo_url)} alt={company.name} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                   <h1 className="text-2xl font-bold text-slate-800">{company.name}</h1>
                   {isLoggedIn && (
                     <>

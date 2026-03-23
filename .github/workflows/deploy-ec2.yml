@@ -144,5 +144,7 @@ jobs:
             cd "$BASE/server"
             npm ci --omit=dev
             npx prisma generate
-            pm2 startOrReload "$BASE/ecosystem.config.cjs" --only entangle
+            # Drop stale PM2 definition (e.g. old `npm run dev` / nodemon) so ecosystem.config.cjs wins.
+            pm2 delete entangle 2>/dev/null || true
+            pm2 start "$BASE/ecosystem.config.cjs" --only entangle
             pm2 save

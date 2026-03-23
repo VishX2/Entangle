@@ -4,13 +4,16 @@
  */
 const path = require("path");
 const serverDir = path.join(__dirname, "server");
+// Absolute path so PM2 always runs `node …/index.js`, never a stale `npm run dev` / nodemon.
+const entry = path.join(serverDir, "src", "index.js");
 
 module.exports = {
   apps: [
     {
       name: "entangle",
       cwd: serverDir,
-      script: "src/index.js",
+      script: entry,
+      interpreter: "node",
       instances: 1,
       exec_mode: "fork",
       env: { NODE_ENV: "production" },

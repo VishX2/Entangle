@@ -67,7 +67,7 @@ const InvestorActionDropdown = ({
               onVerify();
               setOpen(false);
             }}
-            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100"
+            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-surface-alt"
           >
             ✔ Mark as Verified
           </button>
@@ -78,7 +78,7 @@ const InvestorActionDropdown = ({
               onViewDocs();
               setOpen(false);
             }}
-            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100"
+            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-surface-alt"
           >
             📄 View Documents
           </button>
@@ -88,7 +88,7 @@ const InvestorActionDropdown = ({
               onRequestInfo();
               setOpen(false);
             }}
-            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-gray-100 text-orange-600"
+            className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-surface-alt text-orange-600"
           >
             ✉ Request Additional Info
           </button>

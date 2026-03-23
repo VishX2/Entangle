@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import ConnectButton from "../ConnectButton";
 import MessageButton from "../MessageButton";
+import { getAvatarUrl } from "../../utils/avatarUrl";
 
 export default function StartupCard({ startup, matchScore }) {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function StartupCard({ startup, matchScore }) {
             <div className="w-12 h-12 rounded-xl bg-[#e0e4e6] flex items-center justify-center overflow-hidden">
               {startup.logo ? (
                 <img
-                  src={startup.logo}
+                  src={getAvatarUrl(startup.logo)}
                   alt={startup.name}
                   className="w-8 h-8 object-contain"
                 />

@@ -15,7 +15,7 @@ function StartupAgreement({ onAccept, onCancel }) {
           </p>
         </div>
 
-        <div className="bg-gray-100 rounded-xl p-4 h-56 overflow-y-auto text-sm text-[#2B3443] space-y-4">
+        <div className="bg-surface-alt rounded-xl p-4 h-56 overflow-y-auto text-sm text-[#2B3443] space-y-4">
           <p>
             <strong>1. Confidentiality</strong><br />
             All startup information, including business models, product ideas,

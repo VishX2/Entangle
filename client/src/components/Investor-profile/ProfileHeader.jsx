@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import profileImg from "../../assets/investor-profile/investor1.jpg";
 import coverImg from "../../assets/investor-profile/cover.jpg";
 import { fetchCompanies, fetchConnectionRequestsSent, fetchProfile } from "../../store/userApi";
 import { selectCurrentUser } from "../../store/authSlice";
 import { selectCompanies, selectConnectionRequestsSent, selectProfile } from "../../store/userSlice";
+import { getAvatarUrl } from "../../utils/avatarUrl";
 
 export default function ProfileHeader() {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export default function ProfileHeader() {
         {/* PROFILE IMAGE */}
         <div className="-mt-24 relative inline-block">
           <img
-            src={user?.profile_picture || profileImg}
+            src={getAvatarUrl(user?.profile_picture)}
             alt="Investor profile"
             className="w-44 h-44 rounded-full object-cover border-4 border-white"
           />
@@ -94,19 +94,6 @@ export default function ProfileHeader() {
             <p className="mt-4 max-w-2xl text-sm text-slate-700 leading-relaxed">
               {description}
             </p>
-
-            {myCompany?.website_url?.trim() && (
-              <p className="mt-2 text-sm">
-                <a
-                  href={normalizeUrl(myCompany.website_url.trim())}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline break-all"
-                >
-                  {myCompany.website_url.trim()}
-                </a>
-              </p>
-            )}
 
             {/* SOCIAL ICONS */}
             <div className="flex gap-4 mt-6">
@@ -176,11 +163,6 @@ function ActionButton({ children, primary, accent, onClick }) {
       {children}
     </button>
   );
-}
-
-function normalizeUrl(url) {
-  if (!url) return null;
-  return url.startsWith('http') ? url : `https://${url}`;
 }
 
 function getSocialUrl(type, websiteUrl) {

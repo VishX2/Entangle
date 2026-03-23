@@ -2,9 +2,12 @@ import toast from 'react-hot-toast';
 import { createApiClient } from '@shared/api/createApiClient';
 import config from '../config';
 
+/** URLs where 401 should not show “session expired” (login/register, or ImageKit auth retry paths). */
 const isAuthUrl = (url) =>
   typeof url === 'string' &&
-  (url.includes('/auth/login') || url.includes('/auth/register'));
+  (url.includes('/auth/login') ||
+    url.includes('/auth/register') ||
+    url.includes('/imagekit/auth'));
 
 export const api = createApiClient({
   baseURL: `${config.apiUrl}/api`,

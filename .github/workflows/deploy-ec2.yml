@@ -1,0 +1,150 @@
+# Deploy Entangle API to EC2: build on GitHub → SCP tarball → extract → npm ci → prisma generate → PM2 entangle.
+#
+# Secrets: EC2_HOST, EC2_USER, EC2_SSH_KEY *or* EC2_SSH_KEY_B64 (one required)
+# Optional: VITE_API_URL, EC2_DEPLOY_PATH, EC2_SSH_PASSPHRASE (if private key is encrypted)
+#
+# Default install path: $HOME/Entangle on the SSH user (root → /root/Entangle, ec2-user → /home/ec2-user/Entangle).
+# Override with secret EC2_DEPLOY_PATH only if you use a different directory.
+#
+# On the instance: server/.env must exist (not in git). Tarball excludes .env, uploads, node_modules.
+#
+name: Deploy EC2
+
+# Manual only — avoids failed runs on every push when EC2 secrets are not configured.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-ec2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Schema uses env("DATABASE_URL"); validate/generate do not connect on the runner.
+    env:
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci_placeholder
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Install dependencies & build frontends
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: |
+          export VITE_API_URL="${VITE_API_URL:-http://localhost:8000}"
+          (cd server && npm ci)
+          (cd client && npm ci && npm run build)
+          (cd admin && npm ci && npm run build)
+
+      - name: Prisma validate
+        working-directory: server
+        run: npx prisma validate
+
+      - name: Create deploy bundle
+        run: |
+          mkdir -p bundle/server
+          rsync -a --exclude node_modules --exclude uploads --exclude .env server/ bundle/server/
+          rsync -a client/dist/ bundle/client-dist/
+          rsync -a admin/dist/ bundle/admin-dist/
+          cp deploy/ecosystem.config.cjs bundle/
+          tar -czf deploy.tar.gz -C bundle .
+
+      # scp-action runs in Docker: passing multiline EC2_SSH_KEY via env breaks ParsePrivateKey ("no key found").
+      - name: Write EC2 deploy key to workspace file
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_SSH_KEY_B64: ${{ secrets.EC2_SSH_KEY_B64 }}
+        run: |
+          set -euo pipefail
+          OUT="${GITHUB_WORKSPACE}/.deploy_ec2_key.pem"
+          if [ -n "${EC2_SSH_KEY_B64:-}" ]; then
+            if ! printf '%s' "$EC2_SSH_KEY_B64" | tr -d '\r\n ' | base64 -d > "$OUT" 2>/dev/null || [ ! -s "$OUT" ]; then
+              echo "::error::EC2_SSH_KEY_B64 could not be base64-decoded to a non-empty file. Use: base64 -w0 < your-private-key.pem"
+              exit 1
+            fi
+          elif [ -n "$EC2_SSH_KEY" ]; then
+            printf '%s\n' "$EC2_SSH_KEY" | tr -d '\r' > "$OUT"
+          else
+            echo "::error::Set EC2_SSH_KEY (multiline private key) or EC2_SSH_KEY_B64 (single-line base64 of the key file). See deploy/EC2-PIPELINE.md."
+            exit 1
+          fi
+          # Trim BOM / leading blank lines (GitHub UI paste often adds a leading newline).
+          python3 << 'PY'
+          import os
+          from pathlib import Path
+          p = Path(os.environ["GITHUB_WORKSPACE"]) / ".deploy_ec2_key.pem"
+          data = p.read_bytes()
+          if data.startswith(b"\xef\xbb\xbf"):
+              data = data[3:]
+          text = data.decode("utf-8", errors="replace").strip() + "\n"
+          p.write_text(text, newline="\n")
+          PY
+          # drone-scp Docker user must read the bind-mounted file; 600 is often "permission denied" for that UID.
+          chmod 644 "$OUT"
+
+      - name: Validate deploy key shape (avoids cryptic drone-scp "no key found")
+        run: |
+          set -euo pipefail
+          KEY="${GITHUB_WORKSPACE}/.deploy_ec2_key.pem"
+          test -s "$KEY" || { echo "::error::.deploy_ec2_key.pem is empty."; exit 1; }
+          BYTES=$(wc -c < "$KEY" | tr -d ' ')
+          if [ "$BYTES" -lt 100 ]; then
+            echo "::error::Key file is only $BYTES bytes — GitHub secret is likely truncated or wrong."
+            exit 1
+          fi
+          if ! grep -q '^-----BEGIN .*PRIVATE KEY-----' "$KEY"; then
+            echo "::error::Missing -----BEGIN … PRIVATE KEY----- line. You may have pasted the .pub line, only base64 body, or EC2_SSH_KEY_B64 is wrong. If both EC2_SSH_KEY and EC2_SSH_KEY_B64 are set, B64 is used — remove a bad B64 secret."
+            exit 1
+          fi
+          if ! grep -q '^-----END .*PRIVATE KEY-----' "$KEY"; then
+            echo "::error::Missing -----END … PRIVATE KEY----- line — secret may be truncated."
+            exit 1
+          fi
+          echo "Key file shape OK ($BYTES bytes)."
+
+      - name: Upload bundle to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          # Container mount: host workspace → /github/workspace (not ${{ github.workspace }} host path).
+          key_path: /github/workspace/.deploy_ec2_key.pem
+          passphrase: ${{ secrets.EC2_SSH_PASSPHRASE }}
+          source: deploy.tar.gz
+          target: /tmp/
+
+      - name: Extract, install API, PM2 reload
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DEPLOY_PATH: ${{ secrets.EC2_DEPLOY_PATH }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key_path: ${{ github.workspace }}/.deploy_ec2_key.pem
+          passphrase: ${{ secrets.EC2_SSH_PASSPHRASE }}
+          envs: DEPLOY_PATH
+          script_stop: true
+          command_timeout: 20m
+          script: |
+            set -euo pipefail
+            export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:$PATH"
+            # Root: /root/Entangle | ec2-user: /home/ec2-user/Entangle | or EC2_DEPLOY_PATH
+            BASE="${DEPLOY_PATH:-$HOME/Entangle}"
+            echo "Deploy path: $BASE user=$(whoami) node=$(command -v node || echo missing) npm=$(command -v npm || echo missing) pm2=$(command -v pm2 || echo missing)"
+            command -v node >/dev/null || { echo "ERROR: node not found on server. Install Node 24."; exit 1; }
+            command -v npm >/dev/null || { echo "ERROR: npm not found on server."; exit 1; }
+            command -v pm2 >/dev/null || { echo "ERROR: pm2 not found. On EC2 run: npm install -g pm2"; exit 1; }
+            mkdir -p "$BASE"
+            tar -xzf /tmp/deploy.tar.gz -C "$BASE"
+            rm -f /tmp/deploy.tar.gz
+            cd "$BASE/server"
+            npm ci --omit=dev
+            npx prisma generate
+            # Drop stale PM2 definition (e.g. old `npm run dev` / nodemon) so ecosystem.config.cjs wins.
+            pm2 delete entangle 2>/dev/null || true
+            pm2 start "$BASE/ecosystem.config.cjs" --only entangle
+            pm2 save

@@ -13,25 +13,25 @@ const STATUS_STYLES = {
 
 const TIERS = ["gold", "silver", "bronze", "none"];
 
-export default function InvestorVerification() {
+export default function StartupVerification() {
   const dispatch = useDispatch();
 
-  // Get investor data and loading state from Redux store
-  const investors = useSelector(selectCompanies);
+  // Get startup data and loading state from Redux store
+  const startups = useSelector(selectCompanies);
   const loading = useSelector(selectAdminLoading);
 
-  // Fetch investor-type companies when component mounts
+  // Fetch startup-type companies when component mounts
   useEffect(() => {
-    dispatch(fetchCompanies({ type: "investor" }));
+    dispatch(fetchCompanies({ type: "startup" }));
   }, [dispatch]);
 
-  // Mark an investor as verified
+  // Mark a startup as verified
   const markVerified = (id) => {
     dispatch(updateCompany({ id, is_verified: true }));
   };
 
-  // Reject an investor (set inactive)
-  const rejectInvestor = (id) => {
+  // Reject a startup (set inactive)
+  const rejectStartup = (id) => {
     dispatch(updateCompany({ id, is_active: false }));
   };
 
@@ -48,9 +48,9 @@ export default function InvestorVerification() {
 
   // Compute dashboard counts for each status category
   const counts = {
-    Pending: investors.filter((c) => c.is_active && !c.is_verified).length,
-    Verified: investors.filter((c) => c.is_verified).length,
-    Rejected: investors.filter((c) => !c.is_active).length,
+    Pending: startups.filter((c) => c.is_active && !c.is_verified).length,
+    Verified: startups.filter((c) => c.is_verified).length,
+    Rejected: startups.filter((c) => !c.is_active).length,
   };
 
   return (
@@ -59,9 +59,9 @@ export default function InvestorVerification() {
 
       {/* Main content area */}
       <main className="flex-1 p-8 overflow-y-auto">
-        <h1 className="text-2xl font-semibold">Investor Verification</h1>
+        <h1 className="text-2xl font-semibold">Startup Verification</h1>
         <p className="text-slate-500 mb-6">
-          Manage investor identity & compliance verification
+          Manage startup identity & compliance verification
         </p>
 
         {/* Summary cards showing counts of each status */}
@@ -83,9 +83,9 @@ export default function InvestorVerification() {
             <div className="p-8 text-center text-slate-500">Loading...</div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b border-slate-200">
+              <thead className="bg-surface-alt border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4 text-left">Investor Name</th>
+                  <th className="px-6 py-4 text-left">Startup Name</th>
                   <th className="px-6 py-4 text-left">Type</th>
                   <th className="px-6 py-4 text-left">Verification Tier</th>
                   <th className="px-6 py-4 text-left">Status</th>
@@ -95,7 +95,7 @@ export default function InvestorVerification() {
               </thead>
 
               <tbody>
-                {investors.map((c) => {
+                {startups.map((c) => {
                   const status = getStatus(c);
                   return (
                     <tr key={c.id} className="border-b border-slate-200 last:border-0 hover:bg-gray-50 transition">
@@ -142,7 +142,7 @@ export default function InvestorVerification() {
                                 ✔
                               </button>
                               <button
-                                onClick={() => rejectInvestor(c.id)}
+                                onClick={() => rejectStartup(c.id)}
                                 className="text-red-500 hover:scale-110 transition px-2"
                                 title="Reject"
                               >
@@ -174,9 +174,9 @@ export default function InvestorVerification() {
             </table>
           )}
           
-          {!loading && investors.length === 0 && (
+          {!loading && startups.length === 0 && (
             <div className="p-8 text-center text-slate-500">
-              No investors found
+              No startups found
             </div>
           )}
         </div>

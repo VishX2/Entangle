@@ -1,6 +1,5 @@
 import ProfileHeader from "../../components/Startups/Startup-profile/ProfileHeader";
 import VerificationCard from "../../components/Startups/Startup-profile/VerificationCard";
-import InvestmentPreferences from "../../components/Startups/Startup-profile/InvestmentPreferences";
 import BackgroundExperience from "../../components/Startups/Startup-profile/BackgroundExperience";
 import InvestmentHistory from "../../components/Startups/Startup-profile/InvestmentHistory";
 import RatingsFeedback from "../../components/Startups/Startup-profile/RatingsFeedback";
@@ -12,7 +11,7 @@ import PrivacySettings from "../../components/Startups/Startup-profile/PrivacySe
 
 export default function StartupProfile() {
   return (
-    <div className="min-h-screen bg-slate-100 px-6 py-6">
+    <div className="min-h-screen bg-surface px-6 py-6">
       
       {/* CENTERED CONTAINER */}
       <div className="max-w-7xl mx-auto">
@@ -26,7 +25,6 @@ export default function StartupProfile() {
           {/* LEFT COLUMN */}
           <div className="xl:col-span-2 space-y-6">
             <VerificationCard />
-            <InvestmentPreferences />
             <BackgroundExperience />
             <InvestmentHistory />
             <RatingsFeedback />

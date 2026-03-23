@@ -38,3 +38,20 @@ build/
 # Env
 .env
 backend/.env
+
+# Server user uploads (runtime only)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Shared scratch assets (do not commit)
+shared/Screenshot*.png
+
+# EC2 deploy SSH keys (never commit)
+entangle-deploy
+entangle-deploy.pub
+standard-key.pem
+entangle-github-deploy
+entangle-github-deploy.pub
+
+# CI: ephemeral EC2 key file (never commit)
+.deploy_ec2_key.pem

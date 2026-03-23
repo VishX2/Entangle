@@ -3,7 +3,7 @@ export function MarketSnapshot({
   dealsValue = "47",
 }) {
   return (
-    <div className="bg-white rounded-2xl p-5 shadow">
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
       <h3 className="font-semibold mb-3">Market Snapshot</h3>
       <p className="text-sm">Funding This Week</p>
       <p className="text-lg font-semibold">{fundingValue}</p>
@@ -23,7 +23,7 @@ export function TrendingIndustries() {
   ];
 
   return (
-    <div className="bg-white rounded-2xl p-5 shadow">
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
       <h3 className="font-semibold mb-3">Trending Industries</h3>
       {industries.map((ind, i) => (
         <div key={i} className="text-sm py-1">
@@ -35,21 +35,23 @@ export function TrendingIndustries() {
 }
 
 export function RecommendedStartups({ investors = [] }) {
+  const names = (investors || []).length
+    ? investors.slice(0, 3).map((inv) => inv?.name || "Investor")
+    : ["Lumosa AI", "EcoVolt", "Paystream"];
+
   return (
-    <div className="bg-white rounded-2xl p-5 shadow">
-      <h3 className="font-semibold mb-3">
-        Recommended Investors
-      </h3>
-      {(investors || []).slice(0, 3).map((inv) => (
-        <p
-          key={inv?.id || inv?.name}
-          className="text-sm"
-        >
-          {inv?.name || "Investor"}
+    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+      <h3 className="font-semibold mb-3">Recommended Investors</h3>
+      {names.map((name, i) => (
+        <p key={`${name}-${i}`} className="text-sm py-0.5">
+          {name}
         </p>
       ))}
 
-      <button className="mt-4 w-full bg-[#E66A4B] text-white py-2 rounded-xl">
+      <button
+        type="button"
+        className="mt-4 w-full bg-[#E66A4B] text-white py-2 rounded-xl hover:bg-[#d85e40] transition"
+      >
         Explore More Investors
       </button>
     </div>

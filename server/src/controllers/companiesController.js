@@ -154,19 +154,43 @@ async function update(req, res, next) {
   }
 }
 
-//Update the company profile of the authenticated user
+function myCompanyWhere(userId, companyType) {
+  const where = { created_by: userId, is_active: true };
+  if (companyType && ['entrepreneur', 'investor', 'startup'].includes(companyType)) {
+    where.company_type = companyType;
+  }
+  return where;
+}
+
+async function getMyCompany(req, res, next) {
+  try {
+    const companyType = req.query.company_type;
+    const company = await prisma.company.findFirst({
+      where: myCompanyWhere(req.userId, companyType),
+      select: selectFields,
+      orderBy: { created_at: 'desc' },
+    });
+    if (!company) return res.status(404).json({ error: 'No company profile found for this user' });
+    res.json(company);
+  } catch (err) {
+    next(err);
+  }
+}
+
+// Update the company profile of the authenticated user (optional ?company_type=)
 async function updateMyCompany(req, res, next) {
   try {
+    const companyType = req.query.company_type;
     const myCompany = await prisma.company.findFirst({
-      where: { created_by: req.userId, is_active: true },
+      where: myCompanyWhere(req.userId, companyType),
       select: { id: true },
       orderBy: { created_at: 'desc' },
     });
-    
+
     if (!myCompany) return res.status(404).json({ error: 'No active company profile found for this user' });
 
     const {
-      name, description, logo_url, website_url, headquarters,
+      name, description, logo_url, website_url, headquarters, founded_year,
       founder_name, years_experience, investment_focus, min_investment,
       max_investment, funding_stage, team_size,
     } = req.body;
@@ -178,6 +202,7 @@ async function updateMyCompany(req, res, next) {
     if (logo_url !== undefined) data.logo_url = logo_url;
     if (website_url !== undefined) data.website_url = website_url;
     if (headquarters !== undefined) data.headquarters = headquarters;
+    if (founded_year !== undefined) data.founded_year = founded_year;
     if (founder_name !== undefined) data.founder_name = founder_name;
     if (years_experience !== undefined) data.years_experience = years_experience;
     if (investment_focus !== undefined) data.investment_focus = investment_focus;
@@ -216,4 +241,4 @@ async function remove(req, res, next) {
   }
 }
 
-module.exports = { list, summary, getById, create, update, updateMyCompany, remove };
+module.exports = { list, summary, getById, getMyCompany, create, update, updateMyCompany, remove };

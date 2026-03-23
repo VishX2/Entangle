@@ -18,7 +18,7 @@ const statusBadge = (status) => {
   if (s === "pending" || s === "open") return "bg-blue-100 text-blue-600";
   if (s === "escalated") return "bg-orange-100 text-orange-600";
   if (s === "resolved") return "bg-green-100 text-green-600";
-  return "bg-gray-100 text-gray-600";
+  return "bg-surface-alt text-text-muted";
 };
 
 //Color coding for priority level
@@ -86,7 +86,7 @@ export default function ReportsAndComplaints() {
             <div className="p-8 text-center text-slate-500">Loading...</div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b border-slate-200">
+              <thead className="bg-surface-alt border-b border-slate-200">
                 <tr>
                   <th className="px-6 py-4 text-left">ID</th>
                   <th className="px-6 py-4 text-left">Reporter</th>

@@ -1,4 +1,5 @@
 const { prisma } = require('../lib/prisma');
+const config = require('../config');
 const path = require('path');
 
 async function upload(req, res, next) {
@@ -7,7 +8,7 @@ async function upload(req, res, next) {
     const { type, company_id } = req.body;
     const userId = req.userId || null;
     const companyId = company_id ? parseInt(company_id, 10) : null;
-    const baseUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 8000}`;
+    const baseUrl = config.apiUrl;
     const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
 
     const doc = await prisma.document.create({
@@ -28,7 +29,7 @@ async function upload(req, res, next) {
 async function uploadPublic(req, res, next) {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    const baseUrl = process.env.API_URL || `http://localhost:${process.env.PORT || 8000}`;
+    const baseUrl = config.apiUrl;
     const fileUrl = `${baseUrl}/uploads/${req.file.filename}`;
     res.status(201).json({ file_url: fileUrl, file_name: req.file.originalname });
   } catch (err) {

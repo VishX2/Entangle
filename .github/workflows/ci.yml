@@ -1,0 +1,44 @@
+# Green-by-default: Prisma validate + build client + admin. Runs on push/PR.
+# Full API integration tests are in ci-api-tests.yml (run manually from Actions).
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Prisma postinstall/validate read env("DATABASE_URL"); no DB connection in this job.
+    env:
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci_placeholder
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
+      - name: Server — install & Prisma validate
+        working-directory: server
+        run: |
+          npm ci
+          npx prisma validate
+
+      - name: Client — install & build
+        working-directory: client
+        run: |
+          npm ci
+          npm run build
+
+      - name: Admin — install & build
+        working-directory: admin
+        run: |
+          npm ci
+          npm run build

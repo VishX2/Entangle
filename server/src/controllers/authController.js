@@ -55,7 +55,7 @@ async function register(req, res, next) {
 
     const user = await prisma.user.create({
       data: userData,
-      select: { id: true, email: true, first_name: true, last_name: true, role_id: true, created_at: true },
+      select: { id: true, email: true, first_name: true, last_name: true, role_id: true, created_at: true, profile_picture: true },
     });
 
     const companyType = (user_type || '').toLowerCase();
@@ -112,7 +112,7 @@ async function login(req, res, next) {
     }
     const user = await prisma.user.findFirst({
       where: { email, is_active: true },
-      select: { id: true, email: true, password_hash: true, first_name: true, last_name: true, role_id: true },
+      select: { id: true, email: true, password_hash: true, first_name: true, last_name: true, role_id: true, profile_picture: true },
     });
     if (!user || !(await bcrypt.compare(password, user.password_hash))) {
       return res.status(401).json({ error: 'Invalid email or password' });

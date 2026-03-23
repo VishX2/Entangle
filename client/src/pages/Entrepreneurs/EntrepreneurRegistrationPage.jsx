@@ -5,6 +5,7 @@ import { CheckCircle, Lightbulb, User, Building2, Upload, Eye, EyeOff } from 'lu
 import { AuthSidebar } from '../../components/organisms/layout';
 import { registerUser } from '../../store/authApi';
 import { uploadDocument } from '../../store/userApi';
+import { uploadProfilePicture } from '../../utils/imagekitUpload';
 import { selectAuthLoading, selectAuthError } from '../../store/authSlice';
 import { clearError, setError } from '../../store/authSlice';
 
@@ -45,12 +46,12 @@ export default function EntrepreneurRegistration() {
     dispatch(clearError());
     let profile_picture = null;
     if (formData.profilePicture) {
-      const up = await dispatch(uploadDocument(formData.profilePicture));
-      if (uploadDocument.rejected.match(up)) {
-        dispatch(setError(up.payload || 'Failed to upload profile picture'));
+      try {
+        profile_picture = await uploadProfilePicture(formData.profilePicture);
+      } catch (e) {
+        dispatch(setError(e?.message || 'Failed to upload profile picture'));
         return;
       }
-      profile_picture = up.payload?.file_url;
     }
     let referenceLetterUrl = null;
     if (formData.referenceLetter) {

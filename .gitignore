@@ -39,6 +39,13 @@ build/
 .env
 backend/.env
 
+# Server user uploads (runtime only)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Shared scratch assets (do not commit)
+shared/Screenshot*.png
+
 # EC2 deploy SSH keys (never commit)
 entangle-deploy
 entangle-deploy.pub
